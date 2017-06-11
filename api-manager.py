@@ -49,7 +49,6 @@ print "logged into rabbit"
 
 # get current list of apps at startup
 nebula_apps = mongo_list_apps(mongo_collection)
-print nebula_apps
 print "got list of all mongo apps"
 
 # ensure all apps has their rabbitmq exchanges created at startup
