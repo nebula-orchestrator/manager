@@ -1,6 +1,6 @@
 import json, os
 from flask import json, Flask, request, Response, render_template, jsonify
-from flask.ext.basicauth import BasicAuth
+from flask_basicauth import BasicAuth
 from functions.db_functions import *
 from functions.rabbit_functions import *
 from bson.json_util import dumps, loads
