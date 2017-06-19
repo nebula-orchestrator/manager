@@ -220,7 +220,7 @@ def start_app(app_name):
     return dumps(app_json), 202
 
 
-# update an app
+# POST update an app
 @app.route('/api/apps/<app_name>/update', methods=["POST"])
 def update_app(app_name):
     rabbit_channel = rabbit_login()
@@ -256,6 +256,46 @@ def update_app(app_name):
     # update db
     app_json = mongo_update_app(mongo_collection, app_name, starting_ports, containers_per, env_vars, docker_image,
                                 running, network_mode)
+    # post to rabbit to update app
+    app_json["command"] = "update"
+    rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
+    rabbit_close(rabbit_channel)
+    return dumps(app_json), 202
+
+
+# PUT update some fields of an app
+@app.route('/api/apps/<app_name>/update', methods=["PUT"])
+def update_app_fields(app_name):
+    rabbit_channel = rabbit_login()
+    # check app exists first
+    app_exists = mongo_check_app_exists(mongo_collection, app_name)
+    if app_exists is False:
+        rabbit_close(rabbit_channel)
+        return "{\"app_exists\": \"False\"}", 403
+    # check app got update parameters
+    try:
+        app_json = request.json
+    except:
+        rabbit_close(rabbit_channel)
+        return "{\"missing_parameters\": \"True\"}", 400
+    # check corner case of port being outside of possible port ranges in case trying to update port listing
+    try:
+        starting_ports = request.json["starting_ports"]
+        for starting_port in starting_ports:
+            if isinstance(starting_port, int):
+                if not 1 <= starting_port <= 65535:
+                    return "{\"starting_ports\": \"invalid port\"}", 400
+            elif isinstance(starting_port, dict):
+                for host_port, container_port in starting_port.iteritems():
+                    if not 1 <= int(host_port) <= 65535 or not 1 <= int(container_port) <= 65535:
+                        return "{\"starting_ports\": \"invalid port\"}", 400
+            else:
+                rabbit_close(rabbit_channel)
+                return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
+    except:
+        pass
+    # update db
+    app_json = mongo_update_app_fields(mongo_collection, app_name, request.json)
     # post to rabbit to update app
     app_json["command"] = "update"
     rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))

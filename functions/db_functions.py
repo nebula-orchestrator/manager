@@ -59,10 +59,18 @@ def mongo_list_app_envvars(collection, app_name):
     return result["env_vars"]
 
 
-# update envvars of app
+# update envvars of an app
 def mongo_update_app_envars(collection, app_name, env_vars):
     result = collection.find_one_and_update({'app_name': app_name},
                                             {'$set': {'env_vars': env_vars}},
+                                            return_document=ReturnDocument.AFTER)
+    return result
+
+
+# update some fields of an app
+def mongo_update_app_fields(collection, app_name, update_fields_dict):
+    result = collection.find_one_and_update({'app_name': app_name},
+                                            {'$set': update_fields_dict},
                                             return_document=ReturnDocument.AFTER)
     return result
 
