@@ -264,7 +264,7 @@ def update_app(app_name):
 
 
 # PUT update some fields of an app
-@app.route('/api/apps/<app_name>/update', methods=["PUT"])
+@app.route('/api/apps/<app_name>/update', methods=["PUT", "PATCH"])
 def update_app_fields(app_name):
     rabbit_channel = rabbit_login()
     # check app exists first
