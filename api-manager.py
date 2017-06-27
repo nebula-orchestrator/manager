@@ -6,6 +6,7 @@ from functions.rabbit_functions import *
 from bson.json_util import dumps, loads
 
 
+# get setting from envvar with failover from conf.json file if envvar not set
 def get_conf_setting(setting, settings_json):
     try:
         setting_value = os.getenv(setting.upper(), settings_json[setting])
@@ -24,7 +25,7 @@ def rabbit_login():
 
 
 # read config file at startup
-# load the login params from auth.json file or envvar
+# load the login params from envvar or auth.json file if envvar is not set
 print "reading conf.json file"
 auth_file = json.load(open("conf.json"))
 basic_auth_user = get_conf_setting("basic_auth_user", auth_file)
