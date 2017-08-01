@@ -77,7 +77,7 @@ print "basic auth configured"
 # api check page - return 200 and a massage just so we know API is reachable
 @app.route('/api/status', methods=["GET"])
 def check_page():
-    return "{\"api_avilable\": \"True\"}", 200
+    return "{\"api_available\": \"True\"}", 200
 
 
 # create a new app
