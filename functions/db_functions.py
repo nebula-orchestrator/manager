@@ -16,7 +16,7 @@ def mongo_connect(mongo_connection_string, schema_name="nebula"):
 # get all app data
 def mongo_get_app(collection, app_name):
     result = collection.find_one({"app_name": app_name})
-    if result == None:
+    if result is None:
         app_exists = False
     else:
         app_exists = True
