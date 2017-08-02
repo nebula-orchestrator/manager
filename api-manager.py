@@ -45,7 +45,7 @@ mongo_collection = mongo_connect(mongo_url, schema_name)
 print "logged into mongo"
 
 # login to rabbit at startup
-rabbit_channel = rabbit_login()
+rabbit_main_channel = rabbit_login()
 print "logged into rabbit"
 
 # get current list of apps at startup
@@ -54,11 +54,11 @@ print "got list of all mongo apps"
 
 # ensure all apps has their rabbitmq exchanges created at startup
 for nebula_app in nebula_apps:
-    rabbit_create_exchange(rabbit_channel, nebula_app)
+    rabbit_create_exchange(rabbit_main_channel, nebula_app)
 print "all apps has rabbitmq exchange created (if needed)"
 
 # close rabbit connection
-rabbit_close(rabbit_channel)
+rabbit_close(rabbit_main_channel)
 
 # open waiting connection
 app = Flask(__name__)
@@ -232,7 +232,6 @@ def update_app(app_name):
         return "{\"app_exists\": \"False\"}", 403
     # check app got all needed parameters
     try:
-        app_json = request.json
         starting_ports = request.json["starting_ports"]
         containers_per = request.json["containers_per"]
         env_vars = request.json["env_vars"]
@@ -276,6 +275,9 @@ def update_app_fields(app_name):
     # check app got update parameters
     try:
         app_json = request.json
+        if len(app_json) == 0:
+            rabbit_close(rabbit_channel)
+            return "{\"missing_parameters\": \"True\"}", 400
     except:
         rabbit_close(rabbit_channel)
         return "{\"missing_parameters\": \"True\"}", 400
@@ -323,8 +325,8 @@ def release_app(app_name):
 # list apps
 @app.route('/api/apps', methods=["GET"])
 def list_apps():
-    nebula_apps = mongo_list_apps(mongo_collection)
-    return "{\"apps\": " + dumps(nebula_apps) + " }", 200
+    nebula_apps_list = mongo_list_apps(mongo_collection)
+    return "{\"apps\": " + dumps(nebula_apps_list) + " }", 200
 
 
 # get app info
