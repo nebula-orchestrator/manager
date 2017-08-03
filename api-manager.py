@@ -99,6 +99,7 @@ def create_app(app_name):
             docker_image = request.json["docker_image"]
             running = request.json["running"]
             network_mode = request.json["network_mode"]
+            volumes = request.json["volumes"]
         except:
             rabbit_close(rabbit_channel)
             return "{\"missing_parameters\": \"True\"}", 400
@@ -116,7 +117,7 @@ def create_app(app_name):
                 return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
         # update the db
         mongo_add_app(mongo_collection, app_name, starting_ports, containers_per, env_vars, docker_image, running,
-                      network_mode)
+                      network_mode, volumes)
         # create the rabbitmq exchange
         rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
         # post the new app to rabbitmq if app is set to start running
@@ -238,6 +239,7 @@ def update_app(app_name):
         docker_image = request.json["docker_image"]
         running = request.json["running"]
         network_mode = request.json["network_mode"]
+        volumes = request.json["volumes"]
     except:
         rabbit_close(rabbit_channel)
         return "{\"missing_parameters\": \"True\"}", 400
@@ -255,7 +257,7 @@ def update_app(app_name):
             return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
     # update db
     app_json = mongo_update_app(mongo_collection, app_name, starting_ports, containers_per, env_vars, docker_image,
-                                running, network_mode)
+                                running, network_mode, volumes)
     # post to rabbit to update app
     app_json["command"] = "update"
     rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))

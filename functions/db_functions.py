@@ -31,7 +31,7 @@ def mongo_check_app_exists(collection, app_name):
 
 # update all app data
 def mongo_update_app(collection, app_name, starting_ports, containers_per, env_vars, docker_image, running,
-                     network_mode):
+                     network_mode, volumes):
     app_doc = {
         "app_name": app_name,
         "starting_ports": starting_ports,
@@ -39,7 +39,8 @@ def mongo_update_app(collection, app_name, starting_ports, containers_per, env_v
         "env_vars": env_vars,
         "docker_image": docker_image,
         "running": running,
-        "network_mode": network_mode
+        "network_mode": network_mode,
+        "volumes": volumes
     }
     result = collection.find_one_and_update({'app_name': app_name},
                                             {'$set': {'starting_ports': starting_ports,
@@ -47,7 +48,8 @@ def mongo_update_app(collection, app_name, starting_ports, containers_per, env_v
                                                       'env_vars': env_vars,
                                                       'docker_image': docker_image,
                                                       'running': running,
-                                                      'network_mode': network_mode}},
+                                                      'network_mode': network_mode,
+                                                      "volumes": volumes}},
                                             upsert=True,
                                             return_document=ReturnDocument.AFTER)
     return result
@@ -99,7 +101,7 @@ def mongo_list_apps(collection):
 
 # add app
 def mongo_add_app(collection, app_name, starting_ports, containers_per, env_vars, docker_image, running=True,
-                  network_mode="bridge"):
+                  network_mode="bridge", volumes=[]):
     app_doc = {
         "app_name": app_name,
         "starting_ports": starting_ports,
@@ -107,7 +109,8 @@ def mongo_add_app(collection, app_name, starting_ports, containers_per, env_vars
         "env_vars": env_vars,
         "docker_image": docker_image,
         "running": running,
-        "network_mode": network_mode
+        "network_mode": network_mode,
+        "volumes": volumes
     }
     result = collection.insert_one(app_doc).inserted_id
     return result
