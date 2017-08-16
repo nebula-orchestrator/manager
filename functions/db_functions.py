@@ -31,7 +31,7 @@ def mongo_check_app_exists(collection, app_name):
 
 # update all app data
 def mongo_update_app(collection, app_name, starting_ports, containers_per, env_vars, docker_image, running,
-                     network_mode, volumes):
+                     network_mode, volumes, devices, privileged):
     app_doc = {
         "app_name": app_name,
         "starting_ports": starting_ports,
@@ -40,7 +40,9 @@ def mongo_update_app(collection, app_name, starting_ports, containers_per, env_v
         "docker_image": docker_image,
         "running": running,
         "network_mode": network_mode,
-        "volumes": volumes
+        "volumes": volumes,
+        "devices": devices,
+        "privileged": privileged
     }
     result = collection.find_one_and_update({'app_name': app_name},
                                             {'$set': {'starting_ports': starting_ports,
@@ -49,7 +51,10 @@ def mongo_update_app(collection, app_name, starting_ports, containers_per, env_v
                                                       'docker_image': docker_image,
                                                       'running': running,
                                                       'network_mode': network_mode,
-                                                      "volumes": volumes}},
+                                                      "volumes": volumes,
+                                                      "devices": devices,
+                                                      "privileged": privileged
+                                                      }},
                                             upsert=True,
                                             return_document=ReturnDocument.AFTER)
     return result
@@ -101,7 +106,7 @@ def mongo_list_apps(collection):
 
 # add app
 def mongo_add_app(collection, app_name, starting_ports, containers_per, env_vars, docker_image, running=True,
-                  network_mode="bridge", volumes=[]):
+                  network_mode="bridge", volumes=[], devices=[], privileged=False):
     app_doc = {
         "app_name": app_name,
         "starting_ports": starting_ports,
@@ -110,7 +115,9 @@ def mongo_add_app(collection, app_name, starting_ports, containers_per, env_vars
         "docker_image": docker_image,
         "running": running,
         "network_mode": network_mode,
-        "volumes": volumes
+        "volumes": volumes,
+        "devices": devices,
+        "privileged": privileged
     }
     result = collection.insert_one(app_doc).inserted_id
     return result
