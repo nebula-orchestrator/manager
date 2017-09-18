@@ -1,3 +1,4 @@
+import sys
 from pymongo import MongoClient, ReturnDocument
 
 
@@ -7,7 +8,8 @@ def mongo_connect(mongo_connection_string, schema_name="nebula"):
         client = MongoClient(mongo_connection_string)
         db = client[schema_name]
         collection = db["nebula"]
-    except:
+    except Exception as e:
+        print >> sys.stderr, e
         print "error connection to mongodb"
         exit(2)
     return collection

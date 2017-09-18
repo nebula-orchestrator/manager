@@ -1,4 +1,4 @@
-import json, os
+import json, os, sys
 from flask import json, Flask, request, Response, render_template, jsonify
 from flask_basicauth import BasicAuth
 from functions.db_functions import *
@@ -11,7 +11,8 @@ def get_conf_setting(setting, settings_json):
     try:
         setting_value = os.getenv(setting.upper(), settings_json[setting])
         return setting_value
-    except:
+    except Exception as e:
+        print >> sys.stderr, e
         print "missing " + setting + " config setting"
         exit(2)
 
