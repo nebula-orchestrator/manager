@@ -31,7 +31,7 @@ def mongo_check_app_exists(collection, app_name):
 
 # update all app data
 def mongo_update_app(collection, app_name, starting_ports, containers_per, env_vars, docker_image, running,
-                     network_mode, volumes, devices, privileged):
+                     networks, volumes, devices, privileged):
     app_doc = {
         "app_name": app_name,
         "starting_ports": starting_ports,
@@ -39,7 +39,7 @@ def mongo_update_app(collection, app_name, starting_ports, containers_per, env_v
         "env_vars": env_vars,
         "docker_image": docker_image,
         "running": running,
-        "network_mode": network_mode,
+        "networks": networks,
         "volumes": volumes,
         "devices": devices,
         "privileged": privileged
@@ -50,7 +50,7 @@ def mongo_update_app(collection, app_name, starting_ports, containers_per, env_v
                                                       'env_vars': env_vars,
                                                       'docker_image': docker_image,
                                                       'running': running,
-                                                      'network_mode': network_mode,
+                                                      'networks': networks,
                                                       "volumes": volumes,
                                                       "devices": devices,
                                                       "privileged": privileged
@@ -106,7 +106,7 @@ def mongo_list_apps(collection):
 
 # add app
 def mongo_add_app(collection, app_name, starting_ports, containers_per, env_vars, docker_image, running=True,
-                  network_mode="bridge", volumes=[], devices=[], privileged=False):
+                  networks="nebula", volumes=[], devices=[], privileged=False):
     app_doc = {
         "app_name": app_name,
         "starting_ports": starting_ports,
@@ -114,7 +114,7 @@ def mongo_add_app(collection, app_name, starting_ports, containers_per, env_vars
         "env_vars": env_vars,
         "docker_image": docker_image,
         "running": running,
-        "network_mode": network_mode,
+        "networks": networks,
         "volumes": volumes,
         "devices": devices,
         "privileged": privileged
