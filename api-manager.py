@@ -18,9 +18,10 @@ def get_conf_setting(setting, settings_json):
 
 
 # login to rabbit function
-def rabbit_login():
-    rabbit_connection = rabbit_connect(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
-                                       rabbit_heartbeat)
+def rabbit_login(rabbit_login_user, rabbit_login_password, rabbit_login_host, rabbit_login_port, rabbit_login_vhost,
+                 rabbit_login_heartbeat):
+    rabbit_connection = rabbit_connect(rabbit_login_user, rabbit_login_password, rabbit_login_host, rabbit_login_port,
+                                       rabbit_login_vhost, rabbit_login_heartbeat)
     rabbit_connection_channel = rabbit_create_channel(rabbit_connection)
     return rabbit_connection_channel
 
@@ -46,7 +47,8 @@ mongo_collection = mongo_connect(mongo_url, schema_name)
 print "logged into mongo"
 
 # login to rabbit at startup
-rabbit_main_channel = rabbit_login()
+rabbit_main_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
+                                   rabbit_heartbeat)
 print "logged into rabbit"
 
 # get current list of apps at startup
@@ -84,7 +86,8 @@ def check_page():
 # create a new app
 @app.route('/api/apps/<app_name>', methods=["POST"])
 def create_app(app_name):
-    rabbit_channel = rabbit_login()
+    rabbit_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
+                                  rabbit_heartbeat)
     # check app does't exists first
     app_exists = mongo_check_app_exists(mongo_collection, app_name)
     if app_exists is True:
@@ -133,7 +136,8 @@ def create_app(app_name):
 # delete an app
 @app.route('/api/apps/<app_name>', methods=["DELETE"])
 def delete_app(app_name):
-    rabbit_channel = rabbit_login()
+    rabbit_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
+                                  rabbit_heartbeat)
     # check app exists first
     app_exists = mongo_check_app_exists(mongo_collection, app_name)
     if app_exists is False:
@@ -152,7 +156,8 @@ def delete_app(app_name):
 # restart an app
 @app.route('/api/apps/<app_name>/restart', methods=["POST"])
 def restart_app(app_name):
-    rabbit_channel = rabbit_login()
+    rabbit_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
+                                  rabbit_heartbeat)
     app_exists, app_json = mongo_get_app(mongo_collection, app_name)
     # check app exists first
     if app_exists is False:
@@ -172,7 +177,8 @@ def restart_app(app_name):
 # rolling restart an app
 @app.route('/api/apps/<app_name>/roll', methods=["POST"])
 def roll_app(app_name):
-    rabbit_channel = rabbit_login()
+    rabbit_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
+                                  rabbit_heartbeat)
     app_exists, app_json = mongo_get_app(mongo_collection, app_name)
     # check app exists first
     if app_exists is False:
@@ -192,7 +198,8 @@ def roll_app(app_name):
 # stop an app
 @app.route('/api/apps/<app_name>/stop', methods=["POST"])
 def stop_app(app_name):
-    rabbit_channel = rabbit_login()
+    rabbit_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
+                                  rabbit_heartbeat)
     # check app exists first
     app_exists = mongo_check_app_exists(mongo_collection, app_name)
     if app_exists is False:
@@ -210,7 +217,8 @@ def stop_app(app_name):
 # start an app
 @app.route('/api/apps/<app_name>/start', methods=["POST"])
 def start_app(app_name):
-    rabbit_channel = rabbit_login()
+    rabbit_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
+                                  rabbit_heartbeat)
     # check app exists first
     app_exists = mongo_check_app_exists(mongo_collection, app_name)
     if app_exists is False:
@@ -228,7 +236,8 @@ def start_app(app_name):
 # POST update an app
 @app.route('/api/apps/<app_name>/update', methods=["POST"])
 def update_app(app_name):
-    rabbit_channel = rabbit_login()
+    rabbit_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
+                                  rabbit_heartbeat)
     # check app exists first
     app_exists = mongo_check_app_exists(mongo_collection, app_name)
     if app_exists is False:
@@ -273,7 +282,8 @@ def update_app(app_name):
 # PUT update some fields of an app
 @app.route('/api/apps/<app_name>/update', methods=["PUT", "PATCH"])
 def update_app_fields(app_name):
-    rabbit_channel = rabbit_login()
+    rabbit_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
+                                  rabbit_heartbeat)
     # check app exists first
     app_exists = mongo_check_app_exists(mongo_collection, app_name)
     if app_exists is False:
@@ -316,7 +326,8 @@ def update_app_fields(app_name):
 # new version released
 @app.route('/api/apps/<app_name>/release', methods=["POST"])
 def release_app(app_name):
-    rabbit_channel = rabbit_login()
+    rabbit_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
+                                  rabbit_heartbeat)
     app_exists, app_json = mongo_get_app(mongo_collection, app_name)
     # check app exists first
     if app_exists is False:
