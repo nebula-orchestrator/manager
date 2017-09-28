@@ -368,6 +368,6 @@ def apply_caching(response):
     return response
 
 
-# will usually run in gunicorn but for debugging set ENV envvar to dev to run from flask built in web server
+# will usually run in gunicorn but for debugging set the "ENV" envvar to "dev" to run from flask built in web server
 if os.getenv("ENV", "prod") == "dev":
     app.run(host='0.0.0.0', port=5000, threaded=True)
