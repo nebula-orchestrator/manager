@@ -10,7 +10,7 @@ RUN apt-get update
 RUN apt-get -y install python python-pip
 RUN pip install -r /www/requirements.txt
 
-# adding the config
+# adding the gunicorn config
 ADD config.py /etc/gunicorn/config.py
 
 #set python to be unbuffered
