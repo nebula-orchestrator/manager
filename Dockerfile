@@ -4,7 +4,7 @@ FROM ubuntu:14.04
 # install flask and rabbitmq required
 RUN apt-get update
 RUN apt-get -y install python python-pip
-RUN pip install flask pika Flask-BasicAuth pymongo[tls] gunicorn futures
+RUN pip install -r requirements.txt
 
 # copy the codebase
 COPY . /www
