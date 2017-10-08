@@ -34,18 +34,6 @@ def mongo_check_app_exists(collection, app_name):
 # update all app data
 def mongo_update_app(collection, app_name, starting_ports, containers_per, env_vars, docker_image, running,
                      networks, volumes, devices, privileged):
-    app_doc = {
-        "app_name": app_name,
-        "starting_ports": starting_ports,
-        "containers_per": containers_per,
-        "env_vars": env_vars,
-        "docker_image": docker_image,
-        "running": running,
-        "networks": networks,
-        "volumes": volumes,
-        "devices": devices,
-        "privileged": privileged
-    }
     result = collection.find_one_and_update({'app_name': app_name},
                                             {'$set': {'starting_ports': starting_ports,
                                                       'containers_per': containers_per,
