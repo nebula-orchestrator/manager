@@ -7,18 +7,18 @@ from bson.json_util import dumps, loads
 
 
 # get setting from envvar with failover from conf.json file if envvar not set
-def get_conf_setting(setting, settings_json, default_value=None):
+def get_conf_setting(setting, settings_json, default_value="skip"):
     try:
-        setting_value = os.getenv(setting.upper(), settings_json[setting])
-        return setting_value
+        setting_value = os.getenv(setting.upper(), settings_json.get(setting, default_value))
     except Exception as e:
-        if default_value is not None:
-            setting_value = default_value
-            return setting_value
-        else:
-            print >> sys.stderr, e
-            print "missing " + setting + " config setting"
-            exit(2)
+        print >> sys.stderr, "missing " + setting + " config setting"
+        print "missing " + setting + " config setting"
+        exit(2)
+    if setting_value == "skip":
+        print >> sys.stderr, "missing " + setting + " config setting"
+        print "missing " + setting + " config setting"
+        exit(2)
+    return setting_value
 
 
 # login to rabbit function

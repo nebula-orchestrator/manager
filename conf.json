@@ -1,12 +1,1 @@
-{
-  "basic_auth_user": "nebula_api_user",
-  "basic_auth_password": "nebula_api_pass",
-  "rabbit_host": "nebula_rabbit_host",
-  "rabbit_port": 5672,
-  "rabbit_user": "nebula_rabbit_user",
-  "rabbit_password": "nebula_rabbit_pass",
-  "rabbit_vhost": "/",
-  "rabbit_heartbeat": 3600,
-  "mongo_url": "mongodb://<mongo_user>:<mongo_password>@<nebula_mongo_host>:27017/<mongo_schema>?ssl=true&replicaSet=<mongo_replica_set>&authSource=<mongo_auth_schema>",
-  "schema_name": "nebula"
-}
+{}
