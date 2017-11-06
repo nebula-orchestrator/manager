@@ -40,8 +40,8 @@ def rabbit_login(rabbit_login_user, rabbit_login_password, rabbit_login_host, ra
 # load the login params from envvar or auth.json file if envvar is not set
 print "reading config variables"
 auth_file = json.load(open("conf.json"))
-basic_auth_user = get_conf_setting("basic_auth_user", auth_file)
-basic_auth_password = get_conf_setting("basic_auth_password", auth_file)
+basic_auth_user = get_conf_setting("basic_auth_user", auth_file, None)
+basic_auth_password = get_conf_setting("basic_auth_password", auth_file, None)
 rabbit_host = get_conf_setting("rabbit_host", auth_file)
 rabbit_vhost = get_conf_setting("rabbit_vhost", auth_file, "/")
 rabbit_port = int(get_conf_setting("rabbit_port", auth_file, 5672))
