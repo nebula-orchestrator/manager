@@ -12,6 +12,10 @@ from bson.json_util import dumps, loads
 def get_conf_setting(setting, settings_json, default_value="skip"):
     try:
         setting_value = os.getenv(setting.upper(), settings_json.get(setting, default_value))
+        if setting_value == "true":
+            return True
+        elif setting_value == "false":
+            return False
     except Exception as e:
         print >> sys.stderr, "missing " + setting + " config setting"
         print "missing " + setting + " config setting"
