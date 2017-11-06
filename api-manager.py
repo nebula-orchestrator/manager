@@ -34,7 +34,7 @@ def rabbit_login(rabbit_login_user, rabbit_login_password, rabbit_login_host, ra
 
 # read config file at startup
 # load the login params from envvar or auth.json file if envvar is not set
-print "reading conf.json file"
+print "reading config variables"
 auth_file = json.load(open("conf.json"))
 basic_auth_user = get_conf_setting("basic_auth_user", auth_file)
 basic_auth_password = get_conf_setting("basic_auth_password", auth_file)
@@ -46,6 +46,7 @@ rabbit_password = get_conf_setting("rabbit_password", auth_file)
 mongo_url = get_conf_setting("mongo_url", auth_file)
 schema_name = get_conf_setting("schema_name", auth_file, "nebula")
 rabbit_heartbeat = int(get_conf_setting("rabbit_heartbeat", auth_file, 3600))
+basic_auth_enabled = int(get_conf_setting("basic_auth_enabled", auth_file, True))
 
 
 # login to db at startup
@@ -77,7 +78,7 @@ print "now waiting for connections"
 # based on https://flask-basicauth.readthedocs.io/en/latest/
 app.config['BASIC_AUTH_USERNAME'] = basic_auth_user
 app.config['BASIC_AUTH_PASSWORD'] = basic_auth_password
-app.config['BASIC_AUTH_FORCE'] = True
+app.config['BASIC_AUTH_FORCE'] = basic_auth_enabled
 app.config['BASIC_AUTH_REALM'] = 'nebula'
 basic_auth = BasicAuth(app)
 print "basic auth configured"

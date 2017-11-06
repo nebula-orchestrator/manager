@@ -8,5 +8,6 @@
   "rabbit_vhost": "/",
   "rabbit_heartbeat": 3600,
   "mongo_url": "mongodb://<mongo_user>:<mongo_password>@<nebula_mongo_host>:27017/<mongo_schema>?ssl=true&replicaSet=<mongo_replica_set>&authSource=<mongo_auth_schema>",
-  "schema_name": "nebula"
+  "schema_name": "nebula",
+  "basic_auth_enabled": true
 }
