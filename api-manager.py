@@ -36,6 +36,20 @@ def rabbit_login(rabbit_login_user, rabbit_login_password, rabbit_login_host, ra
     return rabbit_connection_channel
 
 
+# figure out what params are missing on a request and returns a list of those
+def find_missing_params(invalid_request):
+    try:
+        required_params = ["starting_ports", "containers_per", "env_vars", "docker_image", "running", "networks",
+                           "volumes", "devices", "privileged"]
+        missing_params = dict()
+        missing_params["missing_parameters"] = list(set(required_params) - set(invalid_request))
+
+    except Exception as e:
+        print >> sys.stderr, "unable to find missing params yet the request is returning an error"
+        exit(2)
+    return missing_params
+
+
 # read config file at startup
 # load the login params from envvar or auth.json file if envvar is not set
 print "reading config variables"
@@ -108,6 +122,9 @@ def create_app(app_name):
         # check the request is passed with all needed parameters
         try:
             app_json = request.json
+        except:
+            return json.dumps(find_missing_params({})), 400
+        try:
             starting_ports = request.json["starting_ports"]
             containers_per = request.json["containers_per"]
             env_vars = request.json["env_vars"]
@@ -119,7 +136,7 @@ def create_app(app_name):
             privileged = request.json["privileged"]
         except:
             rabbit_close(rabbit_channel)
-            return "{\"missing_parameters\": \"True\"}", 400
+            return json.dumps(find_missing_params(app_json)), 400
         # check corner case of port being outside of possible port ranges
         for starting_port in starting_ports:
             if isinstance(starting_port, int):
@@ -267,7 +284,7 @@ def update_app(app_name):
         privileged = request.json["privileged"]
     except:
         rabbit_close(rabbit_channel)
-        return "{\"missing_parameters\": \"True\"}", 400
+        return json.dumps(find_missing_params(app_json)), 400
     # check corner case of port being outside of possible port ranges
     for starting_port in starting_ports:
         if isinstance(starting_port, int):
