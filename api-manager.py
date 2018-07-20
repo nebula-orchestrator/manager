@@ -197,6 +197,10 @@ def restart_app(app_name):
         return "{\"running_before_restart\": \"False\"}", 403
     # post to rabbit to restart app
     app_json["command"] = "restart"
+
+    # create the RabbitMQ exchange in case it somehow got deleted
+    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+
     rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
     rabbit_close(rabbit_channel)
     return dumps(app_json), 202
@@ -218,6 +222,10 @@ def roll_app(app_name):
         return "{\"running_before_restart\": \"False\"}", 403
     # post to rabbit to restart app
     app_json["command"] = "roll"
+
+    # create the RabbitMQ exchange in case it somehow got deleted
+    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+
     rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
     rabbit_close(rabbit_channel)
     return dumps(app_json), 202
@@ -237,6 +245,10 @@ def stop_app(app_name):
     app_json = mongo_update_app_running_state(mongo_collection, app_name, False)
     # post to rabbit to stop app
     app_json["command"] = "stop"
+
+    # create the RabbitMQ exchange in case it somehow got deleted
+    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+
     rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
     rabbit_close(rabbit_channel)
     return dumps(app_json), 202
@@ -256,6 +268,10 @@ def start_app(app_name):
     app_json = mongo_update_app_running_state(mongo_collection, app_name, True)
     # post to rabbit to stop app
     app_json["command"] = "start"
+
+    # create the RabbitMQ exchange in case it somehow got deleted
+    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+
     rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
     rabbit_close(rabbit_channel)
     return dumps(app_json), 202
@@ -272,6 +288,10 @@ def update_app(app_name):
         rabbit_close(rabbit_channel)
         return "{\"app_exists\": \"False\"}", 403
     # check app got all needed parameters
+    try:
+        app_json = request.json
+    except:
+        return json.dumps(find_missing_params({})), 400
     try:
         starting_ports = request.json["starting_ports"]
         containers_per = request.json["containers_per"]
@@ -302,6 +322,10 @@ def update_app(app_name):
                                 running, networks, volumes, devices, privileged)
     # post to rabbit to update app
     app_json["command"] = "update"
+
+    # create the RabbitMQ exchange in case it somehow got deleted
+    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+
     rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
     rabbit_close(rabbit_channel)
     return dumps(app_json), 202
@@ -346,12 +370,16 @@ def update_app_fields(app_name):
     app_json = mongo_update_app_fields(mongo_collection, app_name, request.json)
     # post to rabbit to update app
     app_json["command"] = "update"
+
+    # create the RabbitMQ exchange in case it somehow got deleted
+    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+
     rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
     rabbit_close(rabbit_channel)
     return dumps(app_json), 202
 
 
-# new version released
+# new version released, does the same as restart & kept as legacy.
 @app.route('/api/apps/<app_name>/release', methods=["POST"])
 def release_app(app_name):
     rabbit_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
@@ -363,6 +391,10 @@ def release_app(app_name):
         return "{\"app_exists\": \"False\"}", 403
     # post to rabbit to restart app
     app_json["command"] = "release"
+
+    # create the RabbitMQ exchange in case it somehow got deleted
+    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+
     rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
     rabbit_close(rabbit_channel)
     return dumps(app_json), 202
