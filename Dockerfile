@@ -5,7 +5,7 @@ FROM python:2.7.15-alpine3.8
 COPY . /www
 RUN chmod +x /www/api-manager.py
 
-# install flask and rabbitmq and required packages
+# install required packages
 RUN pip install -r /www/requirements.txt
 
 # adding the gunicorn config
