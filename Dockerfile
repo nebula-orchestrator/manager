@@ -1,13 +1,11 @@
-# using ubuntu because it's the smallest i can use that works with mongo ssl
-FROM ubuntu:14.04
+# it's offical so i'm using it + alpine so damn small
+FROM python:2.7.15-alpine3.8
 
 # copy the codebase
 COPY . /www
 RUN chmod +x /www/api-manager.py
 
 # install flask and rabbitmq and required packages
-RUN apt-get update
-RUN apt-get -y install python python-pip
 RUN pip install -r /www/requirements.txt
 
 # adding the gunicorn config
