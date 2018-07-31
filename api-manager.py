@@ -36,7 +36,9 @@ def rabbit_login(rabbit_login_user, rabbit_login_password, rabbit_login_host, ra
     return rabbit_connection_channel
 
 
-# figure out what params are missing on a request and returns a list of those
+# takes an invalid request & figure out what params are missing on a request and returns a list of those, this function
+# should only be called in cases where the "invalid_request" has been tried and found to be missing a param as it fails
+# hard on failure like the rest of the code (which in this case also means no missing params)
 def find_missing_params(invalid_request):
     try:
         required_params = ["starting_ports", "containers_per", "env_vars", "docker_image", "running", "networks",
@@ -51,7 +53,8 @@ def find_missing_params(invalid_request):
 
 
 # read config file at startup
-# load the login params from envvar or auth.json file if envvar is not set
+# load the login params from envvar or auth.json file if envvar is not set, if both are unset will load the default
+# value if one exists for the param
 print "reading config variables"
 auth_file = json.load(open("conf.json"))
 basic_auth_user = get_conf_setting("basic_auth_user", auth_file, None)
@@ -277,7 +280,7 @@ def start_app(app_name):
     return dumps(app_json), 202
 
 
-# POST update an app
+# POST update an app - requires all the params to be given in the request body
 @app.route('/api/apps/<app_name>/update', methods=["POST"])
 def update_app(app_name):
     rabbit_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
@@ -331,7 +334,7 @@ def update_app(app_name):
     return dumps(app_json), 202
 
 
-# PUT update some fields of an app
+# PUT update some fields of an app - params not given will be unchanged from their current value
 @app.route('/api/apps/<app_name>/update', methods=["PUT", "PATCH"])
 def update_app_fields(app_name):
     rabbit_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
@@ -417,7 +420,7 @@ def get_app(app_name):
         return "{\"app_exists\": \"False\"}", 403
 
 
-# set json header
+# set json header - the API is JSON only so the header is set on all requests
 @app.after_request
 def apply_caching(response):
     response.headers["Content-Type"] = "application/json"
@@ -425,5 +428,6 @@ def apply_caching(response):
 
 
 # will usually run in gunicorn but for debugging set the "ENV" envvar to "dev" to run from flask built in web server
+# DO NOT SET AS 'dev' FOR PRODUCTION USE!!!
 if os.getenv("ENV", "prod") == "dev":
     app.run(host='0.0.0.0', port=5000, threaded=True)
