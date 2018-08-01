@@ -3,7 +3,9 @@ from flask import json, Flask, request, Response, render_template, jsonify
 from flask_basicauth import BasicAuth
 from functions.db_functions import *
 from functions.rabbit_functions import *
+from functions.rabbit_rpc_functions import *
 from bson.json_util import dumps, loads
+from threading import Thread
 
 
 # get setting from envvar with failover from conf.json file if envvar not set
@@ -19,11 +21,11 @@ def get_conf_setting(setting, settings_json, default_value="skip"):
     except Exception as e:
         print >> sys.stderr, "missing " + setting + " config setting"
         print "missing " + setting + " config setting"
-        exit(2)
+        os._exit(2)
     if setting_value == "skip":
         print >> sys.stderr, "missing " + setting + " config setting"
         print "missing " + setting + " config setting"
-        exit(2)
+        os._exit(2)
     return setting_value
 
 
@@ -48,9 +50,11 @@ def find_missing_params(invalid_request):
 
     except Exception as e:
         print >> sys.stderr, "unable to find missing params yet the request is returning an error"
-        exit(2)
+        os._exit(2)
     return missing_params
 
+# static variables
+RABBIT_RPC_QUEUE = "rabbit_api_rpc_queue"
 
 # read config file at startup
 # load the login params from envvar or auth.json file if envvar is not set, if both are unset will load the default
@@ -92,8 +96,13 @@ print "all apps has rabbitmq exchange created (if needed)"
 rabbit_close(rabbit_main_channel)
 
 # open waiting connection
-app = Flask(__name__)
-print "now waiting for connections"
+try:
+    app = Flask(__name__)
+    print "now waiting for connections"
+except Exception as e:
+    print >> sys.stderr, e
+    print "Flask connection failure - dropping container"
+    os._exit(2)
 
 # basic auth for api
 # based on https://flask-basicauth.readthedocs.io/en/latest/
@@ -427,7 +436,42 @@ def apply_caching(response):
     return response
 
 
+# used for when running with the 'ENV' envvar set to dev to open a new thread with flask builtin web server
+def run_dev(dev_host='0.0.0.0', dev_port=5000, dev_threaded=True):
+    app.run(host=dev_host, port=dev_port, threaded=dev_threaded)
+
+
+# creates an api rabbitmq work queue and starts processing messages from it 1 at a time, each message gets a name of a
+# nebula app which it then quries the backend DB for the app config and then returnes it to the requesting worker via
+# direct_reply_to
+def bootstrap_workers_via_rabbitmq():
+    try:
+        # login to rabbit at startup
+        rabbit_rpc_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
+                                           rabbit_heartbeat)
+        rabbit_create_rpc_api_queue(RABBIT_RPC_QUEUE, rabbit_rpc_channel)
+        # start processing rpc calls via rabbitmq
+        rabbit_rpc_channel.basic_consume(on_server_rx_rpc_request, queue=RABBIT_RPC_QUEUE)
+        print "logged into rabbit - RPC connection"
+    except Exception as e:
+        print >> sys.stderr, e
+        print "rabbit RPC connection failure - dropping container"
+        os._exit(2)
+
+# opens a thread that will act as an RPC via RabbitMQ to get the app data needed for workers at start
+try:
+    Thread(target=bootstrap_workers_via_rabbitmq).start()
+except Exception as e:
+    print >> sys.stderr, e
+    print "rabbit RPC connection failure - dropping container"
+    os._exit(2)
+
 # will usually run in gunicorn but for debugging set the "ENV" envvar to "dev" to run from flask built in web server
-# DO NOT SET AS 'dev' FOR PRODUCTION USE!!!
+# opens in a new thread, DO NOT SET AS 'dev' FOR PRODUCTION USE!!!
 if os.getenv("ENV", "prod") == "dev":
-    app.run(host='0.0.0.0', port=5000, threaded=True)
+    try:
+        Thread(target=run_dev).start()
+    except Exception as e:
+        print >> sys.stderr, e
+        print "Flask connection failure - dropping container"
+        os._exit(2)

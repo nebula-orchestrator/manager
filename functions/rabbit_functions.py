@@ -52,6 +52,12 @@ def rabbit_create_queue(rabbit_queue_name, rabbit_channel):
     return created_queue
 
 
+# create rpc api queue
+def rabbit_create_rpc_api_queue(rabbit_queue_name, rabbit_channel):
+    created_queue = rabbit_channel.queue_declare(queue=rabbit_queue_name, durable=True)
+    return created_queue
+
+
 # bind queue to exchange
 def rabbit_bind_queue(rabbit_bind_queue_name, rabbit_bind_channel, rabbit_bind_exchange):
     rabbit_bind_channel.queue_bind(exchange=rabbit_bind_exchange, queue=rabbit_bind_queue_name)

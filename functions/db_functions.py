@@ -1,4 +1,4 @@
-import sys
+import sys, os
 from pymongo import MongoClient, ReturnDocument
 
 
@@ -12,7 +12,7 @@ def mongo_connect(mongo_connection_string, schema_name="nebula"):
     except Exception as e:
         print >> sys.stderr, e
         print "error connection to mongodb"
-        exit(2)
+        os._exit(2)
 
 
 # get all app data
