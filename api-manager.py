@@ -99,8 +99,8 @@ try:
     app = Flask(__name__)
     print "now waiting for connections"
 except Exception as e:
-    print >> sys.stderr, e
     print "Flask connection failure - dropping container"
+    print >> sys.stderr, e
     os._exit(2)
 
 # basic auth for api
@@ -440,8 +440,8 @@ def run_dev(dev_host='0.0.0.0', dev_port=5000, dev_threaded=True):
     try:
         app.run(host=dev_host, port=dev_port, threaded=dev_threaded)
     except Exception as e:
-        print >> sys.stderr, e
         print "Flask connection failure - dropping container"
+        print >> sys.stderr, e
         os._exit(2)
 
 
@@ -456,8 +456,8 @@ def on_server_rx_rpc_request(ch, method_frame, properties, body):
         ch.basic_publish('', routing_key=properties.reply_to, body=rpc_app_info)
         ch.basic_ack(delivery_tag=method_frame.delivery_tag)
     except Exception as e:
-        print >> sys.stderr, e
         print "rabbit RPC connection failure - dropping container"
+        print >> sys.stderr, e
         os._exit(2)
 
 
@@ -474,16 +474,16 @@ def bootstrap_workers_via_rabbitmq():
         print "logged into rabbit - RPC connection"
         rabbit_receive(rabbit_rpc_channel, on_server_rx_rpc_request, RABBIT_RPC_QUEUE)
     except Exception as e:
-        print >> sys.stderr, e
         print "rabbit RPC connection failure - dropping container"
+        print >> sys.stderr, e
         os._exit(2)
 
 # opens a thread that will act as an RPC via RabbitMQ to get the app data needed for workers at start
 try:
     Thread(target=bootstrap_workers_via_rabbitmq).start()
 except Exception as e:
-    print >> sys.stderr, e
     print "rabbit RPC connection failure - dropping container"
+    print >> sys.stderr, e
     os._exit(2)
 
 # will usually run in gunicorn but for debugging set the "ENV" envvar to "dev" to run from flask built in web server
@@ -492,6 +492,6 @@ if os.getenv("ENV", "prod") == "dev":
     try:
         Thread(target=run_dev).start()
     except Exception as e:
-        print >> sys.stderr, e
         print "Flask connection failure - dropping container"
+        print >> sys.stderr, e
         os._exit(2)

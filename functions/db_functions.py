@@ -10,8 +10,8 @@ def mongo_connect(mongo_connection_string, schema_name="nebula"):
         collection = db["nebula"]
         return collection
     except Exception as e:
-        print >> sys.stderr, e
         print "error connection to mongodb"
+        print >> sys.stderr, e
         os._exit(2)
 
 
