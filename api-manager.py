@@ -468,7 +468,7 @@ def bootstrap_workers_via_rabbitmq():
     try:
         # login to rabbit at startup
         rabbit_rpc_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
-                                           rabbit_heartbeat)
+                                          rabbit_heartbeat)
         rabbit_rpc_channel.basic_qos(prefetch_count=1)
         rabbit_create_rpc_api_queue(RABBIT_RPC_QUEUE, rabbit_rpc_channel)
         # start processing rpc calls via rabbitmq
