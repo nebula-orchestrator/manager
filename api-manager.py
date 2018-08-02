@@ -3,7 +3,6 @@ from flask import json, Flask, request, Response, render_template, jsonify
 from flask_basicauth import BasicAuth
 from functions.db_functions import *
 from functions.rabbit_functions import *
-from functions.rabbit_rpc_functions import *
 from bson.json_util import dumps, loads
 from threading import Thread
 
@@ -438,7 +437,28 @@ def apply_caching(response):
 
 # used for when running with the 'ENV' envvar set to dev to open a new thread with flask builtin web server
 def run_dev(dev_host='0.0.0.0', dev_port=5000, dev_threaded=True):
-    app.run(host=dev_host, port=dev_port, threaded=dev_threaded)
+    try:
+        app.run(host=dev_host, port=dev_port, threaded=dev_threaded)
+    except Exception as e:
+        print >> sys.stderr, e
+        print "Flask connection failure - dropping container"
+        os._exit(2)
+
+
+# for each request recieved take the app name from the request body, get that app config from the backend DB & return
+# that app config to the requesting server via rabbitmq direct_reply_to
+def on_server_rx_rpc_request(ch, method_frame, properties, body):
+    try:
+        print 'RPC Server got request:', body
+        # get app configuration from backend DB
+        rpc_app_info = get_app(body)[0]
+        # return app configuration to requesting worker
+        ch.basic_publish('', routing_key=properties.reply_to, body=rpc_app_info)
+        ch.basic_ack(delivery_tag=method_frame.delivery_tag)
+    except Exception as e:
+        print >> sys.stderr, e
+        print "rabbit RPC connection failure - dropping container"
+        os._exit(2)
 
 
 # creates an api rabbitmq work queue and starts processing messages from it 1 at a time, each message gets a name of a
@@ -451,8 +471,8 @@ def bootstrap_workers_via_rabbitmq():
                                            rabbit_heartbeat)
         rabbit_create_rpc_api_queue(RABBIT_RPC_QUEUE, rabbit_rpc_channel)
         # start processing rpc calls via rabbitmq
-        rabbit_rpc_channel.basic_consume(on_server_rx_rpc_request, queue=RABBIT_RPC_QUEUE)
         print "logged into rabbit - RPC connection"
+        rabbit_receive(rabbit_rpc_channel, on_server_rx_rpc_request, RABBIT_RPC_QUEUE)
     except Exception as e:
         print >> sys.stderr, e
         print "rabbit RPC connection failure - dropping container"
