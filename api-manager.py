@@ -75,12 +75,12 @@ basic_auth_enabled = int(get_conf_setting("basic_auth_enabled", auth_file, True)
 
 # login to db at startup
 mongo_collection = mongo_connect(mongo_url, schema_name)
-print "logged into mongo"
+print "opened MongoDB connection"
 
 # login to rabbit at startup
 rabbit_main_channel = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
                                    rabbit_heartbeat)
-print "logged into rabbit"
+print "logged into RabbitMQ"
 
 # get current list of apps at startup
 nebula_apps = mongo_list_apps(mongo_collection)
