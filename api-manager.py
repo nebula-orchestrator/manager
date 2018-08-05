@@ -449,7 +449,7 @@ def run_dev(dev_host='0.0.0.0', dev_port=5000, dev_threaded=True):
 # that app config to the requesting server via rabbitmq direct_reply_to
 def on_server_rx_rpc_request(ch, method_frame, properties, body):
     try:
-        print 'RPC Server got request:', body
+        print 'RPC Server got request for initial config of app:', body
         # get app configuration from backend DB
         rpc_app_info = get_app(body)[0]
         # return app configuration to requesting worker
