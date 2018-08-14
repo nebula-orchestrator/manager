@@ -10,8 +10,9 @@ def rabbit_connect(rabbit_user, rabbit_pass, rabbit_host, rabbit_port, rabbit_vi
 
 
 # close connection to rabbit function
-def rabbit_close(rabbit_connection):
+def rabbit_close(rabbit_connection, rabbit_channel):
     rabbit_connection.close()
+    rabbit_channel.close()
 
 
 # create channel
