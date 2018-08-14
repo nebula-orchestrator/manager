@@ -89,7 +89,7 @@ print "got list of all mongo apps"
 
 # ensure all apps has their rabbitmq exchanges created at startup
 for nebula_app in nebula_apps:
-    rabbit_create_exchange(rabbit_main_channel, nebula_app)
+    rabbit_create_exchange(rabbit_main_channel, nebula_app + "_fanout")
 print "all apps has rabbitmq exchange created (if needed)"
 
 # close rabbit connection
