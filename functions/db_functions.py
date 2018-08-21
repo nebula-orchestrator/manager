@@ -15,7 +15,7 @@ def mongo_connect(mongo_connection_string, schema_name="nebula"):
         os._exit(2)
 
 
-# create indexes
+# create index
 def mongo_create_index(collection, index_name):
     try:
         collection.create_index([(index_name, ASCENDING)], background=True, name=index_name + "_index", unique=True,
