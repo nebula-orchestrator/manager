@@ -446,7 +446,7 @@ def run_dev(dev_host='0.0.0.0', dev_port=5000, dev_threaded=True):
         os._exit(2)
 
 
-# for each request recieved take the app name from the request body, get that app config from the backend DB & return
+# for each request received take the app name from the request body, get that app config from the backend DB & return
 # that app config to the requesting server via rabbitmq direct_reply_to
 def on_server_rx_rpc_request(ch, method_frame, properties, body):
     try:
@@ -463,7 +463,7 @@ def on_server_rx_rpc_request(ch, method_frame, properties, body):
 
 
 # creates an api rabbitmq work queue and starts processing messages from it 1 at a time, each message gets a name of a
-# nebula app which it then quries the backend DB for the app config and then returnes it to the requesting worker via
+# nebula app which it then quries the backend DB for the app config and then returns it to the requesting worker via
 # direct_reply_to
 def bootstrap_workers_via_rabbitmq():
     try:
