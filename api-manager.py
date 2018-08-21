@@ -78,6 +78,9 @@ basic_auth_enabled = int(get_conf_setting("basic_auth_enabled", auth_file, True)
 mongo_collection = mongo_connect(mongo_url, schema_name)
 print "opened MongoDB connection"
 
+# ensure mongo is indexed properly
+mongo_create_index(mongo_collection, "app_name")
+
 # login to rabbit at startup
 rabbit_main_channel, rabbit_main_connection = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port,
                                                            rabbit_vhost, rabbit_heartbeat)

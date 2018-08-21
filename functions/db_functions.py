@@ -1,5 +1,5 @@
 import sys, os
-from pymongo import MongoClient, ReturnDocument
+from pymongo import MongoClient, ReturnDocument, HASHED
 
 
 # connect to db
@@ -11,6 +11,17 @@ def mongo_connect(mongo_connection_string, schema_name="nebula"):
         return collection
     except Exception as e:
         print "error connection to mongodb"
+        print >> sys.stderr, e
+        os._exit(2)
+
+
+# create indexes
+def mongo_create_index(collection, index_name):
+    try:
+
+        collection.create_index([(index_name, HASHED)], background=True)
+    except Exception as e:
+        print "error creating mongodb index"
         print >> sys.stderr, e
         os._exit(2)
 
