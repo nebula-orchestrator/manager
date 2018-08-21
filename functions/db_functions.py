@@ -18,7 +18,8 @@ def mongo_connect(mongo_connection_string, schema_name="nebula"):
 # create indexes
 def mongo_create_index(collection, index_name):
     try:
-        collection.create_index([(index_name, ASCENDING)], background=True)
+        collection.create_index([(index_name, ASCENDING)], background=True, name=index_name + "_index", unique=True,
+                                sparse=True)
     except Exception as e:
         print "error creating mongodb index"
         print >> sys.stderr, e
