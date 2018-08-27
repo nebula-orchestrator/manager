@@ -28,15 +28,6 @@ def get_conf_setting(setting, settings_json, default_value="skip"):
     return setting_value
 
 
-# login to rabbit function
-def rabbit_login(rabbit_login_user, rabbit_login_password, rabbit_login_host, rabbit_login_port, rabbit_login_vhost,
-                 rabbit_login_heartbeat):
-    rabbit_connection = rabbit_connect(rabbit_login_user, rabbit_login_password, rabbit_login_host, rabbit_login_port,
-                                       rabbit_login_vhost, rabbit_login_heartbeat)
-    rabbit_connection_channel = rabbit_create_channel(rabbit_connection)
-    return rabbit_connection_channel, rabbit_connection
-
-
 # takes an invalid request & figure out what params are missing on a request and returns a list of those, this function
 # should only be called in cases where the "invalid_request" has been tried and found to be missing a param as it fails
 # hard on failure like the rest of the code (which in this case also means no missing params)
@@ -82,8 +73,7 @@ print "opened MongoDB connection"
 mongo_create_index(mongo_collection, "app_name")
 
 # login to rabbit at startup
-rabbit_main_channel, rabbit_main_connection = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port,
-                                                           rabbit_vhost, rabbit_heartbeat)
+rabbit_main_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
 print "logged into RabbitMQ"
 
 # get current list of apps at startup
@@ -92,11 +82,11 @@ print "got list of all mongo apps"
 
 # ensure all apps has their rabbitmq exchanges created at startup
 for nebula_app in nebula_apps:
-    rabbit_create_exchange(rabbit_main_channel, nebula_app + "_fanout")
+    rabbit_main_channel.rabbit_create_exchange(nebula_app + "_fanout")
 print "all apps has rabbitmq exchange created (if needed)"
 
 # close rabbit connection
-rabbit_close(rabbit_main_channel, rabbit_main_connection)
+rabbit_main_channel.rabbit_close()
 
 # open waiting connection
 try:
@@ -126,12 +116,11 @@ def check_page():
 # create a new app
 @app.route('/api/apps/<app_name>', methods=["POST"])
 def create_app(app_name):
-    rabbit_channel, rabbit_connection = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port,
-                                                     rabbit_vhost, rabbit_heartbeat)
+    rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     # check app does't exists first
     app_exists = mongo_check_app_exists(mongo_collection, app_name)
     if app_exists is True:
-        rabbit_close(rabbit_channel, rabbit_connection)
+        rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"True\"}", 403
     else:
         # check the request is passed with all needed parameters
@@ -150,7 +139,7 @@ def create_app(app_name):
             devices = request.json["devices"]
             privileged = request.json["privileged"]
         except:
-            rabbit_close(rabbit_channel, rabbit_connection)
+            rabbit_channel.rabbit_close()
             return json.dumps(find_missing_params(app_json)), 400
         # check corner case of port being outside of possible port ranges
         for starting_port in starting_ports:
@@ -162,99 +151,95 @@ def create_app(app_name):
                     if not 1 <= int(host_port) <= 65535 or not 1 <= int(container_port) <= 65535:
                         return "{\"starting_ports\": \"invalid port\"}", 400
             else:
-                rabbit_close(rabbit_channel, rabbit_connection)
+                rabbit_channel.rabbit_close()
                 return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
         # update the db
         mongo_add_app(mongo_collection, app_name, starting_ports, containers_per, env_vars, docker_image, running,
                       networks, volumes, devices, privileged)
         # create the rabbitmq exchange
-        rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+        rabbit_channel.rabbit_create_exchange(app_name + "_fanout")
         # post the new app to rabbitmq if app is set to start running
         if running is True:
-            rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
-        rabbit_close(rabbit_channel, rabbit_connection)
+            rabbit_channel.rabbit_send(app_name + "_fanout", dumps(app_json))
+            rabbit_channel.rabbit_close()
         return jsonify(**app_json), 202
 
 
 # delete an app
 @app.route('/api/apps/<app_name>', methods=["DELETE"])
 def delete_app(app_name):
-    rabbit_channel, rabbit_connection = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port,
-                                                     rabbit_vhost, rabbit_heartbeat)
+    rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     # check app exists first
     app_exists = mongo_check_app_exists(mongo_collection, app_name)
     if app_exists is False:
-        rabbit_close(rabbit_channel, rabbit_connection)
+        rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"False\"}", 403
     # remove from db
     mongo_remove_app(mongo_collection, app_name)
     # post to rabbit to stop all app containers
-    rabbit_send(rabbit_channel, app_name + "_fanout", "{}")
+    rabbit_channel.rabbit_send(app_name + "_fanout", "{}")
     # remove rabbit exchange
-    rabbit_delete_exchange(rabbit_channel, app_name + "_fanout")
-    rabbit_close(rabbit_channel, rabbit_connection)
+    rabbit_channel.rabbit_delete_exchange(app_name + "_fanout")
+    rabbit_channel.rabbit_close()
     return "{}", 202
 
 
 # restart an app
 @app.route('/api/apps/<app_name>/restart', methods=["POST"])
 def restart_app(app_name):
-    rabbit_channel, rabbit_connection = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port,
-                                                     rabbit_vhost, rabbit_heartbeat)
+    rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     app_exists, app_json = mongo_get_app(mongo_collection, app_name)
     # check app exists first
     if app_exists is False:
-        rabbit_close(rabbit_channel, rabbit_connection)
+        rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"False\"}", 403
     # check if app already running:
     if app_json["running"] is False:
-        rabbit_close(rabbit_channel, rabbit_connection)
+        rabbit_channel.rabbit_close()
         return "{\"running_before_restart\": \"False\"}", 403
     # post to rabbit to restart app
     app_json["command"] = "restart"
 
     # create the RabbitMQ exchange in case it somehow got deleted
-    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+    rabbit_channel.rabbit_create_exchange(app_name + "_fanout")
 
-    rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
-    rabbit_close(rabbit_channel, rabbit_connection)
+    rabbit_channel.rabbit_send(app_name + "_fanout", dumps(app_json))
+    rabbit_channel.rabbit_close()
     return dumps(app_json), 202
 
 
 # rolling restart an app
 @app.route('/api/apps/<app_name>/roll', methods=["POST"])
 def roll_app(app_name):
-    rabbit_channel, rabbit_connection = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port,
-                                                     rabbit_vhost, rabbit_heartbeat)
+    rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     app_exists, app_json = mongo_get_app(mongo_collection, app_name)
     # check app exists first
     if app_exists is False:
-        rabbit_close(rabbit_channel, rabbit_connection)
+        rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"False\"}", 403
     # check if app already running:
     if app_json["running"] is False:
-        rabbit_close(rabbit_channel, rabbit_connection)
+        rabbit_channel.rabbit_close()
         return "{\"running_before_restart\": \"False\"}", 403
     # post to rabbit to restart app
     app_json["command"] = "roll"
 
     # create the RabbitMQ exchange in case it somehow got deleted
-    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+    rabbit_channel.rabbit_create_exchange(app_name + "_fanout")
 
-    rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
-    rabbit_close(rabbit_channel, rabbit_connection)
+    rabbit_channel.rabbit_send(app_name + "_fanout", dumps(app_json))
+    rabbit_channel.rabbit_close()
     return dumps(app_json), 202
 
 
 # stop an app
 @app.route('/api/apps/<app_name>/stop', methods=["POST"])
 def stop_app(app_name):
-    rabbit_channel, rabbit_connection = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port,
-                                                     rabbit_vhost, rabbit_heartbeat)
+    rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     # check app exists first
     app_exists = mongo_check_app_exists(mongo_collection, app_name)
     if app_exists is False:
-        rabbit_close(rabbit_channel, rabbit_connection)
+        rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"False\"}", 403
     # post to db
     app_json = mongo_update_app_running_state(mongo_collection, app_name, False)
@@ -262,22 +247,21 @@ def stop_app(app_name):
     app_json["command"] = "stop"
 
     # create the RabbitMQ exchange in case it somehow got deleted
-    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+    rabbit_channel.rabbit_create_exchange(app_name + "_fanout")
 
-    rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
-    rabbit_close(rabbit_channel, rabbit_connection)
+    rabbit_channel.rabbit_send(app_name + "_fanout", dumps(app_json))
+    rabbit_channel.rabbit_close()
     return dumps(app_json), 202
 
 
 # start an app
 @app.route('/api/apps/<app_name>/start', methods=["POST"])
 def start_app(app_name):
-    rabbit_channel, rabbit_connection = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port,
-                                                     rabbit_vhost, rabbit_heartbeat)
+    rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     # check app exists first
     app_exists = mongo_check_app_exists(mongo_collection, app_name)
     if app_exists is False:
-        rabbit_close(rabbit_channel, rabbit_connection)
+        rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"False\"}", 403
     # post to db
     app_json = mongo_update_app_running_state(mongo_collection, app_name, True)
@@ -285,22 +269,21 @@ def start_app(app_name):
     app_json["command"] = "start"
 
     # create the RabbitMQ exchange in case it somehow got deleted
-    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+    rabbit_channel.rabbit_create_exchange(app_name + "_fanout")
 
-    rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
-    rabbit_close(rabbit_channel, rabbit_connection)
+    rabbit_channel.rabbit_send(app_name + "_fanout", dumps(app_json))
+    rabbit_channel.rabbit_close()
     return dumps(app_json), 202
 
 
 # POST update an app - requires all the params to be given in the request body
 @app.route('/api/apps/<app_name>/update', methods=["POST"])
 def update_app(app_name):
-    rabbit_channel, rabbit_connection = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port,
-                                                     rabbit_vhost, rabbit_heartbeat)
+    rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     # check app exists first
     app_exists = mongo_check_app_exists(mongo_collection, app_name)
     if app_exists is False:
-        rabbit_close(rabbit_channel, rabbit_connection)
+        rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"False\"}", 403
     # check app got all needed parameters
     try:
@@ -318,7 +301,7 @@ def update_app(app_name):
         devices = request.json["devices"]
         privileged = request.json["privileged"]
     except:
-        rabbit_close(rabbit_channel, rabbit_connection)
+        rabbit_channel.rabbit_close()
         return json.dumps(find_missing_params(app_json)), 400
     # check corner case of port being outside of possible port ranges
     for starting_port in starting_ports:
@@ -330,7 +313,7 @@ def update_app(app_name):
                 if not 1 <= int(host_port) <= 65535 or not 1 <= int(container_port) <= 65535:
                     return "{\"starting_ports\": \"invalid port\"}", 400
         else:
-            rabbit_close(rabbit_channel, rabbit_connection)
+            rabbit_channel.rabbit_close()
             return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
     # update db
     app_json = mongo_update_app(mongo_collection, app_name, starting_ports, containers_per, env_vars, docker_image,
@@ -339,31 +322,30 @@ def update_app(app_name):
     app_json["command"] = "update"
 
     # create the RabbitMQ exchange in case it somehow got deleted
-    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+    rabbit_channel.rabbit_create_exchange(app_name + "_fanout")
 
-    rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
-    rabbit_close(rabbit_channel, rabbit_connection)
+    rabbit_channel.rabbit_send(app_name + "_fanout", dumps(app_json))
+    rabbit_channel.rabbit_close()
     return dumps(app_json), 202
 
 
 # PUT update some fields of an app - params not given will be unchanged from their current value
 @app.route('/api/apps/<app_name>/update', methods=["PUT", "PATCH"])
 def update_app_fields(app_name):
-    rabbit_channel, rabbit_connection = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port,
-                                                     rabbit_vhost, rabbit_heartbeat)
+    rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     # check app exists first
     app_exists = mongo_check_app_exists(mongo_collection, app_name)
     if app_exists is False:
-        rabbit_close(rabbit_channel, rabbit_connection)
+        rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"False\"}", 403
     # check app got update parameters
     try:
         app_json = request.json
         if len(app_json) == 0:
-            rabbit_close(rabbit_channel, rabbit_connection)
+            rabbit_channel.rabbit_close()
             return "{\"missing_parameters\": \"True\"}", 400
     except:
-        rabbit_close(rabbit_channel, rabbit_connection)
+        rabbit_channel.rabbit_close()
         return "{\"missing_parameters\": \"True\"}", 400
     # check corner case of port being outside of possible port ranges in case trying to update port listing
     try:
@@ -377,7 +359,7 @@ def update_app_fields(app_name):
                     if not 1 <= int(host_port) <= 65535 or not 1 <= int(container_port) <= 65535:
                         return "{\"starting_ports\": \"invalid port\"}", 400
             else:
-                rabbit_close(rabbit_channel, rabbit_connection)
+                rabbit_channel.rabbit_close()
                 return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
     except:
         pass
@@ -387,31 +369,30 @@ def update_app_fields(app_name):
     app_json["command"] = "update"
 
     # create the RabbitMQ exchange in case it somehow got deleted
-    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+    rabbit_channel.rabbit_create_exchange(app_name + "_fanout")
 
-    rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
-    rabbit_close(rabbit_channel, rabbit_connection)
+    rabbit_channel.rabbit_send(app_name + "_fanout", dumps(app_json))
+    rabbit_channel.rabbit_close()
     return dumps(app_json), 202
 
 
 # new version released, does the same as restart & kept as legacy.
 @app.route('/api/apps/<app_name>/release', methods=["POST"])
 def release_app(app_name):
-    rabbit_channel, rabbit_connection = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port,
-                                                     rabbit_vhost, rabbit_heartbeat)
+    rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     app_exists, app_json = mongo_get_app(mongo_collection, app_name)
     # check app exists first
     if app_exists is False:
-        rabbit_close(rabbit_channel, rabbit_connection)
+        rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"False\"}", 403
     # post to rabbit to restart app
     app_json["command"] = "release"
 
     # create the RabbitMQ exchange in case it somehow got deleted
-    rabbit_create_exchange(rabbit_channel, app_name + "_fanout")
+    rabbit_channel.rabbit_create_exchange(app_name + "_fanout")
 
-    rabbit_send(rabbit_channel, app_name + "_fanout", dumps(app_json))
-    rabbit_close(rabbit_channel, rabbit_connection)
+    rabbit_channel.rabbit_send(app_name + "_fanout", dumps(app_json))
+    rabbit_channel.rabbit_close()
     return dumps(app_json), 202
 
 
@@ -471,13 +452,13 @@ def on_server_rx_rpc_request(ch, method_frame, properties, body):
 def bootstrap_workers_via_rabbitmq():
     try:
         # login to rabbit at startup
-        rabbit_rpc_channel, rabbit_rpc_connection = rabbit_login(rabbit_user, rabbit_password, rabbit_host, rabbit_port,
-                                                                 rabbit_vhost, rabbit_heartbeat)
-        rabbit_rpc_channel.basic_qos(prefetch_count=1)
-        rabbit_create_rpc_api_queue(RABBIT_RPC_QUEUE, rabbit_rpc_channel)
+        rabbit_rpc_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost,
+                                    rabbit_heartbeat)
+        rabbit_rpc_channel.rabbit_qos(prefetch_count=1)
+        rabbit_rpc_channel.rabbit_create_rpc_api_queue(RABBIT_RPC_QUEUE)
         # start processing rpc calls via rabbitmq
         print "logged into rabbit - RPC connection"
-        rabbit_receive(rabbit_rpc_channel, on_server_rx_rpc_request, RABBIT_RPC_QUEUE)
+        rabbit_rpc_channel.rabbit_receive(on_server_rx_rpc_request, RABBIT_RPC_QUEUE)
     except Exception as e:
         print "rabbit RPC connection failure - dropping container"
         print >> sys.stderr, e
