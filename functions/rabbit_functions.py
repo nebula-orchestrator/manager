@@ -13,8 +13,10 @@ class Rabbit:
 
     # close connection to rabbit function
     def rabbit_close(self):
-        self.channel.close()
-        self.connection.close()
+        if self.channel.is_closed is False and self.channel.is_closing is False:
+            self.channel.close()
+        if self.connection.is_closed is False and self.connection.is_closing is False:
+            self.connection.close()
 
     # set qos
     def rabbit_qos(self, prefetch_count=1):
