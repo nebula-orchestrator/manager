@@ -100,7 +100,7 @@ def mongo_update_app_containers_per(collection, app_name, containers_per):
 # get list of apps
 def mongo_list_apps(collection):
     apps_list = []
-    for app in collection.find({"app_name":  {"$exists": "true"}}):
+    for app in collection.find({"app_name": {"$exists": "true"}}):
         apps_list.append(app["app_name"])
     return apps_list
 

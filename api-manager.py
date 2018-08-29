@@ -64,7 +64,6 @@ schema_name = get_conf_setting("schema_name", auth_file, "nebula")
 rabbit_heartbeat = int(get_conf_setting("rabbit_heartbeat", auth_file, 3600))
 basic_auth_enabled = int(get_conf_setting("basic_auth_enabled", auth_file, True))
 
-
 # login to db at startup
 mongo_collection = mongo_connect(mongo_url, schema_name)
 print "opened MongoDB connection"
