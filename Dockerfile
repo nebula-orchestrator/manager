@@ -18,4 +18,4 @@ ENV PYTHONUNBUFFERED=1
 EXPOSE 80
 
 # and running it
-CMD ["gunicorn" ,"--config=/etc/gunicorn/config.py", "api-manager:app"]
+CMD ["gunicorn" ,"--config", "/etc/gunicorn/config.py", "api-manager:app"]
