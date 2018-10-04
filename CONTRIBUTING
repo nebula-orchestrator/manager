@@ -7,7 +7,7 @@ can help
 
 * Fork the latest branch of the component you want to contribute to
 * Make sure you have a [GitHub account](https://github.com/signup/free)
-* Use virtualenv to install all requirements from the requirements.txt file
+* Use virtualenv to install all requirements from the requirements.txt file, this may require having GCC compiler depending on your environment setup due to gevent requiring compilation on some OS.
 * Fix the issue you \ add a feature
 * Create a pull request
 
