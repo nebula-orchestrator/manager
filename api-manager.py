@@ -44,6 +44,24 @@ def find_missing_params(invalid_request):
     return missing_params
 
 
+# check for edge case of port being outside of the valid port range
+def check_ports_valid_range(checked_ports):
+    for checked_port in checked_ports:
+        if isinstance(checked_port, int):
+            if not 1 <= checked_port <= 65535:
+                return "{\"starting_ports\": \"invalid port\"}", 400
+        elif isinstance(checked_port, dict):
+            for host_port, container_port in checked_port.iteritems():
+                try:
+                    if not 1 <= int(host_port) <= 65535 or not 1 <= int(container_port) <= 65535:
+                        return "{\"starting_ports\": \"invalid port\"}", 400
+                except ValueError:
+                    return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
+        else:
+            return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
+    return "all ports checked are in a valid 1-65535 range", 202
+
+
 # static variables
 RABBIT_RPC_QUEUE = "rabbit_api_rpc_queue"
 
@@ -140,18 +158,11 @@ def create_app(app_name):
         except:
             rabbit_channel.rabbit_close()
             return json.dumps(find_missing_params(app_json)), 400
-        # check corner case of port being outside of possible port ranges
-        for starting_port in starting_ports:
-            if isinstance(starting_port, int):
-                if not 1 <= starting_port <= 65535:
-                    return "{\"starting_ports\": \"invalid port\"}", 400
-            elif isinstance(starting_port, dict):
-                for host_port, container_port in starting_port.iteritems():
-                    if not 1 <= int(host_port) <= 65535 or not 1 <= int(container_port) <= 65535:
-                        return "{\"starting_ports\": \"invalid port\"}", 400
-            else:
-                rabbit_channel.rabbit_close()
-                return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
+        # check edge case of port being outside of possible port ranges
+        ports_check_return_message, port_check_return_code = check_ports_valid_range(starting_ports)
+        if port_check_return_code >= 300:
+            rabbit_channel.rabbit_close()
+            return ports_check_return_message, port_check_return_code
         # update the db
         mongo_add_app(mongo_collection, app_name, starting_ports, containers_per, env_vars, docker_image, running,
                       networks, volumes, devices, privileged)
@@ -302,18 +313,11 @@ def update_app(app_name):
     except:
         rabbit_channel.rabbit_close()
         return json.dumps(find_missing_params(app_json)), 400
-    # check corner case of port being outside of possible port ranges
-    for starting_port in starting_ports:
-        if isinstance(starting_port, int):
-            if not 1 <= starting_port <= 65535:
-                return "{\"starting_ports\": \"invalid port\"}", 400
-        elif isinstance(starting_port, dict):
-            for host_port, container_port in starting_port.iteritems():
-                if not 1 <= int(host_port) <= 65535 or not 1 <= int(container_port) <= 65535:
-                    return "{\"starting_ports\": \"invalid port\"}", 400
-        else:
-            rabbit_channel.rabbit_close()
-            return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
+    # check edge case of port being outside of possible port ranges
+    ports_check_return_message, port_check_return_code = check_ports_valid_range(starting_ports)
+    if port_check_return_code >= 300:
+        rabbit_channel.rabbit_close()
+        return ports_check_return_message, port_check_return_code
     # update db
     app_json = mongo_update_app(mongo_collection, app_name, starting_ports, containers_per, env_vars, docker_image,
                                 running, networks, volumes, devices, privileged)
@@ -346,20 +350,13 @@ def update_app_fields(app_name):
     except:
         rabbit_channel.rabbit_close()
         return "{\"missing_parameters\": \"True\"}", 400
-    # check corner case of port being outside of possible port ranges in case trying to update port listing
+    # check edge case of port being outside of possible port ranges in case trying to update port listing
     try:
         starting_ports = request.json["starting_ports"]
-        for starting_port in starting_ports:
-            if isinstance(starting_port, int):
-                if not 1 <= starting_port <= 65535:
-                    return "{\"starting_ports\": \"invalid port\"}", 400
-            elif isinstance(starting_port, dict):
-                for host_port, container_port in starting_port.iteritems():
-                    if not 1 <= int(host_port) <= 65535 or not 1 <= int(container_port) <= 65535:
-                        return "{\"starting_ports\": \"invalid port\"}", 400
-            else:
-                rabbit_channel.rabbit_close()
-                return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
+        ports_check_return_message, port_check_return_code = check_ports_valid_range(starting_ports)
+        if port_check_return_code >= 300:
+            rabbit_channel.rabbit_close()
+            return ports_check_return_message, port_check_return_code
     except:
         pass
     # update db
