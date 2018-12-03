@@ -130,6 +130,26 @@ def check_page():
     return "{\"api_available\": \"True\"}", 200
 
 
+# prune unused images on all devices running said app
+@app.route('/api/apps/<app_name>/prune', methods=["POST"])
+def prune_images(app_name):
+    rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
+    app_exists, app_json = mongo_get_app(mongo_collection, app_name)
+    # check app exists first
+    if app_exists is False:
+        rabbit_channel.rabbit_close()
+        return "{\"app_exists\": \"False\"}", 403
+    # post to rabbit to restart app
+    app_json["command"] = "prune"
+
+    # create the RabbitMQ exchange in case it somehow got deleted
+    rabbit_channel.rabbit_create_exchange(app_name + "_fanout")
+
+    rabbit_channel.rabbit_send(app_name + "_fanout", dumps(app_json))
+    rabbit_channel.rabbit_close()
+    return dumps(app_json), 202
+
+
 # create a new app
 @app.route('/api/apps/<app_name>', methods=["POST"])
 def create_app(app_name):
