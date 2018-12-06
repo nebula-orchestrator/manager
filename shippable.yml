@@ -8,7 +8,7 @@ integrations:
 env:
   global:
     - DOCKER_HUB_ORG=nebulaorchestrator
-    - DOCKER_HUB_REPO=api
+    - DOCKER_HUB_REPO=manager
 
 build:
   post_ci:
