@@ -2,7 +2,7 @@
 
 ## Main website available [here](https://nebula-orchestrator.github.io/), refer to the [documentation](http://nebula.readthedocs.io/en/latest/) for more details about how to install & use.
 
-Nebula is a open source distributed Docker orchestrator designed for massive scales (tens of thousands of servers/worker devices), unlike Mesos/Swarm/Kubernetes it has the ability to have workers distributed on high latency connections (such as the internet) yet have the pods(containers) be managed centrally with changes taking affect (almost) immediately, this makes Nebula ideal for managing a vast cluster of servers\devices across the globe, some possible use cases are:
+Nebula is a open source distributed Docker orchestrator designed for massive scales (tens of thousands of servers/worker devices), unlike Mesos/Swarm/Kubernetes it has the ability to have workers distributed on high latency connections (such as the internet) yet have the pods(containers) be managed centrally with changes taking affect (almost) immediately, this makes Nebula ideal for managing a vast cluster of servers\devices across the globe, some example use cases are:
 
 * IoT devices
 * appliances\virtual appliances located at clients data centers 
