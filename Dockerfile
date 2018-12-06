@@ -3,7 +3,7 @@ FROM python:2.7.15-alpine3.8
 
 # copy the codebase
 COPY . /www
-RUN chmod +x /www/api-manager.py
+RUN chmod +x /www/manager.py
 
 # install required packages - rquire build-base due to gevent GCC complier requirements
 RUN apk add --no-cache build-base
@@ -19,4 +19,4 @@ ENV PYTHONUNBUFFERED=1
 EXPOSE 80
 
 # and running it
-CMD ["gunicorn" ,"--config", "/etc/gunicorn/config.py", "api-manager:app"]
+CMD ["gunicorn" ,"--config", "/etc/gunicorn/config.py", "manager:app"]
