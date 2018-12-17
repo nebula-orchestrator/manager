@@ -69,7 +69,10 @@ RABBIT_RPC_QUEUE = "rabbit_api_rpc_queue"
 # load the login params from envvar or auth.json file if envvar is not set, if both are unset will load the default
 # value if one exists for the param
 print "reading config variables"
-auth_file = json.load(open("conf.json"))
+if os.path.exists("conf.json"):
+    auth_file = json.load(open("conf.json"))
+else:
+    auth_file = {}
 basic_auth_user = get_conf_setting("basic_auth_user", auth_file, None)
 basic_auth_password = get_conf_setting("basic_auth_password", auth_file, None)
 rabbit_host = get_conf_setting("rabbit_host", auth_file)
