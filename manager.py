@@ -1,9 +1,9 @@
-import json, os, sys
-from flask import json, Flask, request, Response, render_template, jsonify
+import json
+from flask import json, Flask, request, jsonify
 from flask_basicauth import BasicAuth
-from functions.db_functions import *
-from functions.rabbit_functions import *
-from bson.json_util import dumps, loads
+from functions.db.mongo import *
+from functions.message_queue.rabbit import *
+from bson.json_util import dumps
 from threading import Thread
 
 
