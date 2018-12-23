@@ -7,7 +7,7 @@ from bson.json_util import dumps, loads
 from threading import Thread
 
 
-# get setting from envvar with failover from conf.json file if envvar not set
+# get setting from envvar with failover from config/conf.json file if envvar not set
 # using skip rather then None so passing a None type will still pass a None value rather then assuming there should be
 # default value thus allowing to have No value set where needed (like in the case of registry user\pass)
 def get_conf_setting(setting, settings_json, default_value="skip"):
@@ -68,11 +68,14 @@ RABBIT_RPC_QUEUE = "rabbit_api_rpc_queue"
 # read config file at startup
 # load the login params from envvar or auth.json file if envvar is not set, if both are unset will load the default
 # value if one exists for the param
-print "reading config variables"
-if os.path.exists("conf.json"):
-    auth_file = json.load(open("conf.json"))
+if os.path.exists("config/conf.json"):
+    print "reading config file"
+    auth_file = json.load(open("config/conf.json"))
 else:
+    print "config file not found - skipping reading it and checking if needed params are given from envvars"
     auth_file = {}
+
+print "reading config variables"
 basic_auth_user = get_conf_setting("basic_auth_user", auth_file, None)
 basic_auth_password = get_conf_setting("basic_auth_password", auth_file, None)
 rabbit_host = get_conf_setting("rabbit_host", auth_file)

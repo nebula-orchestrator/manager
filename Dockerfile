@@ -5,12 +5,12 @@ FROM python:2.7.15-alpine3.8
 COPY . /www
 RUN chmod +x /www/manager.py
 
-# install required packages - rquire build-base due to gevent GCC complier requirements
+# install required packages - requires build-base due to gevent GCC complier requirements
 RUN apk add --no-cache build-base
 RUN pip install -r /www/requirements.txt
 
 # adding the gunicorn config
-ADD config.py /etc/gunicorn/config.py
+COPY config/config.py /etc/gunicorn/config.py
 
 #set python to be unbuffered
 ENV PYTHONUNBUFFERED=1
