@@ -86,18 +86,18 @@ rabbit_heartbeat = int(get_conf_setting("rabbit_heartbeat", auth_file, 3600))
 basic_auth_enabled = int(get_conf_setting("basic_auth_enabled", auth_file, True))
 
 # login to db at startup
-mongo_collection = mongo_connect(mongo_url, schema_name)
+mongo_connection = MongoConnection(mongo_url, schema_name)
 print "opened MongoDB connection"
 
 # ensure mongo is indexed properly
-mongo_create_index(mongo_collection, "app_name")
+mongo_connection.mongo_create_index("app_name")
 
 # login to rabbit at startup
 rabbit_main_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
 print "logged into RabbitMQ"
 
 # get current list of apps at startup
-nebula_apps = mongo_list_apps(mongo_collection)
+nebula_apps = mongo_connection.mongo_list_apps()
 print "got list of all mongo apps"
 
 # ensure all apps has their rabbitmq exchanges created at startup
@@ -137,7 +137,7 @@ def check_page():
 @app.route('/api/apps/<app_name>/prune', methods=["POST"])
 def prune_images(app_name):
     rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
-    app_exists, app_json = mongo_get_app(mongo_collection, app_name)
+    app_exists, app_json = mongo_connection.mongo_get_app(app_name)
     # check app exists first
     if app_exists is False:
         rabbit_channel.rabbit_close()
@@ -158,7 +158,7 @@ def prune_images(app_name):
 def create_app(app_name):
     rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     # check app does't exists first
-    app_exists = mongo_check_app_exists(mongo_collection, app_name)
+    app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is True:
         rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"True\"}", 403
@@ -187,8 +187,8 @@ def create_app(app_name):
             rabbit_channel.rabbit_close()
             return ports_check_return_message, port_check_return_code
         # update the db
-        mongo_add_app(mongo_collection, app_name, starting_ports, containers_per, env_vars, docker_image, running,
-                      networks, volumes, devices, privileged)
+        mongo_connection.mongo_add_app(app_name, starting_ports, containers_per, env_vars, docker_image, running,
+                                       networks, volumes, devices, privileged)
         # create the rabbitmq exchange
         rabbit_channel.rabbit_create_exchange(app_name + "_fanout")
         # post the new app to rabbitmq if app is set to start running
@@ -203,12 +203,12 @@ def create_app(app_name):
 def delete_app(app_name):
     rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     # check app exists first
-    app_exists = mongo_check_app_exists(mongo_collection, app_name)
+    app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
         rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"False\"}", 403
     # remove from db
-    mongo_remove_app(mongo_collection, app_name)
+    mongo_connection.mongo_remove_app(app_name)
     # post to rabbit to stop all app containers
     rabbit_channel.rabbit_send(app_name + "_fanout", "{}")
     # remove rabbit exchange
@@ -221,7 +221,7 @@ def delete_app(app_name):
 @app.route('/api/apps/<app_name>/restart', methods=["POST"])
 def restart_app(app_name):
     rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
-    app_exists, app_json = mongo_get_app(mongo_collection, app_name)
+    app_exists, app_json = mongo_connection.mongo_get_app(app_name)
     # check app exists first
     if app_exists is False:
         rabbit_channel.rabbit_close()
@@ -245,7 +245,7 @@ def restart_app(app_name):
 @app.route('/api/apps/<app_name>/roll', methods=["POST"])
 def roll_app(app_name):
     rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
-    app_exists, app_json = mongo_get_app(mongo_collection, app_name)
+    app_exists, app_json = mongo_connection.mongo_get_app(app_name)
     # check app exists first
     if app_exists is False:
         rabbit_channel.rabbit_close()
@@ -270,12 +270,12 @@ def roll_app(app_name):
 def stop_app(app_name):
     rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     # check app exists first
-    app_exists = mongo_check_app_exists(mongo_collection, app_name)
+    app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
         rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"False\"}", 403
     # post to db
-    app_json = mongo_update_app_running_state(mongo_collection, app_name, False)
+    app_json = mongo_connection.mongo_update_app_running_state(app_name, False)
     # post to rabbit to stop app
     app_json["command"] = "stop"
 
@@ -292,12 +292,12 @@ def stop_app(app_name):
 def start_app(app_name):
     rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     # check app exists first
-    app_exists = mongo_check_app_exists(mongo_collection, app_name)
+    app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
         rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"False\"}", 403
     # post to db
-    app_json = mongo_update_app_running_state(mongo_collection, app_name, True)
+    app_json = mongo_connection.mongo_update_app_running_state(app_name, True)
     # post to rabbit to stop app
     app_json["command"] = "start"
 
@@ -314,7 +314,7 @@ def start_app(app_name):
 def update_app(app_name):
     rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     # check app exists first
-    app_exists = mongo_check_app_exists(mongo_collection, app_name)
+    app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
         rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"False\"}", 403
@@ -342,8 +342,8 @@ def update_app(app_name):
         rabbit_channel.rabbit_close()
         return ports_check_return_message, port_check_return_code
     # update db
-    app_json = mongo_update_app(mongo_collection, app_name, starting_ports, containers_per, env_vars, docker_image,
-                                running, networks, volumes, devices, privileged)
+    app_json = mongo_connection.mongo_update_app(app_name, starting_ports, containers_per, env_vars, docker_image,
+                                                 running, networks, volumes, devices, privileged)
     # post to rabbit to update app
     app_json["command"] = "update"
 
@@ -360,7 +360,7 @@ def update_app(app_name):
 def update_app_fields(app_name):
     rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
     # check app exists first
-    app_exists = mongo_check_app_exists(mongo_collection, app_name)
+    app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
         rabbit_channel.rabbit_close()
         return "{\"app_exists\": \"False\"}", 403
@@ -383,7 +383,7 @@ def update_app_fields(app_name):
     except:
         pass
     # update db
-    app_json = mongo_update_app_fields(mongo_collection, app_name, request.json)
+    app_json = mongo_connection.mongo_update_app_fields(app_name, request.json)
     # post to rabbit to update app
     app_json["command"] = "update"
 
@@ -399,7 +399,7 @@ def update_app_fields(app_name):
 @app.route('/api/apps/<app_name>/release', methods=["POST"])
 def release_app(app_name):
     rabbit_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
-    app_exists, app_json = mongo_get_app(mongo_collection, app_name)
+    app_exists, app_json = mongo_connection.mongo_get_app(app_name)
     # check app exists first
     if app_exists is False:
         rabbit_channel.rabbit_close()
@@ -418,14 +418,14 @@ def release_app(app_name):
 # list apps
 @app.route('/api/apps', methods=["GET"])
 def list_apps():
-    nebula_apps_list = mongo_list_apps(mongo_collection)
+    nebula_apps_list = mongo_connection.mongo_list_apps()
     return "{\"apps\": " + dumps(nebula_apps_list) + " }", 200
 
 
 # get app info
 @app.route('/api/apps/<app_name>', methods=["GET"])
 def get_app(app_name):
-    app_exists, app_json = mongo_get_app(mongo_collection, app_name)
+    app_exists, app_json = mongo_connection.mongo_get_app(app_name)
     if app_exists is True:
         return dumps(app_json), 200
     elif app_exists is False:
