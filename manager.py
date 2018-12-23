@@ -112,19 +112,19 @@ rabbit_main_channel.rabbit_close()
 try:
     app = Flask(__name__)
     print "now waiting for connections"
+
+    # basic auth for api
+    # based on https://flask-basicauth.readthedocs.io/en/latest/
+    app.config['BASIC_AUTH_USERNAME'] = basic_auth_user
+    app.config['BASIC_AUTH_PASSWORD'] = basic_auth_password
+    app.config['BASIC_AUTH_FORCE'] = basic_auth_enabled
+    app.config['BASIC_AUTH_REALM'] = 'nebula'
+    basic_auth = BasicAuth(app)
+    print "basic auth configured"
 except Exception as e:
-    print "Flask connection failure - dropping container"
+    print "Flask connection configuration failure - dropping container"
     print >> sys.stderr, e
     os._exit(2)
-
-# basic auth for api
-# based on https://flask-basicauth.readthedocs.io/en/latest/
-app.config['BASIC_AUTH_USERNAME'] = basic_auth_user
-app.config['BASIC_AUTH_PASSWORD'] = basic_auth_password
-app.config['BASIC_AUTH_FORCE'] = basic_auth_enabled
-app.config['BASIC_AUTH_REALM'] = 'nebula'
-basic_auth = BasicAuth(app)
-print "basic auth configured"
 
 
 # api check page - return 200 and a massage just so we know API is reachable
