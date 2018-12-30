@@ -97,7 +97,12 @@ class MongoConnection:
 
     # add app
     def mongo_add_app(self, app_name, starting_ports, containers_per, env_vars, docker_image, running=True,
-                      networks="nebula", volumes=[], devices=[], privileged=False):
+                      networks="nebula", volumes=None, devices=None, privileged=False):
+        # creating the list inside the function to avoid mutable value list in the function default value
+        if volumes is None:
+            volumes = []
+        if devices is None:
+            devices = []
         app_doc = {
             "app_name": app_name,
             "starting_ports": starting_ports,
