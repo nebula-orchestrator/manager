@@ -19,11 +19,11 @@ def get_conf_setting(setting, settings_json, default_value="skip"):
             return False
     except Exception as e:
         print >> sys.stderr, "missing " + setting + " config setting"
-        print "missing " + setting + " config setting"
+        print("missing " + setting + " config setting")
         os._exit(2)
     if setting_value == "skip":
         print >> sys.stderr, "missing " + setting + " config setting"
-        print "missing " + setting + " config setting"
+        print("missing " + setting + " config setting")
         os._exit(2)
     return setting_value
 
@@ -69,13 +69,13 @@ RABBIT_RPC_QUEUE = "rabbit_api_rpc_queue"
 # load the login params from envvar or auth.json file if envvar is not set, if both are unset will load the default
 # value if one exists for the param
 if os.path.exists("config/conf.json"):
-    print "reading config file"
+    print("reading config file")
     auth_file = json.load(open("config/conf.json"))
 else:
-    print "config file not found - skipping reading it and checking if needed params are given from envvars"
+    print("config file not found - skipping reading it and checking if needed params are given from envvars")
     auth_file = {}
 
-print "reading config variables"
+print("reading config variables")
 basic_auth_user = get_conf_setting("basic_auth_user", auth_file, None)
 basic_auth_password = get_conf_setting("basic_auth_password", auth_file, None)
 rabbit_host = get_conf_setting("rabbit_host", auth_file)
@@ -90,23 +90,23 @@ basic_auth_enabled = int(get_conf_setting("basic_auth_enabled", auth_file, True)
 
 # login to db at startup
 mongo_connection = MongoConnection(mongo_url, schema_name)
-print "opened MongoDB connection"
+print("opened MongoDB connection")
 
 # ensure mongo is indexed properly
 mongo_connection.mongo_create_index("app_name")
 
 # login to rabbit at startup
 rabbit_main_channel = Rabbit(rabbit_user, rabbit_password, rabbit_host, rabbit_port, rabbit_vhost, rabbit_heartbeat)
-print "logged into RabbitMQ"
+print("logged into RabbitMQ")
 
 # get current list of apps at startup
 nebula_apps = mongo_connection.mongo_list_apps()
-print "got list of all mongo apps"
+print("got list of all mongo apps")
 
 # ensure all apps has their rabbitmq exchanges created at startup
 for nebula_app in nebula_apps:
     rabbit_main_channel.rabbit_create_exchange(nebula_app + "_fanout")
-print "all apps has rabbitmq exchange created (if needed)"
+print("all apps has rabbitmq exchange created (if needed)")
 
 # close rabbit connection
 rabbit_main_channel.rabbit_close()
@@ -114,7 +114,7 @@ rabbit_main_channel.rabbit_close()
 # open waiting connection
 try:
     app = Flask(__name__)
-    print "now waiting for connections"
+    print("now waiting for connections")
 
     # basic auth for api
     # based on https://flask-basicauth.readthedocs.io/en/latest/
@@ -123,9 +123,9 @@ try:
     app.config['BASIC_AUTH_FORCE'] = basic_auth_enabled
     app.config['BASIC_AUTH_REALM'] = 'nebula'
     basic_auth = BasicAuth(app)
-    print "basic auth configured"
+    print("basic auth configured")
 except Exception as e:
-    print "Flask connection configuration failure - dropping container"
+    print("Flask connection configuration failure - dropping container")
     print >> sys.stderr, e
     os._exit(2)
 
@@ -447,7 +447,7 @@ def run_dev(dev_host='0.0.0.0', dev_port=5000, dev_threaded=True):
     try:
         app.run(host=dev_host, port=dev_port, threaded=dev_threaded)
     except Exception as e:
-        print "Flask connection failure - dropping container"
+        print("Flask connection failure - dropping container")
         print >> sys.stderr, e
         os._exit(2)
 
@@ -463,7 +463,7 @@ def on_server_rx_rpc_request(ch, method_frame, properties, body):
         ch.basic_publish('', routing_key=properties.reply_to, body=rpc_app_info)
         ch.basic_ack(delivery_tag=method_frame.delivery_tag)
     except Exception as e:
-        print "rabbit RPC connection failure - dropping container"
+        print("rabbit RPC connection failure - dropping container")
         print >> sys.stderr, e
         os._exit(2)
 
@@ -479,10 +479,10 @@ def bootstrap_workers_via_rabbitmq():
         rabbit_rpc_channel.rabbit_qos(prefetch_count=1)
         rabbit_rpc_channel.rabbit_create_rpc_api_queue(RABBIT_RPC_QUEUE)
         # start processing rpc calls via rabbitmq
-        print "logged into rabbit - RPC connection"
+        print("logged into rabbit - RPC connection")
         rabbit_rpc_channel.rabbit_receive(on_server_rx_rpc_request, RABBIT_RPC_QUEUE)
     except Exception as e:
-        print "rabbit RPC connection failure - dropping container"
+        print("rabbit RPC connection failure - dropping container")
         print >> sys.stderr, e
         os._exit(2)
 
@@ -491,7 +491,7 @@ def bootstrap_workers_via_rabbitmq():
 try:
     Thread(target=bootstrap_workers_via_rabbitmq).start()
 except Exception as e:
-    print "rabbit RPC connection failure - dropping container"
+    print("rabbit RPC connection failure - dropping container")
     print >> sys.stderr, e
     os._exit(2)
 
@@ -501,6 +501,6 @@ if os.getenv("ENV", "prod") == "dev":
     try:
         Thread(target=run_dev).start()
     except Exception as e:
-        print "Flask connection failure - dropping container"
+        print("Flask connection failure - dropping container")
         print >> sys.stderr, e
         os._exit(2)

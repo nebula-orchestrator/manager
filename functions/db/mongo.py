@@ -11,7 +11,7 @@ class MongoConnection:
             self.db = self.client[schema_name]
             self.collection = self.db["nebula"]
         except Exception as e:
-            print "error connection to mongodb"
+            print("error connection to mongodb")
             print >> sys.stderr, e
             os._exit(2)
 
@@ -21,7 +21,7 @@ class MongoConnection:
             self.collection.create_index([(index_name, ASCENDING)], background=True, name=index_name + "_index",
                                          unique=True, sparse=True)
         except Exception as e:
-            print "error creating mongodb index"
+            print("error creating mongodb index")
             print >> sys.stderr, e
             os._exit(2)
 
