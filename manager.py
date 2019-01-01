@@ -347,12 +347,41 @@ def get_device_group(device_group):
     elif device_group_exists is False:
         return "{\"device_group_exists\": false}", 403
 
-# update device_group
-# TODO - create function
+
+# POST update device_group - requires a full list of apps to be given in the request body
+@app.route('/api/device_groups/<device_group>/update', methods=["POST"])
+def update_device_group(device_group):
+    # check app exists first
+    device_group_exists = mongo_connection.mongo_check_app_exists(device_group)
+    if device_group_exists is False:
+        return "{\"app_exists\": false}", 403
+    # check app got all needed parameters
+    try:
+        app_json = request.json
+    except:
+        return json.dumps(find_missing_params({})), 400
+    try:
+        apps = request.json["apps"]
+    except:
+        return json.dumps(find_missing_params(app_json)), 400
+        # check edge case where apps is not a list
+    if type(apps) is not list:
+        return "{\"apps_is_list\": false}", 400
+    # update db
+    app_json = mongo_connection.mongo_update_device_group(device_group, apps)
+    return dumps(app_json), 202
 
 
 # delete device_group
-# TODO - create function
+@app.route('/api/device_groups/<device_group>', methods=["DELETE"])
+def delete_app(device_group):
+    # check app exists first
+    device_group_exists = mongo_connection.mongo_check_app_exists(device_group)
+    if device_group_exists is False:
+        return "{\"app_exists\": false}", 403
+    # remove from db
+    mongo_connection.mongo_remove_device_group(device_group)
+    return "{}", 200
 
 
 # set json header - the API is JSON only so the header is set on all requests
