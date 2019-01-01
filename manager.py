@@ -384,6 +384,13 @@ def delete_device_group(device_group):
     return "{}", 200
 
 
+# list device_groups
+@app.route('/api/device_groups', methods=["GET"])
+def list_device_groups():
+    nebula_device_groups_list = mongo_connection.mongo_list_device_groups()
+    return "{\"apps\": " + dumps(nebula_device_groups_list) + " }", 200
+
+
 # set json header - the API is JSON only so the header is set on all requests
 @app.after_request
 def apply_caching(response):
