@@ -4,6 +4,7 @@ from flask_basicauth import BasicAuth
 from functions.db.mongo import *
 from bson.json_util import dumps
 from threading import Thread
+from cachetools import cached, TTLCache
 
 
 # get setting from envvar with failover from config/conf.json file if envvar not set
@@ -77,13 +78,14 @@ basic_auth_password = get_conf_setting("basic_auth_password", auth_file, None)
 mongo_url = get_conf_setting("mongo_url", auth_file)
 schema_name = get_conf_setting("schema_name", auth_file, "nebula")
 basic_auth_enabled = int(get_conf_setting("basic_auth_enabled", auth_file, True))
+cache_time = int(get_conf_setting("cache_time", auth_file, "60"))
 
 # login to db at startup
 mongo_connection = MongoConnection(mongo_url, schema_name)
 print("opened MongoDB connection")
 
 # ensure mongo is indexed properly
-mongo_connection.mongo_create_index("app_name")
+mongo_connection.mongo_create_indexes("app_name", "device_group")
 
 # get current list of apps at startup
 nebula_apps = mongo_connection.mongo_list_apps()
@@ -294,6 +296,35 @@ def get_app(app_name):
         return dumps(app_json), 200
     elif app_exists is False:
         return "{\"app_exists\": \"False\"}", 403
+
+
+# get device_group info
+@app.route('/api/device_groups/<device_group>', methods=["GET"])
+@cached(cache=TTLCache(maxsize=1024, ttl=cache_time))
+def get_device_group_info(device_group):
+    # TODO - get a list of all apps in the device group and return a combined JSON of all the apps
+    # TODO - add to the combined app JSON the ID of the current prune
+    app_exists, app_json = mongo_connection.mongo_get_app(device_group)
+    if app_exists is True:
+        return dumps(app_json), 200
+    elif app_exists is False:
+        return "{\"app_exists\": \"False\"}", 403
+
+
+# create device_group
+# TODO - create function
+
+
+# list device_group
+# TODO - create function
+
+
+# update device_group
+# TODO - create function
+
+
+# delete device_group
+# TODO - create function
 
 
 # set json header - the API is JSON only so the header is set on all requests

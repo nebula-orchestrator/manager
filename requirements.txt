@@ -1,4 +1,5 @@
 backports.ssl-match-hostname==3.5.0.1
+cachetools==3.0.0
 certifi==2018.10.15
 chardet==3.0.4
 Click==7.0
