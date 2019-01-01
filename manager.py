@@ -59,7 +59,7 @@ def check_ports_valid_range(checked_ports):
                     return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
         else:
             return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
-    return "all ports checked are in a valid 1-65535 range", 202
+    return "all ports checked are in a valid 1-65535 range", 200
 
 
 # read config file at startup
@@ -113,7 +113,7 @@ except Exception as e:
 # api check page - return 200 and a massage just so we know API is reachable
 @app.route('/api/status', methods=["GET"])
 def check_page():
-    return "{\"api_available\": \"True\"}", 200
+    return "{\"api_available\": true}", 200
 
 
 # prune unused images on all devices running said app
@@ -122,7 +122,7 @@ def prune_images(app_name):
     app_exists, app_json = mongo_connection.mongo_get_app(app_name)
     # check app exists first
     if app_exists is False:
-        return "{\"app_exists\": \"False\"}", 403
+        return "{\"app_exists\": false}", 403
     # TODO - save prune ID in DB and have it moved to it's own endpoint or a per device_group (or both)?
     return dumps(app_json), 202
 
@@ -133,7 +133,7 @@ def create_app(app_name):
     # check app does't exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is True:
-        return "{\"app_exists\": \"True\"}", 403
+        return "{\"app_exists\": true}", 403
     else:
         # check the request is passed with all needed parameters
         try:
@@ -159,7 +159,7 @@ def create_app(app_name):
         # update the db
         app_json = mongo_connection.mongo_add_app(app_name, starting_ports, containers_per, env_vars, docker_image, running,
                                        networks, volumes, devices, privileged)
-        return dumps(app_json), 202
+        return dumps(app_json), 200
 
 
 # delete an app
@@ -168,10 +168,10 @@ def delete_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
-        return "{\"app_exists\": \"False\"}", 403
+        return "{\"app_exists\": false}", 403
     # remove from db
     mongo_connection.mongo_remove_app(app_name)
-    return "{}", 202
+    return "{}", 200
 
 
 # restart an app
@@ -183,7 +183,7 @@ def restart_app(app_name):
         return "{\"app_exists\": \"False\"}", 403
     # check if app already running:
     if app_json["running"] is False:
-        return "{\"running_before_restart\": \"False\"}", 403
+        return "{\"running_before_restart\": false}", 403
     # post to db
     app_json = mongo_connection.mongo_increase_app_id(app_name)
     return dumps(app_json), 202
@@ -199,7 +199,7 @@ def stop_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
-        return "{\"app_exists\": \"False\"}", 403
+        return "{\"app_exists\": false}", 403
     # post to db
     app_json = mongo_connection.mongo_update_app_running_state(app_name, False)
     return dumps(app_json), 202
@@ -211,7 +211,7 @@ def start_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
-        return "{\"app_exists\": \"False\"}", 403
+        return "{\"app_exists\": false}", 403
     # post to db
     app_json = mongo_connection.mongo_update_app_running_state(app_name, True)
     return dumps(app_json), 202
@@ -223,7 +223,7 @@ def update_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
-        return "{\"app_exists\": \"False\"}", 403
+        return "{\"app_exists\": false}", 403
     # check app got all needed parameters
     try:
         app_json = request.json
@@ -257,14 +257,14 @@ def update_app_fields(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
-        return "{\"app_exists\": \"False\"}", 403
+        return "{\"app_exists\": false}", 403
     # check app got update parameters
     try:
         app_json = request.json
         if len(app_json) == 0:
-            return "{\"missing_parameters\": \"True\"}", 400
+            return "{\"missing_parameters\": true}", 400
     except:
-        return "{\"missing_parameters\": \"True\"}", 400
+        return "{\"missing_parameters\": true}", 400
     # check edge case of port being outside of possible port ranges in case trying to update port listing
     try:
         starting_ports = request.json["starting_ports"]
@@ -292,29 +292,60 @@ def get_app(app_name):
     if app_exists is True:
         return dumps(app_json), 200
     elif app_exists is False:
-        return "{\"app_exists\": \"False\"}", 403
+        return "{\"app_exists\": false}", 403
 
 
 # get device_group info
-@app.route('/api/device_groups/<device_group>', methods=["GET"])
+@app.route('/api/device_groups/<device_group>/info', methods=["GET"])
 @cached(cache=TTLCache(maxsize=1024, ttl=cache_time))
 def get_device_group_info(device_group):
-    # TODO - get a list of all apps in the device group and return a combined JSON of all the apps
+    device_group_exists, device_group_json = mongo_connection.mongo_get_device_group(device_group)
+    if device_group_exists is False:
+        return "{\"device_group_exists\": false}", 403
+    device_group_config = {"apps": []}
+    for device_app in device_group_json["apps"]:
+        app_exists, app_json = mongo_connection.mongo_get_app(device_group)
+        if app_exists is True:
+            device_group_config["apps"][device_app] = dumps(app_json)
+        elif app_exists is False:
+            device_group_config["apps"][device_app] = {}
     # TODO - add to the combined app JSON the ID of the current prune
-    app_exists, app_json = mongo_connection.mongo_get_app(device_group)
-    if app_exists is True:
-        return dumps(app_json), 200
-    elif app_exists is False:
-        return "{\"app_exists\": \"False\"}", 403
+    return device_group_config, 200
 
 
 # create device_group
-# TODO - create function
+@app.route('/api/device_groups/<device_group>', methods=["POST"])
+def create_device_group(device_group):
+    # check app does't exists first
+    device_group_exists = mongo_connection.mongo_get_device_group(device_group)
+    if device_group_exists is True:
+        return "{\"device_group_exists\": true}", 403
+    else:
+        # check the request is passed with all needed parameters
+        try:
+            app_json = request.json
+        except:
+            return json.dumps(find_missing_params({})), 400
+        try:
+            apps = request.json["apps"]
+        except:
+            return json.dumps(find_missing_params(app_json)), 400
+        # check edge case where apps is not a list
+        if type(apps) is not list:
+            return "{\"apps_is_list\": false}", 400
+        # update the db
+        app_json = mongo_connection.mongo_add_device_group(device_group, apps)
+        return dumps(app_json), 200
 
 
 # list device_group
-# TODO - create function
-
+@app.route('/api/device_groups/<device_group>', methods=["GET"])
+def get_device_group(device_group):
+    device_group_exists, device_group_json = mongo_connection.mongo_get_device_group(device_group)
+    if device_group_exists is True:
+        return dumps(device_group_json), 200
+    elif device_group_exists is False:
+        return "{\"device_group_exists\": false}", 403
 
 # update device_group
 # TODO - create function

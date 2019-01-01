@@ -43,6 +43,11 @@ class MongoConnection:
         result, ignored = self.mongo_get_app(app_name)
         return result
 
+    # check if device_group exists
+    def mongo_check_device_group_exists(self, device_group):
+        result, ignored = self.mongo_get_device_group(device_group)
+        return result
+
     # update all app data
     def mongo_update_app(self, app_name, starting_ports, containers_per, env_vars, docker_image, running,
                          networks, volumes, devices, privileged):
@@ -189,7 +194,7 @@ class MongoConnection:
 
     # update device_group
     def mongo_update_device_group(self, device_group, apps):
-        result = self.collection_apps.find_one_and_update({'device_group': device_group},
+        result = self.collection_device_groups.find_one_and_update({'device_group': device_group},
                                                           {'$inc': {'app_id': 1},
                                                            '$set': {'apps': apps}},
                                                           return_document=ReturnDocument.AFTER)
