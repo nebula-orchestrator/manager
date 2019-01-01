@@ -278,9 +278,6 @@ def update_app_fields(app_name):
     return dumps(app_json), 202
 
 
-# new version released, does the same as restart & kept as legacy.
-# TODO - deprecate the /release endpoint as it does the same as restart and is misleading
-
 # list apps
 @app.route('/api/apps', methods=["GET"])
 def list_apps():
