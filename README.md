@@ -16,3 +16,6 @@ want the ability to stop\start a globally distributed service with a single comm
 Nebula was designed from the ground up to answer all of this needs and much more, refer to the [documentation](http://nebula.readthedocs.io/en/latest/) if your interested in seeing on how to use it.
 
 This repo is the manager component of Nebula container orchestrator, it's the API endpoint through which Nebula apps are managed.
+
+
+# NOTE THIS IS A POC BRANCH WHICH RADICALLY BREAKS EVERYTHING AND IS DESIGNED TO IMPLEMENT A NEW COMMUNICATION METHOD based around monotonic ID's (inspired by Kafka) inside the API and memoization rather then using RabbitMQ. 

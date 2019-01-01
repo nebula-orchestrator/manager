@@ -43,16 +43,18 @@ class MongoConnection:
     def mongo_update_app(self, app_name, starting_ports, containers_per, env_vars, docker_image, running,
                          networks, volumes, devices, privileged):
         result = self.collection.find_one_and_update({'app_name': app_name},
-                                                     {'$set': {'starting_ports': starting_ports,
-                                                               'containers_per': containers_per,
-                                                               'env_vars': env_vars,
-                                                               'docker_image': docker_image,
-                                                               'running': running,
-                                                               'networks': networks,
-                                                               "volumes": volumes,
-                                                               "devices": devices,
-                                                               "privileged": privileged
-                                                               }},
+                                                     {'$inc': {'app_id': 1},
+                                                     '$set': {'starting_ports': starting_ports,
+                                                              'containers_per': containers_per,
+                                                              'env_vars': env_vars,
+                                                              'docker_image': docker_image,
+                                                              'running': running,
+                                                              'networks': networks,
+                                                              "volumes": volumes,
+                                                              "devices": devices,
+                                                              "privileged": privileged
+                                                              }
+                                                      },
                                                      upsert=True,
                                                      return_document=ReturnDocument.AFTER)
         return result
@@ -65,14 +67,16 @@ class MongoConnection:
     # update envvars of an app
     def mongo_update_app_envars(self, app_name, env_vars):
         result = self.collection.find_one_and_update({'app_name': app_name},
-                                                     {'$set': {'env_vars': env_vars}},
+                                                     {'$inc': {'app_id': 1},
+                                                     '$set': {'env_vars': env_vars}},
                                                      return_document=ReturnDocument.AFTER)
         return result
 
     # update some fields of an app
     def mongo_update_app_fields(self, app_name, update_fields_dict):
         result = self.collection.find_one_and_update({'app_name': app_name},
-                                                     {'$set': update_fields_dict},
+                                                     {'$inc': {'app_id': 1},
+                                                     '$set': update_fields_dict},
                                                      return_document=ReturnDocument.AFTER)
         return result
 
@@ -84,7 +88,8 @@ class MongoConnection:
     # update number of containers per cpu of app
     def mongo_update_app_containers_per(self, app_name, containers_per):
         result = self.collection.find_one_and_update({'app_name': app_name},
-                                                     {'$set': {'containers_per': containers_per}},
+                                                     {'$inc': {'app_id': 1},
+                                                     '$set': {'containers_per': containers_per}},
                                                      return_document=ReturnDocument.AFTER)
         return result
 
@@ -104,6 +109,7 @@ class MongoConnection:
         if devices is None:
             devices = []
         app_doc = {
+            "app_id": 1,
             "app_name": app_name,
             "starting_ports": starting_ports,
             "containers_per": containers_per,
@@ -115,7 +121,8 @@ class MongoConnection:
             "devices": devices,
             "privileged": privileged
         }
-        result = self.collection.insert_one(app_doc).inserted_id
+        insert_id = self.collection.insert_one(app_doc).inserted_id
+        result = self.mongo_get_app(app_name)
         return result
 
     # remove app
@@ -131,9 +138,17 @@ class MongoConnection:
     # update app starting ports
     def mongo_update_app_starting_ports(self, app_name, starting_ports):
         result = self.collection.find_one_and_update({'app_name': app_name},
-                                                     {'$set': {'starting_ports': starting_ports}},
+                                                     {'$inc': {'app_id': 1},
+                                                     '$set': {'starting_ports': starting_ports}},
                                                      return_document=ReturnDocument.AFTER)
         return result
+
+    # increase app_id - used to restart the app
+    def mongo_increase_app_id(self, app_name):
+            result = self.collection.find_one_and_update({'app_name': app_name},
+                                                         {'$inc': {'app_id': 1}},
+                                                         return_document=ReturnDocument.AFTER)
+            return result
 
     # get app running\stopped state
     def mongo_list_app_running_state(self, app_name):
@@ -143,6 +158,7 @@ class MongoConnection:
     # update app running\stopped state
     def mongo_update_app_running_state(self, app_name, running):
         result = self.collection.find_one_and_update({'app_name': app_name},
-                                                     {'$set': {'running': running}},
+                                                     {'$inc': {'app_id': 1},
+                                                     '$set': {'running': running}},
                                                      return_document=ReturnDocument.AFTER)
         return result
