@@ -304,7 +304,7 @@ def get_device_group_info(device_group):
         return "{\"device_group_exists\": false}", 403
     device_group_config = {"apps": []}
     for device_app in device_group_json["apps"]:
-        app_exists, app_json = mongo_connection.mongo_get_app(device_group)
+        app_exists, app_json = mongo_connection.mongo_get_app(device_app)
         if app_exists is True:
             device_group_config["apps"][device_app] = dumps(app_json)
         elif app_exists is False:
@@ -317,7 +317,7 @@ def get_device_group_info(device_group):
 @app.route('/api/device_groups/<device_group>', methods=["POST"])
 def create_device_group(device_group):
     # check app does't exists first
-    device_group_exists = mongo_connection.mongo_get_device_group(device_group)
+    device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
     if device_group_exists is True:
         return "{\"device_group_exists\": true}", 403
     else:
@@ -333,6 +333,7 @@ def create_device_group(device_group):
         # check edge case where apps is not a list
         if type(apps) is not list:
             return "{\"apps_is_list\": false}", 400
+        # TODO - add edge case check where trying to add an app that does not exist yet
         # update the db
         app_json = mongo_connection.mongo_add_device_group(device_group, apps)
         return dumps(app_json), 200
@@ -352,7 +353,7 @@ def get_device_group(device_group):
 @app.route('/api/device_groups/<device_group>/update', methods=["POST"])
 def update_device_group(device_group):
     # check app exists first
-    device_group_exists = mongo_connection.mongo_check_app_exists(device_group)
+    device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
     if device_group_exists is False:
         return "{\"app_exists\": false}", 403
     # check app got all needed parameters
@@ -367,6 +368,7 @@ def update_device_group(device_group):
         # check edge case where apps is not a list
     if type(apps) is not list:
         return "{\"apps_is_list\": false}", 400
+    # TODO - add edge case check where trying to add an app that does not exist yet
     # update db
     app_json = mongo_connection.mongo_update_device_group(device_group, apps)
     return dumps(app_json), 202
@@ -376,7 +378,7 @@ def update_device_group(device_group):
 @app.route('/api/device_groups/<device_group>', methods=["DELETE"])
 def delete_device_group(device_group):
     # check app exists first
-    device_group_exists = mongo_connection.mongo_check_app_exists(device_group)
+    device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
     if device_group_exists is False:
         return "{\"app_exists\": false}", 403
     # remove from db
@@ -388,7 +390,7 @@ def delete_device_group(device_group):
 @app.route('/api/device_groups', methods=["GET"])
 def list_device_groups():
     nebula_device_groups_list = mongo_connection.mongo_list_device_groups()
-    return "{\"apps\": " + dumps(nebula_device_groups_list) + " }", 200
+    return "{\"device_groups\": " + dumps(nebula_device_groups_list) + " }", 200
 
 
 # set json header - the API is JSON only so the header is set on all requests

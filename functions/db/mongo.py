@@ -208,5 +208,5 @@ class MongoConnection:
     def mongo_list_device_groups(self):
         device_groups = []
         for device_group in self.collection_device_groups.find({"device_group": {"$exists": "true"}}):
-            device_groups.append(device_group["app_name"])
+            device_groups.append(device_group["device_group"])
         return device_groups
