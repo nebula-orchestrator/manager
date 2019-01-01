@@ -374,7 +374,7 @@ def update_device_group(device_group):
 
 # delete device_group
 @app.route('/api/device_groups/<device_group>', methods=["DELETE"])
-def delete_app(device_group):
+def delete_device_group(device_group):
     # check app exists first
     device_group_exists = mongo_connection.mongo_check_app_exists(device_group)
     if device_group_exists is False:
