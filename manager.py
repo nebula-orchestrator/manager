@@ -5,6 +5,7 @@ from functions.db.mongo import *
 from bson.json_util import dumps
 from threading import Thread
 from cachetools import cached, TTLCache
+from retrying import retry
 
 
 # get setting from envvar with failover from config/conf.json file if envvar not set
@@ -79,6 +80,7 @@ mongo_url = get_conf_setting("mongo_url", auth_file)
 schema_name = get_conf_setting("schema_name", auth_file, "nebula")
 basic_auth_enabled = int(get_conf_setting("basic_auth_enabled", auth_file, True))
 cache_time = int(get_conf_setting("cache_time", auth_file, "60"))
+cache_max_size = int(get_conf_setting("cache_max_size", auth_file, "1024"))
 
 # login to db at startup
 mongo_connection = MongoConnection(mongo_url, schema_name)
@@ -112,6 +114,7 @@ except Exception as e:
 
 # api check page - return 200 and a massage just so we know API is reachable
 @app.route('/api/status', methods=["GET"])
+@retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=1000)
 def check_page():
     return "{\"api_available\": true}", 200
 
@@ -280,6 +283,7 @@ def update_app_fields(app_name):
 
 # list apps
 @app.route('/api/apps', methods=["GET"])
+@retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=1000)
 def list_apps():
     nebula_apps_list = mongo_connection.mongo_list_apps()
     return "{\"apps\": " + dumps(nebula_apps_list) + " }", 200
@@ -287,6 +291,7 @@ def list_apps():
 
 # get app info
 @app.route('/api/apps/<app_name>', methods=["GET"])
+@retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=1000)
 def get_app(app_name):
     app_exists, app_json = mongo_connection.mongo_get_app(app_name)
     if app_exists is True:
@@ -297,7 +302,8 @@ def get_app(app_name):
 
 # get device_group info
 @app.route('/api/device_groups/<device_group>/info', methods=["GET"])
-@cached(cache=TTLCache(maxsize=1024, ttl=cache_time))
+@cached(cache=TTLCache(maxsize=cache_max_size, ttl=cache_time))
+@retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=1000)
 def get_device_group_info(device_group):
     device_group_exists, device_group_json = mongo_connection.mongo_get_device_group(device_group)
     if device_group_exists is False:
@@ -341,6 +347,7 @@ def create_device_group(device_group):
 
 # list device_group
 @app.route('/api/device_groups/<device_group>', methods=["GET"])
+@retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=1000)
 def get_device_group(device_group):
     device_group_exists, device_group_json = mongo_connection.mongo_get_device_group(device_group)
     if device_group_exists is True:
@@ -388,6 +395,7 @@ def delete_device_group(device_group):
 
 # list device_groups
 @app.route('/api/device_groups', methods=["GET"])
+@retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=1000)
 def list_device_groups():
     nebula_device_groups_list = mongo_connection.mongo_list_device_groups()
     return "{\"device_groups\": " + dumps(nebula_device_groups_list) + " }", 200
