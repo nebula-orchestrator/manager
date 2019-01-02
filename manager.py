@@ -60,9 +60,9 @@ def check_ports_valid_range(checked_ports):
                     if not 1 <= int(host_port) <= 65535 or not 1 <= int(container_port) <= 65535:
                         return "{\"starting_ports\": \"invalid port\"}", 400
                 except ValueError:
-                    return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
+                    return "{\"starting_ports\": \"can only be a list containing integers or dicts\"}", 403
         else:
-            return "{\"starting_ports\": \"can only be a list containing intgers or dicts\"}", 403
+            return "{\"starting_ports\": \"can only be a list containing integers or dicts\"}", 403
     return "all ports checked are in a valid 1-65535 range", 200
 
 
