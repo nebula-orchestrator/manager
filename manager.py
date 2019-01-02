@@ -190,7 +190,7 @@ def restart_app(app_name):
 
 
 # rolling restart an app
-# TODO - roll should be moved to update_strategy inside the app config
+# TODO - roll should be moved to update_strategy inside the app config as update_strategy
 
 
 # stop an app
@@ -306,11 +306,11 @@ def get_device_group_info(device_group):
     for device_app in device_group_json["apps"]:
         app_exists, app_json = mongo_connection.mongo_get_app(device_app)
         if app_exists is True:
-            device_group_config["apps"][device_app] = dumps(app_json)
+            device_group_config["apps"].append(app_json)
         elif app_exists is False:
-            device_group_config["apps"][device_app] = {}
+            device_group_config["apps"].append({})
     # TODO - add to the combined app JSON the ID of the current prune
-    return device_group_config, 200
+    return dumps(device_group_config), 200
 
 
 # create device_group
