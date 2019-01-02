@@ -177,10 +177,18 @@ class MongoConnection:
         app_doc = {
             "app_id": 1,
             "device_group": device_group,
-            "apps": apps
+            "apps": apps,
+            "prune_id": 1
         }
         insert_id = self.collection_device_groups.insert_one(app_doc).inserted_id
         result = self.mongo_get_device_group(device_group)
+        return result
+
+    # increase app_id - used to restart the app
+    def mongo_increase_prune_id(self, device_group):
+        result = self.collection_device_groups.find_one_and_update({'device_group': device_group},
+                                                                   {'$inc': {'prune_id': 1}},
+                                                                   return_document=ReturnDocument.AFTER)
         return result
 
     # list device_group

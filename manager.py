@@ -119,17 +119,6 @@ def check_page():
     return "{\"api_available\": true}", 200
 
 
-# prune unused images on all devices running said app
-@app.route('/api/apps/<app_name>/prune', methods=["POST"])
-def prune_images(app_name):
-    app_exists, app_json = mongo_connection.mongo_get_app(app_name)
-    # check app exists first
-    if app_exists is False:
-        return "{\"app_exists\": false}", 403
-    # TODO - save prune ID in DB and have it moved to it's own endpoint or a per device_group (or both)?
-    return dumps(app_json), 202
-
-
 # create a new app
 @app.route('/api/apps/<app_name>', methods=["POST"])
 def create_app(app_name):
@@ -308,14 +297,13 @@ def get_device_group_info(device_group):
     device_group_exists, device_group_json = mongo_connection.mongo_get_device_group(device_group)
     if device_group_exists is False:
         return "{\"device_group_exists\": false}", 403
-    device_group_config = {"apps": []}
+    device_group_config = {"apps": [], "prune_id": device_group_json["prune_id"]}
     for device_app in device_group_json["apps"]:
         app_exists, app_json = mongo_connection.mongo_get_app(device_app)
         if app_exists is True:
             device_group_config["apps"].append(app_json)
         elif app_exists is False:
             device_group_config["apps"].append({})
-    # TODO - add to the combined app JSON the ID of the current prune
     return dumps(device_group_config), 200
 
 
@@ -359,7 +347,7 @@ def get_device_group(device_group):
 # POST update device_group - requires a full list of apps to be given in the request body
 @app.route('/api/device_groups/<device_group>/update', methods=["POST"])
 def update_device_group(device_group):
-    # check app exists first
+    # check device_group exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
     if device_group_exists is False:
         return "{\"app_exists\": false}", 403
@@ -400,6 +388,21 @@ def list_device_groups():
     nebula_device_groups_list = mongo_connection.mongo_list_device_groups()
     return "{\"device_groups\": " + dumps(nebula_device_groups_list) + " }", 200
 
+
+# prune unused images on all devices running said device_group
+@app.route('/api/device_groups/<device_group>/prune', methods=["POST"])
+def prune_device_group_images(device_group):
+    # check device_group exists first
+    device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
+    if device_group_exists is False:
+        return "{\"app_exists\": false}", 403
+    # update db
+    app_json = mongo_connection.mongo_increase_prune_id(device_group)
+    return dumps(app_json), 202
+
+
+# prune unused images on all devices
+# TODO - to a prune on all device groups by listing all device groups and running a prune on all of them in a loop
 
 # set json header - the API is JSON only so the header is set on all requests
 @app.after_request
