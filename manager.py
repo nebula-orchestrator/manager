@@ -323,11 +323,11 @@ def create_device_group(device_group):
         try:
             app_json = request.json
         except:
-            return json.dumps(find_missing_params({})), 400
+            return json.dumps({"missing_parameters": ["apps"]}), 400
         try:
             apps = request.json["apps"]
         except:
-            return json.dumps(find_missing_params(app_json)), 400
+            return json.dumps({"missing_parameters": ["apps"]}), 400
         # check edge case where apps is not a list
         if type(apps) is not list:
             return "{\"apps_is_list\": false}", 400
@@ -359,11 +359,11 @@ def update_device_group(device_group):
     try:
         app_json = request.json
     except:
-        return json.dumps(find_missing_params({})), 400
+        return json.dumps({"missing_parameters": ["apps"]}), 400
     try:
         apps = request.json["apps"]
     except:
-        return json.dumps(find_missing_params(app_json)), 400
+        return json.dumps({"missing_parameters": ["apps"]}), 400
         # check edge case where apps is not a list
     if type(apps) is not list:
         return "{\"apps_is_list\": false}", 400
