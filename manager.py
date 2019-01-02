@@ -402,7 +402,22 @@ def prune_device_group_images(device_group):
 
 
 # prune unused images on all devices
-# TODO - to a prune on all device groups by listing all device groups and running a prune on all of them in a loop
+@app.route('/api/prune', methods=["POST"])
+def prune_images_on_all_device_groups():
+    # get a list of all device_groups
+    device_groups = mongo_connection.mongo_list_device_groups()
+    all_device_groups_prune_id = {}
+    # loop over all device groups
+    for device_group in device_groups:
+        # check device_group exists first
+        device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
+        if device_group_exists is False:
+            return "{\"app_exists\": false}", 403
+        # update db
+        app_json = mongo_connection.mongo_increase_prune_id(device_group)
+        all_device_groups_prune_id[device_group] = app_json["prune_id"]
+    return dumps(all_device_groups_prune_id), 202
+
 
 # set json header - the API is JSON only so the header is set on all requests
 @app.after_request
