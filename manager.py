@@ -38,7 +38,7 @@ def get_conf_setting(setting, settings_json, default_value="skip"):
 def find_missing_params(invalid_request):
     try:
         required_params = ["starting_ports", "containers_per", "env_vars", "docker_image", "running", "networks",
-                           "volumes", "devices", "privileged"]
+                           "volumes", "devices", "privileged", "rolling_restart"]
         missing_params = dict()
         missing_params["missing_parameters"] = list(set(required_params) - set(invalid_request))
 
@@ -145,6 +145,7 @@ def create_app(app_name):
             volumes = request.json["volumes"]
             devices = request.json["devices"]
             privileged = request.json["privileged"]
+            rolling_restart = request.json["rolling_restart"]
         except:
             return json.dumps(find_missing_params(app_json)), 400
         # check edge case of port being outside of possible port ranges
@@ -153,7 +154,7 @@ def create_app(app_name):
             return ports_check_return_message, port_check_return_code
         # update the db
         app_json = mongo_connection.mongo_add_app(app_name, starting_ports, containers_per, env_vars, docker_image, running,
-                                       networks, volumes, devices, privileged)
+                                       networks, volumes, devices, privileged, rolling_restart)
         return dumps(app_json), 200
 
 
@@ -182,10 +183,6 @@ def restart_app(app_name):
     # post to db
     app_json = mongo_connection.mongo_increase_app_id(app_name)
     return dumps(app_json), 202
-
-
-# rolling restart an app
-# TODO - roll should be moved to update_strategy inside the app config as update_strategy
 
 
 # stop an app
@@ -234,6 +231,7 @@ def update_app(app_name):
         volumes = request.json["volumes"]
         devices = request.json["devices"]
         privileged = request.json["privileged"]
+        rolling_restart = request.json["rolling_restart"]
     except:
         return json.dumps(find_missing_params(app_json)), 400
     # check edge case of port being outside of possible port ranges
@@ -242,7 +240,7 @@ def update_app(app_name):
         return ports_check_return_message, port_check_return_code
     # update db
     app_json = mongo_connection.mongo_update_app(app_name, starting_ports, containers_per, env_vars, docker_image,
-                                                 running, networks, volumes, devices, privileged)
+                                                 running, networks, volumes, devices, privileged, rolling_restart)
     return dumps(app_json), 202
 
 

@@ -50,7 +50,7 @@ class MongoConnection:
 
     # update all app data
     def mongo_update_app(self, app_name, starting_ports, containers_per, env_vars, docker_image, running,
-                         networks, volumes, devices, privileged):
+                         networks, volumes, devices, privileged, rolling_restart):
         result = self.collection_apps.find_one_and_update({'app_name': app_name},
                                                           {'$inc': {'app_id': 1},
                                                            '$set': {'starting_ports': starting_ports,
@@ -61,7 +61,8 @@ class MongoConnection:
                                                                     'networks': networks,
                                                                     "volumes": volumes,
                                                                     "devices": devices,
-                                                                    "privileged": privileged
+                                                                    "privileged": privileged,
+                                                                    "rolling_restart": rolling_restart
                                                                     }
                                                            },
                                                           upsert=True,
@@ -111,7 +112,7 @@ class MongoConnection:
 
     # add app
     def mongo_add_app(self, app_name, starting_ports, containers_per, env_vars, docker_image, running=True,
-                      networks="nebula", volumes=None, devices=None, privileged=False):
+                      networks="nebula", volumes=None, devices=None, privileged=False, rolling_restart=False):
         # creating the list inside the function to avoid mutable value list in the function default value
         if volumes is None:
             volumes = []
@@ -128,7 +129,8 @@ class MongoConnection:
             "networks": networks,
             "volumes": volumes,
             "devices": devices,
-            "privileged": privileged
+            "privileged": privileged,
+            "rolling_restart": rolling_restart
         }
         insert_id = self.collection_apps.insert_one(app_doc).inserted_id
         result = self.mongo_get_app(app_name)
