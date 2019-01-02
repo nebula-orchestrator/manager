@@ -205,6 +205,7 @@ class MongoConnection:
         result = self.collection_device_groups.delete_one({"device_group": device_group})
         return result
 
+    # list all device groups
     def mongo_list_device_groups(self):
         device_groups = []
         for device_group in self.collection_device_groups.find({"device_group": {"$exists": "true"}}):
