@@ -175,7 +175,7 @@ class MongoConnection:
     # add device_group
     def mongo_add_device_group(self, device_group, apps):
         app_doc = {
-            "app_id": 1,
+            "device_group_id": 1,
             "device_group": device_group,
             "apps": apps,
             "prune_id": 1
@@ -203,7 +203,7 @@ class MongoConnection:
     # update device_group
     def mongo_update_device_group(self, device_group, apps):
         result = self.collection_device_groups.find_one_and_update({'device_group': device_group},
-                                                                   {'$inc': {'app_id': 1},
+                                                                   {'$inc': {'device_group_id': 1},
                                                                     '$set': {'apps': apps}},
                                                                    return_document=ReturnDocument.AFTER
                                                                    )
