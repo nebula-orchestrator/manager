@@ -8,6 +8,9 @@ from cachetools import cached, TTLCache
 from retrying import retry
 
 
+API_VERSION = "v2"
+
+
 # get setting from envvar with failover from config/conf.json file if envvar not set
 # using skip rather then None so passing a None type will still pass a None value rather then assuming there should be
 # default value thus allowing to have No value set where needed (like in the case of registry user\pass)
@@ -113,14 +116,14 @@ except Exception as e:
 
 
 # api check page - return 200 and a massage just so we know API is reachable
-@app.route('/api/status', methods=["GET"])
+@app.route('/api/' + API_VERSION + '/status', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 def check_page():
     return "{\"api_available\": true}", 200
 
 
 # create a new app
-@app.route('/api/apps/<app_name>', methods=["POST"])
+@app.route('/api/' + API_VERSION + '/apps/<app_name>', methods=["POST"])
 def create_app(app_name):
     # check app does't exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -155,7 +158,7 @@ def create_app(app_name):
 
 
 # delete an app
-@app.route('/api/apps/<app_name>', methods=["DELETE"])
+@app.route('/api/' + API_VERSION + '/apps/<app_name>', methods=["DELETE"])
 def delete_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -167,7 +170,7 @@ def delete_app(app_name):
 
 
 # restart an app
-@app.route('/api/apps/<app_name>/restart', methods=["POST"])
+@app.route('/api/' + API_VERSION + '/apps/<app_name>/restart', methods=["POST"])
 def restart_app(app_name):
     app_exists, app_json = mongo_connection.mongo_get_app(app_name)
     # check app exists first
@@ -186,7 +189,7 @@ def restart_app(app_name):
 
 
 # stop an app
-@app.route('/api/apps/<app_name>/stop', methods=["POST"])
+@app.route('/api/' + API_VERSION + '/apps/<app_name>/stop', methods=["POST"])
 def stop_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -198,7 +201,7 @@ def stop_app(app_name):
 
 
 # start an app
-@app.route('/api/apps/<app_name>/start', methods=["POST"])
+@app.route('/api/' + API_VERSION + '/apps/<app_name>/start', methods=["POST"])
 def start_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -210,7 +213,7 @@ def start_app(app_name):
 
 
 # POST update an app - requires all the params to be given in the request body
-@app.route('/api/apps/<app_name>/update', methods=["POST"])
+@app.route('/api/' + API_VERSION + '/apps/<app_name>/update', methods=["POST"])
 def update_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -244,7 +247,7 @@ def update_app(app_name):
 
 
 # PUT update some fields of an app - params not given will be unchanged from their current value
-@app.route('/api/apps/<app_name>/update', methods=["PUT", "PATCH"])
+@app.route('/api/' + API_VERSION + '/apps/<app_name>/update', methods=["PUT", "PATCH"])
 def update_app_fields(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -271,7 +274,7 @@ def update_app_fields(app_name):
 
 
 # list apps
-@app.route('/api/apps', methods=["GET"])
+@app.route('/api/' + API_VERSION + '/apps', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 def list_apps():
     nebula_apps_list = mongo_connection.mongo_list_apps()
@@ -279,7 +282,7 @@ def list_apps():
 
 
 # get app info
-@app.route('/api/apps/<app_name>', methods=["GET"])
+@app.route('/api/' + API_VERSION + '/apps/<app_name>', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 def get_app(app_name):
     app_exists, app_json = mongo_connection.mongo_get_app(app_name)
@@ -290,7 +293,7 @@ def get_app(app_name):
 
 
 # get device_group info
-@app.route('/api/device_groups/<device_group>/info', methods=["GET"])
+@app.route('/api/' + API_VERSION + '/device_groups/<device_group>/info', methods=["GET"])
 @cached(cache=TTLCache(maxsize=cache_max_size, ttl=cache_time))
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 def get_device_group_info(device_group):
@@ -308,7 +311,7 @@ def get_device_group_info(device_group):
 
 
 # create device_group
-@app.route('/api/device_groups/<device_group>', methods=["POST"])
+@app.route('/api/' + API_VERSION + '/device_groups/<device_group>', methods=["POST"])
 def create_device_group(device_group):
     # check app does't exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
@@ -334,7 +337,7 @@ def create_device_group(device_group):
 
 
 # list device_group
-@app.route('/api/device_groups/<device_group>', methods=["GET"])
+@app.route('/api/' + API_VERSION + '/device_groups/<device_group>', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 def get_device_group(device_group):
     device_group_exists, device_group_json = mongo_connection.mongo_get_device_group(device_group)
@@ -345,7 +348,7 @@ def get_device_group(device_group):
 
 
 # POST update device_group - requires a full list of apps to be given in the request body
-@app.route('/api/device_groups/<device_group>/update', methods=["POST"])
+@app.route('/api/' + API_VERSION + '/device_groups/<device_group>/update', methods=["POST"])
 def update_device_group(device_group):
     # check device_group exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
@@ -370,19 +373,19 @@ def update_device_group(device_group):
 
 
 # delete device_group
-@app.route('/api/device_groups/<device_group>', methods=["DELETE"])
+@app.route('/api/' + API_VERSION + '/device_groups/<device_group>', methods=["DELETE"])
 def delete_device_group(device_group):
     # check app exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
     if device_group_exists is False:
-        return "{\"app_exists\": false}", 403
+        return "{\"device_group_exists\": false}", 403
     # remove from db
     mongo_connection.mongo_remove_device_group(device_group)
     return "{}", 200
 
 
 # list device_groups
-@app.route('/api/device_groups', methods=["GET"])
+@app.route('/api/' + API_VERSION + '/device_groups', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 def list_device_groups():
     nebula_device_groups_list = mongo_connection.mongo_list_device_groups()
@@ -390,7 +393,7 @@ def list_device_groups():
 
 
 # prune unused images on all devices running said device_group
-@app.route('/api/device_groups/<device_group>/prune', methods=["POST"])
+@app.route('/api/' + API_VERSION + '/device_groups/<device_group>/prune', methods=["POST"])
 def prune_device_group_images(device_group):
     # check device_group exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
@@ -402,11 +405,11 @@ def prune_device_group_images(device_group):
 
 
 # prune unused images on all devices
-@app.route('/api/prune', methods=["POST"])
+@app.route('/api/' + API_VERSION + '/prune', methods=["POST"])
 def prune_images_on_all_device_groups():
     # get a list of all device_groups
     device_groups = mongo_connection.mongo_list_device_groups()
-    all_device_groups_prune_id = {}
+    all_device_groups_prune_id = {"prune_ids": {}}
     # loop over all device groups
     for device_group in device_groups:
         # check device_group exists first
@@ -415,7 +418,7 @@ def prune_images_on_all_device_groups():
             return "{\"app_exists\": false}", 403
         # update db
         app_json = mongo_connection.mongo_increase_prune_id(device_group)
-        all_device_groups_prune_id[device_group] = app_json["prune_id"]
+        all_device_groups_prune_id["prune_ids"][device_group] = app_json["prune_id"]
     return dumps(all_device_groups_prune_id), 202
 
 
