@@ -3,5 +3,7 @@
   "basic_auth_password": "nebula_api_pass",
   "mongo_url": "mongodb://<mongo_user>:<mongo_password>@<nebula_mongo_host>:27017/<mongo_schema>?ssl=true&replicaSet=<mongo_replica_set>&authSource=<mongo_auth_schema>",
   "schema_name": "nebula",
-  "basic_auth_enabled": true
+  "basic_auth_enabled": true,
+  "cache_time": 10,
+  "cache_max_size": 1024
 }
