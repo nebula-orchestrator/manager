@@ -306,8 +306,6 @@ def get_device_group_info(device_group):
         app_exists, app_json = mongo_connection.mongo_get_app(device_app)
         if app_exists is True:
             device_group_config["apps"].append(app_json)
-        elif app_exists is False:
-            device_group_config["apps"].append({})
     return dumps(device_group_config), 200
 
 
@@ -331,7 +329,11 @@ def create_device_group(device_group):
         # check edge case where apps is not a list
         if type(apps) is not list:
             return "{\"apps_is_list\": false}", 400
-        # TODO - add edge case check where trying to add an app that does not exist yet
+        # check edge case where adding an app that does not exist
+        for device_app in apps:
+            app_exists, app_json = mongo_connection.mongo_get_app(device_app)
+            if app_exists is False:
+                return "{\"app_exists\": false}", 403
         # update the db
         app_json = mongo_connection.mongo_add_device_group(device_group, apps)
         return dumps(app_json), 200
@@ -367,7 +369,11 @@ def update_device_group(device_group):
         # check edge case where apps is not a list
     if type(apps) is not list:
         return "{\"apps_is_list\": false}", 400
-    # TODO - add edge case check where trying to add an app that does not exist yet
+    # check edge case where adding an app that does not exist
+    for device_app in apps:
+        app_exists, app_json = mongo_connection.mongo_get_app(device_app)
+        if app_exists is False:
+            return "{\"app_exists\": false}", 403
     # update db
     app_json = mongo_connection.mongo_update_device_group(device_group, apps)
     return dumps(app_json), 202
