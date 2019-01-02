@@ -52,20 +52,20 @@ class MongoConnection:
     def mongo_update_app(self, app_name, starting_ports, containers_per, env_vars, docker_image, running,
                          networks, volumes, devices, privileged):
         result = self.collection_apps.find_one_and_update({'app_name': app_name},
-                                                     {'$inc': {'app_id': 1},
-                                                     '$set': {'starting_ports': starting_ports,
-                                                              'containers_per': containers_per,
-                                                              'env_vars': env_vars,
-                                                              'docker_image': docker_image,
-                                                              'running': running,
-                                                              'networks': networks,
-                                                              "volumes": volumes,
-                                                              "devices": devices,
-                                                              "privileged": privileged
-                                                              }
-                                                      },
-                                                     upsert=True,
-                                                     return_document=ReturnDocument.AFTER)
+                                                          {'$inc': {'app_id': 1},
+                                                           '$set': {'starting_ports': starting_ports,
+                                                                    'containers_per': containers_per,
+                                                                    'env_vars': env_vars,
+                                                                    'docker_image': docker_image,
+                                                                    'running': running,
+                                                                    'networks': networks,
+                                                                    "volumes": volumes,
+                                                                    "devices": devices,
+                                                                    "privileged": privileged
+                                                                    }
+                                                           },
+                                                          upsert=True,
+                                                          return_document=ReturnDocument.AFTER)
         return result
 
     # get latest envvars of app
@@ -76,9 +76,9 @@ class MongoConnection:
     # update envvars of an app
     def mongo_update_app_envars(self, app_name, env_vars):
         result = self.collection_apps.find_one_and_update({'app_name': app_name},
-                                                     {'$inc': {'app_id': 1},
-                                                     '$set': {'env_vars': env_vars}},
-                                                     return_document=ReturnDocument.AFTER)
+                                                          {'$inc': {'app_id': 1},
+                                                           '$set': {'env_vars': env_vars}},
+                                                          return_document=ReturnDocument.AFTER)
         return result
 
     # update some fields of an app
@@ -195,9 +195,10 @@ class MongoConnection:
     # update device_group
     def mongo_update_device_group(self, device_group, apps):
         result = self.collection_device_groups.find_one_and_update({'device_group': device_group},
-                                                          {'$inc': {'app_id': 1},
-                                                           '$set': {'apps': apps}},
-                                                          return_document=ReturnDocument.AFTER)
+                                                                   {'$inc': {'app_id': 1},
+                                                                    '$set': {'apps': apps}},
+                                                                   return_document=ReturnDocument.AFTER
+                                                                   )
         return result
 
     # delete device_group
