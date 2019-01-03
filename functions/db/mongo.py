@@ -5,9 +5,9 @@ from pymongo import MongoClient, ReturnDocument, ASCENDING
 class MongoConnection:
 
     # connect to db
-    def __init__(self, mongo_connection_string, schema_name="nebula"):
+    def __init__(self, mongo_connection_string, schema_name="nebula", max_pool_size=100):
         try:
-            self.client = MongoClient(mongo_connection_string)
+            self.client = MongoClient(mongo_connection_string, maxPoolSize=max_pool_size)
             self.db = self.client[schema_name]
             self.collection_apps = self.db["nebula_apps"]
             self.collection_device_groups = self.db["nebula_device_groups"]
