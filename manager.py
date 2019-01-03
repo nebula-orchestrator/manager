@@ -3,7 +3,6 @@ from flask import json, Flask, request
 from flask_basicauth import BasicAuth
 from functions.db.mongo import *
 from bson.json_util import dumps
-from threading import Thread
 from cachetools import cached, TTLCache
 from retrying import retry
 
@@ -448,7 +447,7 @@ def run_dev(dev_host='0.0.0.0', dev_port=5000, dev_threaded=True):
 # opens in a new thread, DO NOT SET AS 'dev' FOR PRODUCTION USE!!!
 if os.getenv("ENV", "prod") == "dev":
     try:
-        Thread(target=run_dev).start()
+        run_dev()
     except Exception as e:
         print("Flask connection failure - dropping container")
         print >> sys.stderr, e
