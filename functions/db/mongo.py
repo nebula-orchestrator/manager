@@ -133,7 +133,7 @@ class MongoConnection:
             "rolling_restart": rolling_restart
         }
         insert_id = self.collection_apps.insert_one(app_doc).inserted_id
-        result = self.mongo_get_app(app_name)
+        ignored_app_existence_status, result = self.mongo_get_app(app_name)
         return result
 
     # remove app
