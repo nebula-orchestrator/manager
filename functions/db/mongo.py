@@ -183,7 +183,7 @@ class MongoConnection:
             "prune_id": 1
         }
         insert_id = self.collection_device_groups.insert_one(app_doc).inserted_id
-        result = self.mongo_get_device_group(device_group)
+        ignored_device_group_existence_status, result = self.mongo_get_device_group(device_group)
         return result
 
     # increase app_id - used to restart the app
