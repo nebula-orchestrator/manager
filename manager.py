@@ -298,12 +298,13 @@ def get_device_group_info(device_group):
     device_group_exists, device_group_json = mongo_connection.mongo_get_device_group(device_group)
     if device_group_exists is False:
         return "{\"device_group_exists\": false}", 403
-    device_group_config = {"apps": [], "prune_id": device_group_json["prune_id"],
+    device_group_config = {"apps": [], "apps_list": [], "prune_id": device_group_json["prune_id"],
                            "device_group_id": device_group_json["device_group_id"]}
     for device_app in device_group_json["apps"]:
         app_exists, app_json = mongo_connection.mongo_get_app(device_app)
         if app_exists is True:
-            device_group_config["apps"].append({app_json["app_name"]: app_json})
+            device_group_config["apps"].append(app_json)
+            device_group_config["apps_list"].append(app_json["app_name"])
     return dumps(device_group_config), 200
 
 
