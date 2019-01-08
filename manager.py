@@ -303,7 +303,7 @@ def get_device_group_info(device_group):
     for device_app in device_group_json["apps"]:
         app_exists, app_json = mongo_connection.mongo_get_app(device_app)
         if app_exists is True:
-            device_group_config["apps"].append(app_json)
+            device_group_config["apps"].append({app_json["app_name"]: app_json})
     return dumps(device_group_config), 200
 
 
