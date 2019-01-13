@@ -6,5 +6,5 @@
   "basic_auth_enabled": true,
   "cache_time": 10,
   "cache_max_size": 1024,
-  "mongo_max_pool_size": 100
+  "mongo_max_pool_size": 25
 }
