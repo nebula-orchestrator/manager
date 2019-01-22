@@ -36,8 +36,7 @@ def get_conf_setting(setting, settings_json, default_value="skip"):
 # hard on failure like the rest of the code (which in this case also means no missing params)
 def find_missing_params(invalid_request):
     try:
-        required_params = ["starting_ports", "containers_per", "env_vars", "docker_image", "running", "networks",
-                           "volumes", "devices", "privileged", "rolling_restart"]
+        required_params = ["docker_image"]
         missing_params = dict()
         missing_params["missing_parameters"] = list(set(required_params) - set(invalid_request))
 
@@ -45,6 +44,14 @@ def find_missing_params(invalid_request):
         print >> sys.stderr, "unable to find missing params yet the request is returning an error"
         os._exit(2)
     return missing_params
+
+
+def return_sane_default_if_not_declared(needed_parameter, parameters_dict, sane_default):
+    if needed_parameter in parameters_dict:
+        returned_value = parameters_dict[needed_parameter]
+    else:
+        returned_value = sane_default
+    return returned_value
 
 
 # check for edge case of port being outside of the valid port range
@@ -136,16 +143,16 @@ def create_app(app_name):
         except:
             return json.dumps(find_missing_params({})), 400
         try:
-            starting_ports = request.json["starting_ports"]
-            containers_per = request.json["containers_per"]
-            env_vars = request.json["env_vars"]
-            docker_image = request.json["docker_image"]
-            running = request.json["running"]
-            networks = request.json["networks"]
-            volumes = request.json["volumes"]
-            devices = request.json["devices"]
-            privileged = request.json["privileged"]
-            rolling_restart = request.json["rolling_restart"]
+            starting_ports = return_sane_default_if_not_declared("starting_ports", app_json, [])
+            containers_per = return_sane_default_if_not_declared("containers_per", app_json, {"server": 1})
+            env_vars = return_sane_default_if_not_declared("env_vars", app_json, [])
+            docker_image = app_json["docker_image"]
+            running = return_sane_default_if_not_declared("running", app_json, True)
+            networks = return_sane_default_if_not_declared("networks", app_json, ["nebula", "bridge"])
+            volumes = return_sane_default_if_not_declared("volumes", app_json, [])
+            devices = return_sane_default_if_not_declared("devices", app_json, [])
+            privileged = return_sane_default_if_not_declared("privileged", app_json, False)
+            rolling_restart = return_sane_default_if_not_declared("rolling_restart", app_json, False)
         except:
             return json.dumps(find_missing_params(app_json)), 400
         # check edge case of port being outside of possible port ranges
@@ -209,7 +216,7 @@ def start_app(app_name):
     return dumps(app_json), 202
 
 
-# POST update an app - requires all the params to be given in the request body
+# POST update an app - requires all the params to be given in the request body or else will be reset to default values
 @app.route('/api/' + API_VERSION + '/apps/<app_name>/update', methods=["POST"])
 def update_app(app_name):
     # check app exists first
@@ -222,16 +229,16 @@ def update_app(app_name):
     except:
         return json.dumps(find_missing_params({})), 400
     try:
-        starting_ports = request.json["starting_ports"]
-        containers_per = request.json["containers_per"]
-        env_vars = request.json["env_vars"]
-        docker_image = request.json["docker_image"]
-        running = request.json["running"]
-        networks = request.json["networks"]
-        volumes = request.json["volumes"]
-        devices = request.json["devices"]
-        privileged = request.json["privileged"]
-        rolling_restart = request.json["rolling_restart"]
+        starting_ports = return_sane_default_if_not_declared("starting_ports", app_json, [])
+        containers_per = return_sane_default_if_not_declared("containers_per", app_json, {"server": 1})
+        env_vars = return_sane_default_if_not_declared("env_vars", app_json, [])
+        docker_image = app_json["docker_image"]
+        running = return_sane_default_if_not_declared("running", app_json, True)
+        networks = return_sane_default_if_not_declared("networks", app_json, ["nebula", "bridge"])
+        volumes = return_sane_default_if_not_declared("volumes", app_json, [])
+        devices = return_sane_default_if_not_declared("devices", app_json, [])
+        privileged = return_sane_default_if_not_declared("privileged", app_json, False)
+        rolling_restart = return_sane_default_if_not_declared("rolling_restart", app_json, False)
     except:
         return json.dumps(find_missing_params(app_json)), 400
     # check edge case of port being outside of possible port ranges
