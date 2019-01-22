@@ -46,11 +46,17 @@ def find_missing_params(invalid_request):
     return missing_params
 
 
+# take a name of a parameter, the dict that parameter may or may not be and a sane default and returns the param from
+# the dict if it exists in it or the sane default otherwise
 def return_sane_default_if_not_declared(needed_parameter, parameters_dict, sane_default):
-    if needed_parameter in parameters_dict:
-        returned_value = parameters_dict[needed_parameter]
-    else:
-        returned_value = sane_default
+    try:
+        if needed_parameter in parameters_dict:
+            returned_value = parameters_dict[needed_parameter]
+        else:
+            returned_value = sane_default
+    except Exception as e:
+        print >> sys.stderr, "problem with parameter phrasing"
+        os._exit(2)
     return returned_value
 
 
