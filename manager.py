@@ -153,8 +153,8 @@ def create_app(app_name):
         if port_check_return_code >= 300:
             return ports_check_return_message, port_check_return_code
         # update the db
-        app_json = mongo_connection.mongo_add_app(app_name, starting_ports, containers_per, env_vars, docker_image, running,
-                                       networks, volumes, devices, privileged, rolling_restart)
+        app_json = mongo_connection.mongo_add_app(app_name, starting_ports, containers_per, env_vars, docker_image,
+                                                  running, networks, volumes, devices, privileged, rolling_restart)
         return dumps(app_json), 200
 
 
