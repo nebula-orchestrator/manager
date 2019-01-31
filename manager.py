@@ -1,6 +1,6 @@
 import json
-from flask import json, Flask, request
-from flask_basicauth import BasicAuth
+from flask import json, Flask, request, g
+from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 from functions.db.mongo import *
 from bson.json_util import dumps
 from cachetools import cached, TTLCache
@@ -112,31 +112,43 @@ print("got list of all mongo apps")
 # open waiting connection
 try:
     app = Flask(__name__)
-    print("now waiting for connections")
-
     # basic auth for api
-    # based on https://flask-basicauth.readthedocs.io/en/latest/
-    app.config['BASIC_AUTH_USERNAME'] = basic_auth_user
-    app.config['BASIC_AUTH_PASSWORD'] = basic_auth_password
-    app.config['BASIC_AUTH_FORCE'] = basic_auth_enabled
-    app.config['BASIC_AUTH_REALM'] = 'nebula'
-    basic_auth = BasicAuth(app)
-    print("basic auth configured")
+    basic_auth = HTTPBasicAuth(realm='nebula')
+    token_auth = HTTPTokenAuth('Bearer')
+    multi_auth = MultiAuth(basic_auth, token_auth)
+    print("startup completed - now waiting for connections")
 except Exception as e:
     print("Flask connection configuration failure - dropping container")
     print >> sys.stderr, e
     os._exit(2)
 
 
+# return true if basic auth is disabled or when the username\password combo matches the one configured, false otherwise
+@basic_auth.verify_password
+def verify_password(username, password):
+    if basic_auth_enabled is False or (username == basic_auth_user and password == basic_auth_password):
+        return True
+    else:
+        return False
+
+
+# always return false as this is not ready yet
+@token_auth.verify_token
+def verify_token(token):
+    return False
+
+
 # api check page - return 200 and a massage just so we know API is reachable
 @app.route('/api/' + API_VERSION + '/status', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
+@multi_auth.login_required
 def check_page():
     return "{\"api_available\": true}", 200
 
 
 # create a new app
 @app.route('/api/' + API_VERSION + '/apps/<app_name>', methods=["POST"])
+@basic_auth.login_required
 def create_app(app_name):
     # check app does't exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -173,6 +185,7 @@ def create_app(app_name):
 
 # delete an app
 @app.route('/api/' + API_VERSION + '/apps/<app_name>', methods=["DELETE"])
+@basic_auth.login_required
 def delete_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -185,6 +198,7 @@ def delete_app(app_name):
 
 # restart an app
 @app.route('/api/' + API_VERSION + '/apps/<app_name>/restart', methods=["POST"])
+@basic_auth.login_required
 def restart_app(app_name):
     app_exists, app_json = mongo_connection.mongo_get_app(app_name)
     # check app exists first
@@ -200,6 +214,7 @@ def restart_app(app_name):
 
 # stop an app
 @app.route('/api/' + API_VERSION + '/apps/<app_name>/stop', methods=["POST"])
+@basic_auth.login_required
 def stop_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -212,6 +227,7 @@ def stop_app(app_name):
 
 # start an app
 @app.route('/api/' + API_VERSION + '/apps/<app_name>/start', methods=["POST"])
+@basic_auth.login_required
 def start_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -224,6 +240,7 @@ def start_app(app_name):
 
 # POST update an app - requires all the params to be given in the request body or else will be reset to default values
 @app.route('/api/' + API_VERSION + '/apps/<app_name>/update', methods=["POST"])
+@basic_auth.login_required
 def update_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -259,6 +276,7 @@ def update_app(app_name):
 
 # PUT update some fields of an app - params not given will be unchanged from their current value
 @app.route('/api/' + API_VERSION + '/apps/<app_name>/update', methods=["PUT", "PATCH"])
+@basic_auth.login_required
 def update_app_fields(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -287,6 +305,7 @@ def update_app_fields(app_name):
 # list apps
 @app.route('/api/' + API_VERSION + '/apps', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
+@basic_auth.login_required
 def list_apps():
     nebula_apps_list = mongo_connection.mongo_list_apps()
     return "{\"apps\": " + dumps(nebula_apps_list) + " }", 200
@@ -295,6 +314,7 @@ def list_apps():
 # get app info
 @app.route('/api/' + API_VERSION + '/apps/<app_name>', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
+@basic_auth.login_required
 def get_app(app_name):
     app_exists, app_json = mongo_connection.mongo_get_app(app_name)
     if app_exists is True:
@@ -307,6 +327,7 @@ def get_app(app_name):
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>/info', methods=["GET"])
 @cached(cache=TTLCache(maxsize=cache_max_size, ttl=cache_time))
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
+@multi_auth.login_required
 def get_device_group_info(device_group):
     device_group_exists, device_group_json = mongo_connection.mongo_get_device_group(device_group)
     if device_group_exists is False:
@@ -323,6 +344,7 @@ def get_device_group_info(device_group):
 
 # create device_group
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>', methods=["POST"])
+@basic_auth.login_required
 def create_device_group(device_group):
     # check app does't exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
@@ -354,6 +376,7 @@ def create_device_group(device_group):
 # list device_group
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
+@basic_auth.login_required
 def get_device_group(device_group):
     device_group_exists, device_group_json = mongo_connection.mongo_get_device_group(device_group)
     if device_group_exists is True:
@@ -364,6 +387,7 @@ def get_device_group(device_group):
 
 # POST update device_group - requires a full list of apps to be given in the request body
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>/update', methods=["POST"])
+@basic_auth.login_required
 def update_device_group(device_group):
     # check device_group exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
@@ -393,6 +417,7 @@ def update_device_group(device_group):
 
 # delete device_group
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>', methods=["DELETE"])
+@basic_auth.login_required
 def delete_device_group(device_group):
     # check app exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
@@ -406,6 +431,7 @@ def delete_device_group(device_group):
 # list device_groups
 @app.route('/api/' + API_VERSION + '/device_groups', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
+@basic_auth.login_required
 def list_device_groups():
     nebula_device_groups_list = mongo_connection.mongo_list_device_groups()
     return "{\"device_groups\": " + dumps(nebula_device_groups_list) + " }", 200
@@ -413,6 +439,7 @@ def list_device_groups():
 
 # prune unused images on all devices running said device_group
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>/prune', methods=["POST"])
+@basic_auth.login_required
 def prune_device_group_images(device_group):
     # check device_group exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
@@ -425,6 +452,7 @@ def prune_device_group_images(device_group):
 
 # prune unused images on all devices
 @app.route('/api/' + API_VERSION + '/prune', methods=["POST"])
+@basic_auth.login_required
 def prune_images_on_all_device_groups():
     # get a list of all device_groups
     device_groups = mongo_connection.mongo_list_device_groups()
@@ -443,6 +471,7 @@ def prune_images_on_all_device_groups():
 
 # set json header - the API is JSON only so the header is set on all requests
 @app.after_request
+@basic_auth.login_required
 def apply_caching(response):
     response.headers["Content-Type"] = "application/json"
     return response
