@@ -9,6 +9,7 @@ can help
 * Make sure you have a [GitHub account](https://github.com/signup/free)
 * Use virtualenv to install all requirements from the requirements.txt file, this may require having GCC compiler depending on your environment setup due to gevent requiring compilation on some OS.
 * Fix the issue you \ add a feature
+* Make sure the unittests pass, you will need to have a running mongo to test them against, the following script will allow you to easily start one: test/travis_ci_scripts/travis_ci_build_script.sh
 * Create a pull request
 
 ## Design philosophy

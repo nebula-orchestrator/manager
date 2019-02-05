@@ -186,7 +186,7 @@ class MongoConnection:
         ignored_device_group_existence_status, result = self.mongo_get_device_group(device_group)
         return result
 
-    # increase app_id - used to restart the app
+    # increase prune_id - used to prune unused images of devices that are part of a device group
     def mongo_increase_prune_id(self, device_group):
         result = self.collection_device_groups.find_one_and_update({'device_group': device_group},
                                                                    {'$inc': {'prune_id': 1}},
