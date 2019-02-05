@@ -1,6 +1,8 @@
 language: python
 python:
   - "2.7"
+env:
+  - MONGO_URL=mongodb://nebula:nebula@127.0.0.1:27017/nebula?authSource=admin
 install:
   - pip install -r requirements.txt
 script:
