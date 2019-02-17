@@ -1,4 +1,4 @@
-# Nebula docs
+# Nebula manager
 
 Travis CI unit tests: [![Build Status](https://travis-ci.org/nebula-orchestrator/manager.svg?branch=master)](https://travis-ci.org/nebula-orchestrator/manager)
 
