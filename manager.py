@@ -21,11 +21,11 @@ def get_conf_setting(setting, settings_json, default_value="skip"):
         elif setting_value == "false":
             return False
     except Exception as e:
-        print >> sys.stderr, "missing " + setting + " config setting"
+        print("missing " + setting + " config setting", file=sys.stderr)
         print("missing " + setting + " config setting")
         os._exit(2)
     if setting_value == "skip":
-        print >> sys.stderr, "missing " + setting + " config setting"
+        print("missing " + setting + " config setting", file=sys.stderr)
         print("missing " + setting + " config setting")
         os._exit(2)
     return setting_value
@@ -41,7 +41,7 @@ def find_missing_params(invalid_request):
         missing_params["missing_parameters"] = list(set(required_params) - set(invalid_request))
 
     except Exception as e:
-        print >> sys.stderr, "unable to find missing params yet the request is returning an error"
+        print("unable to find missing params yet the request is returning an error", file=sys.stderr)
         os._exit(2)
     return missing_params
 
@@ -55,7 +55,7 @@ def return_sane_default_if_not_declared(needed_parameter, parameters_dict, sane_
         else:
             returned_value = sane_default
     except Exception as e:
-        print >> sys.stderr, "problem with parameter phrasing"
+        print("problem with parameter phrasing", file=sys.stderr)
         os._exit(2)
     return returned_value
 
@@ -67,7 +67,7 @@ def check_ports_valid_range(checked_ports):
             if not 1 <= checked_port <= 65535:
                 return "{\"starting_ports\": \"invalid port\"}", 400
         elif isinstance(checked_port, dict):
-            for host_port, container_port in checked_port.iteritems():
+            for host_port, container_port in checked_port.items():
                 try:
                     if not 1 <= int(host_port) <= 65535 or not 1 <= int(container_port) <= 65535:
                         return "{\"starting_ports\": \"invalid port\"}", 400
@@ -119,7 +119,7 @@ try:
     print("startup completed - now waiting for connections")
 except Exception as e:
     print("Flask connection configuration failure - dropping container")
-    print >> sys.stderr, e
+    print(e, file=sys.stderr)
     os._exit(2)
 
 
@@ -484,7 +484,7 @@ def run_dev(dev_host='0.0.0.0', dev_port=5000, dev_threaded=True):
         app.run(host=dev_host, port=dev_port, threaded=dev_threaded)
     except Exception as e:
         print("Flask connection failure - dropping container")
-        print >> sys.stderr, e
+        print(e, file=sys.stderr)
         os._exit(2)
 
 
@@ -495,5 +495,5 @@ if os.getenv("ENV", "prod") == "dev":
         run_dev()
     except Exception as e:
         print("Flask connection failure - dropping container")
-        print >> sys.stderr, e
+        print(e, file=sys.stderr)
         os._exit(2)

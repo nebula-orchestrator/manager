@@ -13,7 +13,7 @@ class MongoConnection:
             self.collection_device_groups = self.db["nebula_device_groups"]
         except Exception as e:
             print("error connection to mongodb")
-            print >> sys.stderr, e
+            print(e, file=sys.stderr)
             os._exit(2)
 
     # create indexes
@@ -26,7 +26,7 @@ class MongoConnection:
                                                        sparse=True)
         except Exception as e:
             print("error creating mongodb indexes")
-            print >> sys.stderr, e
+            print(e, file=sys.stderr)
             os._exit(2)
 
     # get all app data
