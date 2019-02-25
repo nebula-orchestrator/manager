@@ -31,7 +31,7 @@ class MongoConnection:
 
     # get all app data
     def mongo_get_app(self, app_name):
-        result = self.collection_apps.find_one({"app_name": app_name})
+        result = self.collection_apps.find_one({"app_name": app_name}, {'_id': False})
         if result is None:
             app_exists = False
         else:
@@ -71,7 +71,7 @@ class MongoConnection:
 
     # get latest envvars of app
     def mongo_list_app_envvars(self, app_name):
-        result = self.collection_apps.find_one({"app_name": app_name})
+        result = self.collection_apps.find_one({"app_name": app_name}, {'_id': False})
         return result["env_vars"]
 
     # update envvars of an app
@@ -92,7 +92,7 @@ class MongoConnection:
 
     # get number of containers per cpu of app
     def mongo_list_app_containers_per(self, app_name):
-        result = self.collection_apps.find_one({"app_name": app_name})
+        result = self.collection_apps.find_one({"app_name": app_name}, {'_id': False})
         return result["containers_per"]
 
     # update number of containers per cpu of app
@@ -106,7 +106,7 @@ class MongoConnection:
     # get list of apps
     def mongo_list_apps(self):
         apps_list = []
-        for app in self.collection_apps.find({"app_name": {"$exists": "true"}}):
+        for app in self.collection_apps.find({"app_name": {"$exists": "true"}}, {'_id': False}):
             apps_list.append(app["app_name"])
         return apps_list
 
@@ -143,7 +143,7 @@ class MongoConnection:
 
     # get app starting ports
     def mongo_list_app_starting_ports(self, app_name):
-        result = self.collection_apps.find_one({"app_name": app_name})
+        result = self.collection_apps.find_one({"app_name": app_name}, {'_id': False})
         return result["starting_ports"]
 
     # update app starting ports
@@ -163,7 +163,7 @@ class MongoConnection:
 
     # get app running\stopped state
     def mongo_list_app_running_state(self, app_name):
-        result = self.collection_apps.find_one({"app_name": app_name})
+        result = self.collection_apps.find_one({"app_name": app_name}, {'_id': False})
         return result["running"]
 
     # update app running\stopped state
@@ -195,7 +195,7 @@ class MongoConnection:
 
     # list device_group
     def mongo_get_device_group(self, device_group):
-        result = self.collection_device_groups.find_one({"device_group": device_group})
+        result = self.collection_device_groups.find_one({"device_group": device_group}, {'_id': False})
         if result is None:
             device_group_exists = False
         else:
@@ -219,6 +219,6 @@ class MongoConnection:
     # list all device groups
     def mongo_list_device_groups(self):
         device_groups = []
-        for device_group in self.collection_device_groups.find({"device_group": {"$exists": "true"}}):
+        for device_group in self.collection_device_groups.find({"device_group": {"$exists": "true"}}, {'_id': False}):
             device_groups.append(device_group["device_group"])
         return device_groups
