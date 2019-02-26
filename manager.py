@@ -479,7 +479,7 @@ def get_report():
     ACCEPTED_EXPRESSIONS = ['gt', 'lt', 'gte', 'lte', 'ne', 'eq']
     ACCEPTED_TYPE = ['device_group', 'hostname', 'report_creation_time']
     last_id = request.args.get('last_id')
-    page_size = request.args.get('page_size', 100, int)
+    page_size = request.args.get('page_size', 20, int)
     filter_expression = request.args.get('filter_expression', "eq", str)
     filter_type = request.args.get('filter_type')
     filter_value = request.args.get('filter_value')
