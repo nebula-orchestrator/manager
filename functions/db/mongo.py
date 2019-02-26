@@ -1,6 +1,6 @@
 import sys, os
 from pymongo import MongoClient, ReturnDocument, ASCENDING
-
+from bson.objectid import ObjectId
 
 class MongoConnection:
 
@@ -11,6 +11,7 @@ class MongoConnection:
             self.db = self.client[schema_name]
             self.collection_apps = self.db["nebula_apps"]
             self.collection_device_groups = self.db["nebula_device_groups"]
+            self.collection_reports = self.db["nebula_reports"]
         except Exception as e:
             print("error connection to mongodb")
             print(e, file=sys.stderr)
@@ -222,3 +223,29 @@ class MongoConnection:
         for device_group in self.collection_device_groups.find({"device_group": {"$exists": "true"}}, {'_id': False}):
             device_groups.append(device_group["device_group"])
         return device_groups
+
+    # get latest envvars of app
+    def mango_list_paginated_filtered_reports(self, page_size=100, last_id=None, filters=None):
+        if filters is None:
+            filters = {}
+
+        if last_id is not None:
+            filters['_id'] = {'$gt': ObjectId(last_id)}
+
+        if filters == {}:
+            cursor = self.collection_reports.find().limit(page_size).sort('_id', ASCENDING)
+        else:
+            cursor = self.collection_reports.find(filters).limit(page_size).sort('_id', ASCENDING)
+
+        # Get the data
+        data = [x for x in cursor]
+
+        if not data:
+            # No documents left
+            return None, None
+
+        # Since documents are naturally ordered with _id, last document will have max id.
+        last_id = data[-1]['_id']
+
+        # Return data and last_id
+        return data, last_id

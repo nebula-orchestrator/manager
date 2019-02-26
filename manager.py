@@ -471,6 +471,32 @@ def prune_images_on_all_device_groups():
     return dumps(all_device_groups_prune_id), 202
 
 
+# list reports
+@app.route('/api/' + API_VERSION + '/reports', methods=["GET"])
+@retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
+@multi_auth.login_required
+def get_report():
+    ACCEPTED_EXPRESSIONS = ['gt', 'lt', 'gte', 'lte', 'ne', 'eq']
+    ACCEPTED_TYPE = ['device_group', 'hostname', 'report_creation_time']
+    last_id = request.args.get('last_id')
+    page_size = request.args.get('page_size', 100, int)
+    filter_expression = request.args.get('filter_expression', "eq", str)
+    filter_type = request.args.get('filter_type')
+    filter_value = request.args.get('filter_value')
+
+    if filter_type is not None and filter_value is not None and (filter_type in ACCEPTED_TYPE) and \
+            (filter_expression in ACCEPTED_EXPRESSIONS):
+        filter_expression = "$" + filter_expression
+        filters = {filter_type: {filter_expression: filter_value}}
+    else:
+        filters = None
+
+    data, last_id = mongo_connection.mango_list_paginated_filtered_reports(page_size=page_size, last_id=last_id,
+                                                                           filters=filters)
+    reply = {"data": data, "last_id": last_id}
+    return dumps(reply), 200
+
+
 # set json header - the API is JSON only so the header is set on all requests
 @app.after_request
 def apply_caching(response):
