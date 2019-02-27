@@ -226,7 +226,7 @@ class MongoConnection:
 
     # get the reports of the user that match it's requested filtering in a paginanted fashion starting with the last_id
     # of the previous user request (or none if it's the first request)
-    def mango_list_paginated_filtered_reports(self, page_size=100, last_id=None, filters=None):
+    def mango_list_paginated_filtered_reports(self, page_size=10, last_id=None, filters=None):
         if filters is None:
             filters = {}
 

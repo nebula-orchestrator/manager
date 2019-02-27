@@ -490,7 +490,7 @@ def get_report():
     # first we get all the data from the params and pass it through the get_param_filter which will return them in the
     # format MongoDB uses to filtering
     last_id = request.args.get('last_id')
-    page_size = request.args.get('page_size', 20, int)
+    page_size = request.args.get('page_size', 10, int)
     hostname = get_param_filter("hostname", request)
     device_group = get_param_filter("device_group", request)
     report_creation_time_filter = request.args.get('report_creation_time_filter', "eq", str)
