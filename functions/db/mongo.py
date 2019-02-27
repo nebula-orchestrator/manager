@@ -224,16 +224,20 @@ class MongoConnection:
             device_groups.append(device_group["device_group"])
         return device_groups
 
-    # get latest envvars of app
+    # get the reports of the user that match it's requested filtering in a paginanted fashion starting with the last_id
+    # of the previous user request (or none if it's the first request)
     def mango_list_paginated_filtered_reports(self, page_size=100, last_id=None, filters=None):
         if filters is None:
             filters = {}
 
+        # if this isn't the first request start after the last _id of the previous request the user received
         if last_id is not None:
             filters['_id'] = {'$gt': ObjectId(last_id)}
 
+        # if there aren't any filters return a page of all reports
         if filters == {}:
             cursor = self.collection_reports.find().limit(page_size).sort('_id', ASCENDING)
+        # if there are filters return a filtered page of the reports
         else:
             cursor = self.collection_reports.find(filters).limit(page_size).sort('_id', ASCENDING)
 
@@ -244,7 +248,7 @@ class MongoConnection:
             # No documents left
             return None, None
 
-        # Since documents are naturally ordered with _id, last document will have max id.
+        # Since documents are ordered with _id, last document will have max id.
         last_id = data[-1]['_id']
 
         # Return data and last_id
