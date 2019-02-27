@@ -78,7 +78,7 @@ def check_ports_valid_range(checked_ports):
     return "all ports checked are in a valid 1-65535 range", 200
 
 
-# used to filter the hostname & device_group reports filtering to something that monogo can process
+# used to filter the hostname & device_group reports filtering to something that MongoDB can process
 def get_param_filter(param_name, full_request, filter_param="eq", request_type=str):
     filter_param = "$" + filter_param
     param_value = full_request.args.get(param_name, type=request_type)
@@ -487,6 +487,8 @@ def prune_images_on_all_device_groups():
 @multi_auth.login_required
 def get_report():
 
+    # first we get all the data from the params and pass it through the get_param_filter which will return them in the
+    # format MongoDB uses to filtering
     last_id = request.args.get('last_id')
     page_size = request.args.get('page_size', 20, int)
     hostname = get_param_filter("hostname", request)
@@ -495,11 +497,13 @@ def get_report():
     report_creation_time = get_param_filter("report_creation_time", request, report_creation_time_filter,
                                             request_type=int)
 
+    # Now we combine all the filters
     filters = {}
     for filter in [hostname, device_group, report_creation_time]:
         if filter is not None:
             filters = {**filters, **filter}
 
+    # lastly we return the requests reports to the user
     data, last_id = mongo_connection.mango_list_paginated_filtered_reports(page_size=page_size, last_id=last_id,
                                                                            filters=filters)
     reply = {"data": data, "last_id": last_id}
