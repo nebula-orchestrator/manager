@@ -2,6 +2,7 @@ import sys, os
 from pymongo import MongoClient, ReturnDocument, ASCENDING
 from bson.objectid import ObjectId
 
+
 class MongoConnection:
 
     # connect to db
