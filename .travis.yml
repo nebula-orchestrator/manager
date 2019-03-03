@@ -1,11 +1,16 @@
 language: python
 dist: xenial
 python:
-  - "3.7"
+- '3.7'
 env:
+  global:
   - MONGO_URL=mongodb://nebula:nebula@127.0.0.1:27017/nebula?authSource=admin
+  - DOCKER_HUB_ORG=nebulaorchestrator
+  - DOCKER_HUB_REPO=manager
+  - secure: I9/SoRRodn/UwDS3J09o+kSlZyGAUF+3Ek8GhDO1+UxXTeE1/E0dUgJi3rJD98V+1+L4PYnBq6WxpHENFDkZMvuS09pKKeZOaG+eaiF+Il2iRcRHLk2QlBCcAHbjCuJlH4+zDPk+lE+gjdWpc3yH6qg7XyxELzNvvLjnxUCD+jMUkaEdTGXH94GTAfHps1RDn+YeNiZrut6V82PoLTIT6NBzaqN1ZF4Ux+PJY+Cq/Yl0MzChQM8ID9a9nDGJ0sLJe6qjYJQn/kxqDNXMsGxSLfPTaAW+jRWU06pQiCJjGgI2vbYTNBX+KqGZ59fzCGpzHAB1iM+uLaWwnahJKxXyDtwlBQGlMAkfOcY7RmmzSQ5eoFFGtVjSW+aBqtsWuQsM6R5tHPHMCKE0Id2j+bpWgM+QXdLnIcTnvsQCKlsPDKs2ndDF2lgp4stwQP227BlOvd4W/+rrFXnNvkvoZ4vNGXuONR7NuDM0+5XBgUTSDEbLAxOex4HEsdQe9vjQLX46Le7bZSw7F8WT63UlCm9VciniQ37UW+SglobVvT//sa3erx+K810I/MXNbC89qY1Aw+EjrNggHKE3p6DdJqw3o9IWg6bFasIz2or1QnfH81NCDFmbRzh/GlYIk2uHwmR2TJ5WW88XngwQCP3so2IJ67g9gtvTo80SDCW52jEv6OY=
+  - secure: iee/jaG8EIbbUyVDlCqwsZ7BQJbeIluHeYJ1MmZSoiDWUSvQgReIx90jIt/80jw3eY20YITNYpZxW0wwfvaJdpHXlaEUjItPcUo+vKV2eTrsOjkfmy+gQCmJxj8p4y+1broVFXVVv7JnAChKIIv9SFPCddbJcQGuQedjqocThicS2HWX6jV00jbh1TsbjuJkg5ypd7Ax02nSPYf2AIPEKneY9ws0VaGXCKnyRjMlq2daA+VozL5oqHDP20IrbiZihKV12t0ZczF75RWeymSAd21FbPqKONIav1AmDz+wg4T6lm1afPVlYON+/trJattH9DuG4abI2Pj/+rtyI+O3xGYrjxe9YFvvBRyWBqLb6Zg8D4KjvakA/iWeFl7X9G4lc/VJurFJZL6MUCNhBSgYUw7NpnzGU6cpxzj6CMsMPdw5cY+cDELIYW4kz73p8hxOVhOiOYauXuj0Lhshxd00brmExic1ajKI0T18xsKIVp6B9gmrx3K05565c8BnjX8zS8ehfJGQs62lPKAuY9Z7GjlI3wPwm7PGlUsaVgrask3wvK75YA8g7mJxVonT0mlnWDqOQrwf8trNld9XUJRa11fc7jBj6XKpXFJPrH01jCHiIuJRMVZa34RgHSXh79eLMELtXGsV3uY9DrcPzxshfTr+aD4qKBFg67e7GOr2m0k=
 install:
-  - pip install -r requirements.txt
+- pip install -r requirements.txt
 script:
-  - sudo sh test/travis_ci_scripts/travis_ci_build_script.sh
-  - python -m unittest discover
+- sudo sh test/travis_ci_scripts/travis_ci_build_script.sh
+- python -m unittest discover
