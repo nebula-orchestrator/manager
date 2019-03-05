@@ -101,9 +101,10 @@ else:
 print("reading config variables")
 basic_auth_user = get_conf_setting("basic_auth_user", auth_file, None)
 basic_auth_password = get_conf_setting("basic_auth_password", auth_file, None)
+auth_token = get_conf_setting("auth_token", auth_file, None)
 mongo_url = get_conf_setting("mongo_url", auth_file)
 schema_name = get_conf_setting("schema_name", auth_file, "nebula")
-basic_auth_enabled = get_conf_setting("basic_auth_enabled", auth_file, True)
+auth_enabled = get_conf_setting("auth_enabled", auth_file, True)
 cache_time = int(get_conf_setting("cache_time", auth_file, "10"))
 cache_max_size = int(get_conf_setting("cache_max_size", auth_file, "1024"))
 mongo_max_pool_size = int(get_conf_setting("mongo_max_pool_size", auth_file, "25"))
@@ -136,7 +137,7 @@ except Exception as e:
 # return true if basic auth is disabled or when the username\password combo matches the one configured, false otherwise
 @basic_auth.verify_password
 def verify_password(username, password):
-    if basic_auth_enabled is False:
+    if auth_enabled is False:
         return True
     elif username == basic_auth_user and password == basic_auth_password:
         return True
@@ -147,7 +148,12 @@ def verify_password(username, password):
 # always return false as this is not ready yet
 @token_auth.verify_token
 def verify_token(token):
-    return False
+    if auth_enabled is False:
+        return True
+    elif auth_token == token:
+        return True
+    else:
+        return False
 
 
 # api check page - return 200 and a massage just so we know API is reachable
