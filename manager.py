@@ -134,7 +134,7 @@ except Exception as e:
     os._exit(2)
 
 
-# return true if basic auth is disabled or when the username\password combo matches the one configured, false otherwise
+# return true if auth is disabled or when the username\password combo matches the one configured, false otherwise
 @basic_auth.verify_password
 def verify_password(username, password):
     if auth_enabled is False:
@@ -145,7 +145,7 @@ def verify_password(username, password):
         return False
 
 
-# always return false as this is not ready yet
+# return true if auth is disabled or when the token matches the one configured, false otherwise
 @token_auth.verify_token
 def verify_token(token):
     if auth_enabled is False:
