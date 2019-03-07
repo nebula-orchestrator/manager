@@ -524,6 +524,78 @@ def apply_caching(response):
     return response
 
 
+# list users
+@app.route('/api/' + API_VERSION + '/users', methods=["GET"])
+@retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
+@multi_auth.login_required
+def list_users():
+    nebula_users_list = mongo_connection.mongo_list_users()
+    return "{\"users\": " + dumps(nebula_users_list) + " }", 200
+
+
+# get user info
+@app.route('/api/' + API_VERSION + '/users/<user_name>', methods=["GET"])
+@retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
+@multi_auth.login_required
+def get_user(user_name):
+    user_exists, user_json = mongo_connection.mongo_get_user(user_name)
+    if user_exists is True:
+        return dumps(user_json), 200
+    elif user_exists is False:
+        return "{\"user_exists\": false}", 403
+
+
+# delete a user
+@app.route('/api/' + API_VERSION + '/users/<user_name>', methods=["DELETE"])
+@multi_auth.login_required
+def delete_user(user_name):
+    # check user exists first
+    user_exists = mongo_connection.mongo_check_user_exists(user_name)
+    if user_exists is False:
+        return "{\"user_exists\": false}", 403
+    # remove from db
+    mongo_connection.mongo_delete_user(user_name)
+    return "{}", 200
+
+
+# update a user
+@app.route('/api/' + API_VERSION + '/users/<user_name>/update', methods=["PUT", "PATCH"])
+@multi_auth.login_required
+def update_user(user_name):
+    # check user exists first
+    user_exists = mongo_connection.mongo_check_user_exists(user_name)
+    if user_exists is False:
+        return "{\"user_name\": false}", 403
+    # check user got update parameters
+    try:
+        app_json = request.json
+        if len(app_json) == 0:
+            return "{\"missing_parameters\": true}", 400
+    except:
+        return "{\"missing_parameters\": true}", 400
+    # if part of the update includes a token hash it
+    try:
+        request.json["token"] = hash_secret(request.json["token"])
+    except:
+        pass
+    # if part of the update includes a password hash it
+    try:
+        request.json["password"] = hash_secret(request.json["password"])
+    except:
+        pass
+    # update db
+    app_json = mongo_connection.mongo_update_user(user_name, request.json)
+    return dumps(app_json), 202
+
+
+# refresh a user token
+# TODO - finish creating a refresh user token endpoint
+
+
+# create new user
+# TODO - finish creating a create user endpoint
+
+
 # used for when running with the 'ENV' envvar set to dev to open a new thread with flask builtin web server
 def run_dev(dev_host='0.0.0.0', dev_port=5000, dev_threaded=True):
     try:

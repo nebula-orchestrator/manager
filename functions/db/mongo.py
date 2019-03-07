@@ -289,8 +289,8 @@ class MongoConnection:
     def mongo_add_user(self, user_name, password, token):
         user_doc = {
             "user_name": user_name,
-            "hashed_password": password,
-            "hashed_token": token
+            "password": password,
+            "token": token
         }
         insert_id = self.collection_users.insert_one(user_doc).inserted_id
         ignored_device_group_existence_status, result = self.mongo_get_user(user_name)
