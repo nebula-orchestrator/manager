@@ -2,6 +2,7 @@ import json
 from flask import json, Flask, request, g
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 from functions.db.mongo import *
+from functions.hashing.hashing import *
 from bson.json_util import dumps
 from cachetools import cached, TTLCache
 from retrying import retry
@@ -114,7 +115,7 @@ mongo_connection = MongoConnection(mongo_url, schema_name, max_pool_size=mongo_m
 print("opened MongoDB connection")
 
 # ensure mongo is indexed properly
-mongo_connection.mongo_create_indexes("app_name", "device_group")
+mongo_connection.mongo_create_indexes("app_name", "device_group", "users")
 
 # get current list of apps at startup
 nebula_apps = mongo_connection.mongo_list_apps()

@@ -6,7 +6,7 @@ COPY . /www
 RUN chmod +x /www/manager.py
 
 # install required packages - requires build-base due to gevent GCC complier requirements
-RUN apk add --no-cache build-base
+RUN apk add --no-cache build-base libffi-dev
 RUN pip install -r /www/requirements.txt
 
 # adding the gunicorn config

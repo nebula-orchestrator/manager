@@ -13,19 +13,22 @@ class MongoConnection:
             self.collection_apps = self.db["nebula_apps"]
             self.collection_device_groups = self.db["nebula_device_groups"]
             self.collection_reports = self.db["nebula_reports"]
+            self.collection_users = self.db["nebula_users"]
         except Exception as e:
             print("error connection to mongodb")
             print(e, file=sys.stderr)
             os._exit(2)
 
     # create indexes
-    def mongo_create_indexes(self, app_index_name, device_groups_index_name):
+    def mongo_create_indexes(self, app_index_name, device_groups_index_name, users_index_name):
         try:
             self.collection_apps.create_index([(app_index_name, ASCENDING)], background=True,
                                               name=app_index_name + "_index", unique=True, sparse=True)
             self.collection_device_groups.create_index([(device_groups_index_name, ASCENDING)], background=True,
                                                        name=device_groups_index_name + "_index", unique=True,
                                                        sparse=True)
+            self.collection_users.create_index([(users_index_name, ASCENDING)], background=True,
+                                               name=users_index_name + "_index", unique=True, sparse=True)
         except Exception as e:
             print("error creating mongodb indexes")
             print(e, file=sys.stderr)
@@ -254,3 +257,51 @@ class MongoConnection:
 
         # Return data and last_id
         return data, last_id
+
+    # list all users
+    def mongo_list_users(self):
+        users_list = []
+        for user in self.collection_users.find({"user_name": {"$exists": "true"}}, {'_id': False}):
+            users_list.append(user["user_name"])
+        return users_list
+
+    # check if user exists
+    def mongo_check_user_exists(self, user_name):
+        result, ignored = self.mongo_get_user(user_name)
+        return result
+
+    # get user info - the password and\or token are returned hashed for security reasons
+    def mongo_get_user(self, user_name):
+        result = self.collection_users.find_one({"user_name": user_name}, {'_id': False})
+        if result is None:
+            user_exists = False
+        else:
+            user_exists = True
+        return user_exists, result
+
+    # delete a user
+    def mongo_delete_user(self, user_name):
+        result = self.collection_users.delete_one({"user_name": user_name})
+        return result
+
+    # create a user - make sure to hash the password & token before using this function as it does not hash anything on
+    # it's own
+    def mongo_add_user(self, user_name, password, token):
+        user_doc = {
+            "user_name": user_name,
+            "hashed_password": password,
+            "hashed_token": token
+        }
+        insert_id = self.collection_users.insert_one(user_doc).inserted_id
+        ignored_device_group_existence_status, result = self.mongo_get_user(user_name)
+        return result
+
+    # update a user - make sure to hash the password & token before using this function as it does not hash anything on
+    # it's own
+    def mongo_update_user(self, user_name, update_fields_dict):
+        result = self.collection_users.find_one_and_update({'user_name': user_name},
+                                                           {'$inc': {'app_id': 1},
+                                                            '$set': update_fields_dict},
+                                                           return_document=ReturnDocument.AFTER)
+        return result
+
