@@ -1,4 +1,4 @@
-import json
+import json, secrets
 from flask import json, Flask, request, g
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 from functions.db.mongo import *
@@ -589,7 +589,23 @@ def update_user(user_name):
 
 
 # refresh a user token
-# TODO - finish creating a refresh user token endpoint
+@app.route('/api/' + API_VERSION + '/users/<user_name>/refresh', methods=["PUT", "PATCH"])
+@multi_auth.login_required
+def refresh_user_token(user_name):
+    # check user exists first
+    user_exists = mongo_connection.mongo_check_user_exists(user_name)
+    if user_exists is False:
+        return "{\"user_name\": false}", 403
+    # get current user data and update the token for him
+    try:
+        new_token = secrets.token_urlsafe()
+        app_json = mongo_connection.mongo_get_user(user_name)
+        app_json["token"] = new_token
+    except:
+        return "{\"token_refreshed\": false}", 403
+    # update db
+    app_json = mongo_connection.mongo_update_user(user_name, app_json)
+    return dumps(app_json), 202
 
 
 # create new user
