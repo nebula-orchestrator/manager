@@ -2,7 +2,7 @@ from unittest import TestCase
 from functions.hashing.hashing import *
 
 
-class MongoTests(TestCase):
+class HashTests(TestCase):
 
     def test_hashing_matches(self):
         # check hashing compare right password works
