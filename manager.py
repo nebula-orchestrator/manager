@@ -135,19 +135,27 @@ except Exception as e:
     os._exit(2)
 
 
-# return true if auth is disabled or when the username\password combo matches the one configured, false otherwise
+# this function checks basic_auth to allow access to authenticated users.
 @basic_auth.verify_password
 def verify_password(username, password):
+    # if auth_enabled is set to false then always allow access
     if auth_enabled is False:
         return True
+    # else if username and password matches the admin user set in the manager config allow access
     elif username == basic_auth_user and password == basic_auth_password:
         return True
-    # TODO - finish checking against the DB users
+    # else if the user and password matches any in the DB allow access
+    elif mongo_connection.mongo_check_user_exists(username) is True:
+        app_exists, user_json = mongo_connection.mongo_get_user(username)
+        if check_secret_matches(password, user_json["password"]) is True:
+            return True
+        else:
+            return False
     else:
         return False
 
 
-# return true if auth is disabled or when the token matches the one configured, false otherwise
+# this function checks token based auth to allow access to authenticated users.
 @token_auth.verify_token
 def verify_token(token):
     if auth_enabled is False:
