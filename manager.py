@@ -142,6 +142,7 @@ def verify_password(username, password):
         return True
     elif username == basic_auth_user and password == basic_auth_password:
         return True
+    # TODO - finish checking against the DB users
     else:
         return False
 
@@ -153,6 +154,7 @@ def verify_token(token):
         return True
     elif auth_token == token:
         return True
+    # TODO - finish checking against the DB users
     else:
         return False
 
