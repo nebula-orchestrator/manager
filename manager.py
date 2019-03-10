@@ -621,12 +621,12 @@ def create_user(user_name):
         try:
             user_json = request.json
         except:
-            return json.dumps(find_missing_params({})), 400
+            return "{\"missing_parameters\": true}", 400
         try:
             password = hash_secret(return_sane_default_if_not_declared("password", user_json, secrets.token_urlsafe()))
             token = hash_secret(return_sane_default_if_not_declared("token", user_json, secrets.token_urlsafe()))
         except:
-            return json.dumps(find_missing_params(user_json)), 400
+            return "{\"missing_parameters\": true}", 400
         # update the db
         user_json = mongo_connection.mongo_add_user(user_name, password, token)
         return dumps(user_json), 200
