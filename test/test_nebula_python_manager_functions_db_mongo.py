@@ -1,5 +1,6 @@
 from unittest import TestCase
 from functions.db.mongo import *
+from functions.hashing.hashing import *
 
 
 def mongo_connection():
@@ -202,4 +203,38 @@ class MongoTests(TestCase):
 
         # check delete device group works
         test_reply = mongo_connection_object.mongo_remove_device_group("unit_test_device_group")
+        self.assertEqual(test_reply.deleted_count, 1)
+
+    def test_mongo_user_flow(self):
+        mongo_connection_object = mongo_connection()
+
+        # ensure no test user is already created in the unit test DB
+        mongo_connection_object.mongo_delete_user("unit_test_user")
+
+        # check create user works
+        test_reply = mongo_connection_object.mongo_add_user("unit_test_user", "unit_test_pass", "unit_test_token")
+        self.assertEqual(test_reply["user_name"], "unit_test_user")
+        self.assertEqual("unit_test_pass", test_reply["password"])
+        self.assertEqual("unit_test_token", test_reply["token"])
+
+        # check list user works
+        user_exists, test_reply = mongo_connection_object.mongo_get_user("unit_test_user")
+        self.assertTrue(user_exists)
+        self.assertEqual("unit_test_pass", test_reply["password"])
+        self.assertEqual("unit_test_token", test_reply["token"])
+
+        # check list user works
+        test_reply = mongo_connection_object.mongo_list_users()
+        self.assertEqual(test_reply, ["unit_test_user"])
+
+        # check update user works
+        test_reply = mongo_connection_object.mongo_update_user("unit_test_user", {"token": "new_unit_test_token"})
+        self.assertEqual("new_unit_test_token", test_reply["token"])
+
+        # check user exists works
+        test_reply = mongo_connection_object.mongo_check_user_exists("unit_test_user")
+        self.assertTrue(test_reply)
+
+        # check delete user works
+        test_reply = mongo_connection_object.mongo_delete_user("unit_test_user")
         self.assertEqual(test_reply.deleted_count, 1)
