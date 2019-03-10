@@ -300,8 +300,7 @@ class MongoConnection:
     # it's own
     def mongo_update_user(self, user_name, update_fields_dict):
         result = self.collection_users.find_one_and_update({'user_name': user_name},
-                                                           {'$inc': {'app_id': 1},
-                                                            '$set': update_fields_dict},
+                                                           {'$set': update_fields_dict},
                                                            return_document=ReturnDocument.AFTER)
         return result
 

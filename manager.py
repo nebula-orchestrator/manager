@@ -568,8 +568,8 @@ def update_user(user_name):
         return "{\"user_name\": false}", 403
     # check user got update parameters
     try:
-        app_json = request.json
-        if len(app_json) == 0:
+        user_json = request.json
+        if len(user_json) == 0:
             return "{\"missing_parameters\": true}", 400
     except:
         return "{\"missing_parameters\": true}", 400
@@ -584,12 +584,12 @@ def update_user(user_name):
     except:
         pass
     # update db
-    app_json = mongo_connection.mongo_update_user(user_name, request.json)
-    return dumps(app_json), 202
+    user_json = mongo_connection.mongo_update_user(user_name, request.json)
+    return dumps(user_json), 202
 
 
 # refresh a user token
-@app.route('/api/' + API_VERSION + '/users/<user_name>/refresh', methods=["PUT", "PATCH"])
+@app.route('/api/' + API_VERSION + '/users/<user_name>/refresh', methods=["POST"])
 @multi_auth.login_required
 def refresh_user_token(user_name):
     # check user exists first
@@ -599,17 +599,37 @@ def refresh_user_token(user_name):
     # get current user data and update the token for him
     try:
         new_token = secrets.token_urlsafe()
-        app_json = mongo_connection.mongo_get_user(user_name)
-        app_json["token"] = new_token
+        app_exists, user_json = mongo_connection.mongo_get_user(user_name)
+        user_json["token"] = hash_secret(new_token)
     except:
         return "{\"token_refreshed\": false}", 403
     # update db
-    app_json = mongo_connection.mongo_update_user(user_name, app_json)
-    return dumps(app_json), 202
+    user_json = mongo_connection.mongo_update_user(user_name, user_json)
+    return "{\"token\": \"" + new_token + "\" }", 202
 
 
 # create new user
-# TODO - finish creating a create user endpoint
+@app.route('/api/' + API_VERSION + '/users/<user_name>', methods=["POST"])
+@multi_auth.login_required
+def create_user(user_name):
+    # check app does't exists first
+    user_exists = mongo_connection.mongo_check_user_exists(user_name)
+    if user_exists is True:
+        return "{\"user_name\": true}", 403
+    else:
+        # check the request is passed with all needed parameters
+        try:
+            user_json = request.json
+        except:
+            return json.dumps(find_missing_params({})), 400
+        try:
+            password = hash_secret(return_sane_default_if_not_declared("password", user_json, secrets.token_urlsafe()))
+            token = hash_secret(return_sane_default_if_not_declared("token", user_json, secrets.token_urlsafe()))
+        except:
+            return json.dumps(find_missing_params(user_json)), 400
+        # update the db
+        user_json = mongo_connection.mongo_add_user(user_name, password, token)
+        return dumps(user_json), 200
 
 
 # used for when running with the 'ENV' envvar set to dev to open a new thread with flask builtin web server
