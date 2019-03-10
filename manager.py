@@ -604,7 +604,7 @@ def update_user(user_name):
         pass
     # update db
     user_json = mongo_connection.mongo_update_user(user_name, request.json)
-    return dumps(user_json), 202
+    return dumps(user_json), 200
 
 
 # refresh a user token
@@ -624,7 +624,7 @@ def refresh_user_token(user_name):
         return "{\"token_refreshed\": false}", 403
     # update db
     user_json = mongo_connection.mongo_update_user(user_name, user_json)
-    return "{\"token\": \"" + new_token + "\" }", 202
+    return "{\"token\": \"" + new_token + "\" }", 200
 
 
 # create new user
