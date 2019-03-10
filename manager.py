@@ -146,7 +146,7 @@ def verify_password(username, password):
         return True
     # else if the user and password matches any in the DB allow access
     elif mongo_connection.mongo_check_user_exists(username) is True:
-        app_exists, user_json = mongo_connection.mongo_get_user(username)
+        user_exists, user_json = mongo_connection.mongo_get_user(username)
         if check_secret_matches(password, user_json["password"]) is True:
             return True
         else:
@@ -159,13 +159,21 @@ def verify_password(username, password):
 # this function checks token based auth to allow access to authenticated users.
 @token_auth.verify_token
 def verify_token(token):
+    # if auth_enabled is set to false then always allow access
     if auth_enabled is False:
         return True
+    # else if the token matches the admin user set in the manager config allow access
     elif auth_token == token:
         return True
-    # TODO - finish checking against the DB users
+    # else if the token matches any in the DB allow access or deny access if not
     else:
-        return False
+        allow_access = False
+        user_list = mongo_connection.mongo_list_users()
+        for user in user_list:
+            user_exists, user_json = mongo_connection.mongo_get_user(user)
+            if check_secret_matches(token, user_json["token"]) is True:
+                allow_access = True
+        return allow_access
 
 
 # api check page - return 200 and a massage just so we know API is reachable
