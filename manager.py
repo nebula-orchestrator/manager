@@ -151,6 +151,7 @@ def verify_password(username, password):
             return True
         else:
             return False
+    # on any other case deny access:
     else:
         return False
 
