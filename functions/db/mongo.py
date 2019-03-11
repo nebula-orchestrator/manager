@@ -303,4 +303,3 @@ class MongoConnection:
                                                            {'$set': update_fields_dict},
                                                            return_document=ReturnDocument.AFTER)
         return result
-
