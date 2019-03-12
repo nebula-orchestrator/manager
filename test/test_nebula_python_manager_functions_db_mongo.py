@@ -252,20 +252,20 @@ class MongoTests(TestCase):
                                                                       "unit_test_member_2"
                                                                   ],
                                                                   pruning_allowed=False,
-                                                                  apps=[
-                                                                      "unit_test_app_1",
-                                                                      "unit_test_app_2"
-                                                                  ],
-                                                                  device_groups=[
-                                                                      "unit_test_dg_1",
-                                                                      "unit_test_dg_2"
-                                                                  ],
+                                                                  apps={
+                                                                      "unit_test_app_1": "rw",
+                                                                      "unit_test_app_2": "ro"
+                                                                  },
+                                                                  device_groups={
+                                                                      "unit_test_dg_1": "rw",
+                                                                      "unit_test_dg_2": "ro"
+                                                                  },
                                                                   admin=True)
         self.assertEqual(test_reply["user_group"], "unit_test_user_group")
         self.assertEqual(test_reply["group_members"], ["unit_test_member_1", "unit_test_member_2"])
         self.assertFalse(test_reply["pruning_allowed"])
-        self.assertEqual(test_reply["apps"], ["unit_test_app_1", "unit_test_app_2"])
-        self.assertEqual(test_reply["device_groups"], ["unit_test_dg_1", "unit_test_dg_2"])
+        self.assertEqual(test_reply["apps"], {"unit_test_app_1": "rw", "unit_test_app_2": "ro"})
+        self.assertEqual(test_reply["device_groups"], {"unit_test_dg_1": "rw", "unit_test_dg_2": "ro"})
         self.assertTrue(test_reply["admin"])
 
         # check list user_group works
@@ -274,8 +274,8 @@ class MongoTests(TestCase):
         self.assertEqual(test_reply["user_group"], "unit_test_user_group")
         self.assertEqual(test_reply["group_members"], ["unit_test_member_1", "unit_test_member_2"])
         self.assertFalse(test_reply["pruning_allowed"])
-        self.assertEqual(test_reply["apps"], ["unit_test_app_1", "unit_test_app_2"])
-        self.assertEqual(test_reply["device_groups"], ["unit_test_dg_1", "unit_test_dg_2"])
+        self.assertEqual(test_reply["apps"], {"unit_test_app_1": "rw", "unit_test_app_2": "ro"})
+        self.assertEqual(test_reply["device_groups"], {"unit_test_dg_1": "rw", "unit_test_dg_2": "ro"})
         self.assertTrue(test_reply["admin"])
 
         # check list user_group works
