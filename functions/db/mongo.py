@@ -14,13 +14,14 @@ class MongoConnection:
             self.collection_device_groups = self.db["nebula_device_groups"]
             self.collection_reports = self.db["nebula_reports"]
             self.collection_users = self.db["nebula_users"]
+            self.collection_user_groups = self.db["nebula_user_groups"]
         except Exception as e:
             print("error connection to mongodb")
             print(e, file=sys.stderr)
             os._exit(2)
 
     # create indexes
-    def mongo_create_indexes(self, app_index_name, device_groups_index_name, users_index_name):
+    def mongo_create_indexes(self, app_index_name, device_groups_index_name, users_index_name, user_groups_index_name):
         try:
             self.collection_apps.create_index([(app_index_name, ASCENDING)], background=True,
                                               name=app_index_name + "_index", unique=True, sparse=True)
@@ -29,6 +30,8 @@ class MongoConnection:
                                                        sparse=True)
             self.collection_users.create_index([(users_index_name, ASCENDING)], background=True,
                                                name=users_index_name + "_index", unique=True, sparse=True)
+            self.collection_user_groups.create_index([(user_groups_index_name, ASCENDING)], background=True,
+                                                     name=user_groups_index_name + "_index", unique=True, sparse=True)
         except Exception as e:
             print("error creating mongodb indexes")
             print(e, file=sys.stderr)

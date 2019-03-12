@@ -115,7 +115,7 @@ mongo_connection = MongoConnection(mongo_url, schema_name, max_pool_size=mongo_m
 print("opened MongoDB connection")
 
 # ensure mongo is indexed properly
-mongo_connection.mongo_create_indexes("app_name", "device_group", "users")
+mongo_connection.mongo_create_indexes("app_name", "device_group", "users", "user_groups")
 
 # get current list of apps at startup
 nebula_apps = mongo_connection.mongo_list_apps()
