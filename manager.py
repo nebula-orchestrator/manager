@@ -1,5 +1,5 @@
 import json, secrets
-from flask import json, Flask, request
+from flask import json, Flask, request, g
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 from functions.db.mongo import *
 from functions.hashing.hashing import *
@@ -147,6 +147,7 @@ def verify_password(username, password):
     elif mongo_connection.mongo_check_user_exists(username) is True:
         user_exists, user_json = mongo_connection.mongo_get_user(username)
         if check_secret_matches(password, user_json["password"]) is True:
+            g.user = username
             return True
         else:
             return False
@@ -171,6 +172,7 @@ def verify_token(token):
         for user in user_list:
             user_exists, user_json = mongo_connection.mongo_get_user(user)
             if check_secret_matches(token, user_json["token"]) is True:
+                g.user = user
                 allow_access = True
         return allow_access
 
