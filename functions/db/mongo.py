@@ -273,6 +273,11 @@ class MongoConnection:
         result, ignored = self.mongo_get_user(user_name)
         return result
 
+    # check if user exists
+    def mongo_check_user_group_exists(self, user_group):
+        result, ignored = self.mongo_get_user_group(user_group)
+        return result
+
     # get user info - the password and\or token are returned hashed for security reasons
     def mongo_get_user(self, user_name):
         result = self.collection_users.find_one({"user_name": user_name}, {'_id': False})
@@ -307,12 +312,44 @@ class MongoConnection:
                                                            return_document=ReturnDocument.AFTER)
         return result
 
-    # TODO - add create user_group mongo function
+    # create a user_group
+    def mongo_add_user_group(self, user_group, group_members, pruning_allowed, apps, device_groups, admin):
+        user_group_doc = {
+            "user_group": user_group,
+            "group_members": group_members,
+            "pruning_allowed": pruning_allowed,
+            "apps": apps,
+            "device_groups": device_groups,
+            "admin": admin
+        }
+        insert_id = self.collection_user_groups.insert_one(user_group_doc).inserted_id
+        ignored_device_group_existence_status, result = self.mongo_get_user_group(user_group)
+        return result
 
-    # TODO - add update user_group mongo function
+    # update a user_group
+    def mongo_update_user_group(self, user_group, update_fields_dict):
+        result = self.collection_user_groups.find_one_and_update({'user_group': user_group},
+                                                                 {'$set': update_fields_dict},
+                                                                 return_document=ReturnDocument.AFTER)
+        return result
 
-    # TODO - add delete user_group mongo function
+    # delete a user_group
+    def mongo_delete_user_group(self, user_group):
+        result = self.collection_user_groups.delete_one({"user_group": user_group})
+        return result
 
-    # TODO - add list user_groups mongo function
+    # list all user_groups
+    def mongo_list_user_groups(self):
+        user_groups_list = []
+        for user_group in self.collection_user_groups.find({"user_group": {"$exists": "true"}}, {'_id': False}):
+            user_groups_list.append(user_group["user_group"])
+        return user_groups_list
 
-    # TODO - add list user_group mongo function
+    # get user_group info
+    def mongo_get_user_group(self, user_group):
+        result = self.collection_user_groups.find_one({"user_group": user_group}, {'_id': False})
+        if result is None:
+            user_group_exists = False
+        else:
+            user_group_exists = True
+        return user_group_exists, result

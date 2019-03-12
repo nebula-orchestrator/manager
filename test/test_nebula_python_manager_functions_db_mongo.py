@@ -239,4 +239,59 @@ class MongoTests(TestCase):
         test_reply = mongo_connection_object.mongo_delete_user("unit_test_user")
         self.assertEqual(test_reply.deleted_count, 1)
 
-    # TODO - create mongo user_group flow (checks: list, info, create, update, delete)
+    def test_mongo_user_group_flow(self):
+        mongo_connection_object = mongo_connection()
+
+        # ensure no test user_group is already created in the unit test DB
+        mongo_connection_object.mongo_delete_user_group("unit_test_user_group")
+
+        # check create user_group works
+        test_reply = mongo_connection_object.mongo_add_user_group(user_group="unit_test_user_group",
+                                                                  group_members=[
+                                                                      "unit_test_member_1",
+                                                                      "unit_test_member_2"
+                                                                  ],
+                                                                  pruning_allowed=False,
+                                                                  apps=[
+                                                                      "unit_test_app_1",
+                                                                      "unit_test_app_2"
+                                                                  ],
+                                                                  device_groups=[
+                                                                      "unit_test_dg_1",
+                                                                      "unit_test_dg_2"
+                                                                  ],
+                                                                  admin=True)
+        self.assertEqual(test_reply["user_group"], "unit_test_user_group")
+        self.assertEqual(test_reply["group_members"], ["unit_test_member_1", "unit_test_member_2"])
+        self.assertFalse(test_reply["pruning_allowed"])
+        self.assertEqual(test_reply["apps"], ["unit_test_app_1", "unit_test_app_2"])
+        self.assertEqual(test_reply["device_groups"], ["unit_test_dg_1", "unit_test_dg_2"])
+        self.assertTrue(test_reply["admin"])
+
+
+        # check list user_group works
+        user_group_exists, test_reply = mongo_connection_object.mongo_get_user_group("unit_test_user_group")
+        self.assertTrue(user_group_exists)
+        self.assertEqual(test_reply["user_group"], "unit_test_user_group")
+        self.assertEqual(test_reply["group_members"], ["unit_test_member_1", "unit_test_member_2"])
+        self.assertFalse(test_reply["pruning_allowed"])
+        self.assertEqual(test_reply["apps"], ["unit_test_app_1", "unit_test_app_2"])
+        self.assertEqual(test_reply["device_groups"], ["unit_test_dg_1", "unit_test_dg_2"])
+        self.assertTrue(test_reply["admin"])
+
+        # check list user_group works
+        test_reply = mongo_connection_object.mongo_list_user_groups()
+        self.assertEqual(test_reply, ["unit_test_user_group"])
+
+        # check update user_group works
+        test_reply = mongo_connection_object.mongo_update_user_group("unit_test_user_group",
+                                                                     {"pruning_allowed": True})
+        self.assertTrue(test_reply["pruning_allowed"])
+
+        # check user_group exists works
+        test_reply = mongo_connection_object.mongo_check_user_group_exists("unit_test_user_group")
+        self.assertTrue(test_reply)
+
+        # check delete user_group works
+        test_reply = mongo_connection_object.mongo_delete_user_group("unit_test_user_group")
+        self.assertEqual(test_reply.deleted_count, 1)
