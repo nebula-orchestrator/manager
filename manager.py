@@ -1,5 +1,5 @@
 import json, secrets
-from flask import json, Flask, request, g
+from flask import json, Flask, request
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 from functions.db.mongo import *
 from functions.hashing.hashing import *
