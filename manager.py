@@ -35,9 +35,8 @@ def get_conf_setting(setting, settings_json, default_value="skip"):
 # takes an invalid request & figure out what params are missing on a request and returns a list of those, this function
 # should only be called in cases where the "invalid_request" has been tried and found to be missing a param as it fails
 # hard on failure like the rest of the code (which in this case also means no missing params)
-def find_missing_params(invalid_request):
+def find_missing_params(invalid_request, required_params):
     try:
-        required_params = ["docker_image"]
         missing_params = dict()
         missing_params["missing_parameters"] = list(set(required_params) - set(invalid_request))
 
@@ -197,7 +196,7 @@ def create_app(app_name):
         try:
             app_json = request.json
         except:
-            return json.dumps(find_missing_params({})), 400
+            return json.dumps(find_missing_params({}, ["docker_image"])), 400
         try:
             starting_ports = return_sane_default_if_not_declared("starting_ports", app_json, [])
             containers_per = return_sane_default_if_not_declared("containers_per", app_json, {"server": 1})
@@ -210,7 +209,7 @@ def create_app(app_name):
             privileged = return_sane_default_if_not_declared("privileged", app_json, False)
             rolling_restart = return_sane_default_if_not_declared("rolling_restart", app_json, False)
         except:
-            return json.dumps(find_missing_params(app_json)), 400
+            return json.dumps(find_missing_params(app_json, ["docker_image"])), 400
         # check edge case of port being outside of possible port ranges
         ports_check_return_message, port_check_return_code = check_ports_valid_range(starting_ports)
         if port_check_return_code >= 300:
@@ -288,7 +287,7 @@ def update_app(app_name):
     try:
         app_json = request.json
     except:
-        return json.dumps(find_missing_params({})), 400
+        return json.dumps(find_missing_params({}, ["docker_image"])), 400
     try:
         starting_ports = return_sane_default_if_not_declared("starting_ports", app_json, [])
         containers_per = return_sane_default_if_not_declared("containers_per", app_json, {"server": 1})
@@ -301,7 +300,7 @@ def update_app(app_name):
         privileged = return_sane_default_if_not_declared("privileged", app_json, False)
         rolling_restart = return_sane_default_if_not_declared("rolling_restart", app_json, False)
     except:
-        return json.dumps(find_missing_params(app_json)), 400
+        return json.dumps(find_missing_params(app_json, ["docker_image"])), 400
     # check edge case of port being outside of possible port ranges
     ports_check_return_message, port_check_return_code = check_ports_valid_range(starting_ports)
     if port_check_return_code >= 300:
@@ -634,7 +633,7 @@ def create_user(user_name):
     # check app does't exists first
     user_exists = mongo_connection.mongo_check_user_exists(user_name)
     if user_exists is True:
-        return "{\"user_name\": true}", 403
+        return "{\"user_exists\": true}", 403
     else:
         # check the request is passed with all needed parameters
         try:
@@ -642,6 +641,7 @@ def create_user(user_name):
         except:
             return "{\"missing_parameters\": true}", 400
         try:
+            # hash the password & token, if not declared generates them randomly
             password = hash_secret(return_sane_default_if_not_declared("password", user_json, secrets.token_urlsafe()))
             token = hash_secret(return_sane_default_if_not_declared("token", user_json, secrets.token_urlsafe()))
         except:
@@ -651,15 +651,87 @@ def create_user(user_name):
         return dumps(user_json), 200
 
 
-# TODO - add create user_group endpoint
+# create new user_group
+@app.route('/api/' + API_VERSION + '/user_groups/<user_group>', methods=["POST"])
+@multi_auth.login_required
+def create_user_group(user_group):
+    # check app does't exists first
+    user_exists = mongo_connection.mongo_check_user_group_exists(user_group)
+    if user_exists is True:
+        return "{\"user_group_exists\": true}", 403
+    else:
+        # check the request is passed with all needed parameters
+        try:
+            user_json = request.json
+        except:
+            return json.dumps(find_missing_params({}, ["user_group"])), 400
+        try:
+            # return the user_group parameters, anything not declared is by default not allowed
+            group_members = return_sane_default_if_not_declared("group_members", user_json, [])
+            pruning_allowed = return_sane_default_if_not_declared("group_members", user_json, False)
+            apps = return_sane_default_if_not_declared("group_members", user_json, [])
+            device_groups = return_sane_default_if_not_declared("group_members", user_json, [])
+            admin = return_sane_default_if_not_declared("group_members", user_json, False)
+        except:
+            return "{\"missing_parameters\": true}", 400
+        # update the db
+        user_json = mongo_connection.mongo_add_user_group(user_group, group_members, pruning_allowed, apps,
+                                                          device_groups, admin)
+        return dumps(user_json), 200
 
-# TODO - add update user_group endpoint
 
-# TODO - add delete user_group endpoint
+# PUT update some fields of a user_group
+@app.route('/api/' + API_VERSION + '/user_groups/<user_group>/update', methods=["PUT", "PATCH"])
+@multi_auth.login_required
+def update_user_group_fields(user_group):
+    # check user_group exists first
+    user_group_exists = mongo_connection.mongo_check_user_group_exists(user_group)
+    if user_group is False:
+        return "{\"user_group_exists\": false}", 403
+    # check app got update parameters
+    try:
+        app_json = request.json
+        if len(app_json) == 0:
+            return "{\"missing_parameters\": true}", 400
+    except:
+        return "{\"missing_parameters\": true}", 400
+    # update db
+    app_json = mongo_connection.mongo_update_user_group(user_group, request.json)
+    return dumps(app_json), 202
 
-# TODO - add list user_groups endpoint
 
-# TODO - add list user_group endpoint
+# delete a user_group
+@app.route('/api/' + API_VERSION + '/user_groups/<user_group>', methods=["DELETE"])
+@multi_auth.login_required
+def delete_user_group(user_group):
+    # check user exists first
+    user_group_exists = mongo_connection.mongo_check_user_group_exists(user_group)
+    if user_group_exists is False:
+        return "{\"user_group_exists_exists\": false}", 403
+    # remove from db
+    mongo_connection.mongo_delete_user_group(user_group)
+    return "{}", 200
+
+
+# list user_groups
+@app.route('/api/' + API_VERSION + '/user_groups', methods=["GET"])
+@retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
+@multi_auth.login_required
+def list_user_groups():
+    nebula_user_groups_list = mongo_connection.mongo_list_user_groups()
+    return "{\"user_groups\": " + dumps(nebula_user_groups_list) + " }", 200
+
+
+# get user_group info
+@app.route('/api/' + API_VERSION + '/user_groups/<user_group>', methods=["GET"])
+@retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
+@multi_auth.login_required
+def get_user_group(user_group):
+    user_group_exists, user_json = mongo_connection.mongo_get_user_group(user_group)
+    if user_group_exists is True:
+        return dumps(user_json), 200
+    elif user_group_exists is False:
+        return "{\"user_group_exists\": false}", 403
 
 
 # used for when running with the 'ENV' envvar set to dev to open a new thread with flask builtin web server

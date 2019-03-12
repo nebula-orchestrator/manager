@@ -268,7 +268,6 @@ class MongoTests(TestCase):
         self.assertEqual(test_reply["device_groups"], ["unit_test_dg_1", "unit_test_dg_2"])
         self.assertTrue(test_reply["admin"])
 
-
         # check list user_group works
         user_group_exists, test_reply = mongo_connection_object.mongo_get_user_group("unit_test_user_group")
         self.assertTrue(user_group_exists)

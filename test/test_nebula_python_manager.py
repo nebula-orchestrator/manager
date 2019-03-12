@@ -30,7 +30,7 @@ class BaseTests(TestCase):
         self.assertEqual(test_value, "default_value_value")
 
     def test_find_missing_params(self):
-        test_reply = find_missing_params({})
+        test_reply = find_missing_params({}, ["docker_image"])
         self.assertEqual(test_reply, {"missing_parameters": ["docker_image"]})
 
     def test_return_sane_default_if_not_declared_param_declared(self):
