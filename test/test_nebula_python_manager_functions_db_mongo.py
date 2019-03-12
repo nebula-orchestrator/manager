@@ -238,3 +238,5 @@ class MongoTests(TestCase):
         # check delete user works
         test_reply = mongo_connection_object.mongo_delete_user("unit_test_user")
         self.assertEqual(test_reply.deleted_count, 1)
+
+    # TODO - create mongo user_group flow (checks: list, info, create, update, delete)

@@ -306,3 +306,13 @@ class MongoConnection:
                                                            {'$set': update_fields_dict},
                                                            return_document=ReturnDocument.AFTER)
         return result
+
+    # TODO - add create user_group mongo function
+
+    # TODO - add update user_group mongo function
+
+    # TODO - add delete user_group mongo function
+
+    # TODO - add list user_groups mongo function
+
+    # TODO - add list user_group mongo function

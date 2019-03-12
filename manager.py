@@ -651,6 +651,17 @@ def create_user(user_name):
         return dumps(user_json), 200
 
 
+# TODO - add create user_group endpoint
+
+# TODO - add update user_group endpoint
+
+# TODO - add delete user_group endpoint
+
+# TODO - add list user_groups endpoint
+
+# TODO - add list user_group endpoint
+
+
 # used for when running with the 'ENV' envvar set to dev to open a new thread with flask builtin web server
 def run_dev(dev_host='0.0.0.0', dev_port=5000, dev_threaded=True):
     try:
