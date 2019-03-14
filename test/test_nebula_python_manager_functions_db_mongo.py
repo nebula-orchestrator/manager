@@ -246,7 +246,6 @@ class MongoTests(TestCase):
         mongo_connection_object.mongo_delete_user_group("unit_test_user_group")
         mongo_connection_object.mongo_delete_user_group("unit_test_user_group_2")
 
-
         # check create user_group works
         test_reply = mongo_connection_object.mongo_add_user_group(user_group="unit_test_user_group",
                                                                   group_members=[
