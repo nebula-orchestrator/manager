@@ -670,10 +670,10 @@ def create_user_group(user_group):
         try:
             # return the user_group parameters, anything not declared is by default not allowed
             group_members = return_sane_default_if_not_declared("group_members", user_json, [])
-            pruning_allowed = return_sane_default_if_not_declared("group_members", user_json, False)
-            apps = return_sane_default_if_not_declared("group_members", user_json, [])
-            device_groups = return_sane_default_if_not_declared("group_members", user_json, [])
-            admin = return_sane_default_if_not_declared("group_members", user_json, False)
+            pruning_allowed = return_sane_default_if_not_declared("pruning_allowed", user_json, False)
+            apps = return_sane_default_if_not_declared("apps", user_json, {})
+            device_groups = return_sane_default_if_not_declared("device_groups", user_json, {})
+            admin = return_sane_default_if_not_declared("admin", user_json, False)
         except:
             return "{\"missing_parameters\": true}", 400
         # update the db
