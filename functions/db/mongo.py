@@ -353,3 +353,16 @@ class MongoConnection:
         else:
             user_group_exists = True
         return user_group_exists, result
+
+    # return a aggregated view of all groups that a user is a member of
+    def mongo_list_user_permissions(self, user_name):
+        user_permissions = {"apps": {}, "device_groups": {}, "admin": False, "pruning_allowed": False}
+        find_query = {"$and": [{"user_group": {"$exists": "true"}}, {"group_members": user_name}]}
+        for user_group in self.collection_user_groups.find(find_query, {'_id': False}):
+            if user_group["admin"] is True:
+                user_permissions["admin"] = True
+            if user_group["pruning_allowed"] is True:
+                user_permissions["pruning_allowed"] = True
+            user_permissions["apps"] = {**user_permissions["apps"], **user_group["apps"]}
+            user_permissions["device_groups"] = {**user_permissions["device_groups"], **user_group["device_groups"]}
+        return user_permissions

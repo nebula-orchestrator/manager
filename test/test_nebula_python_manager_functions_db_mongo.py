@@ -244,6 +244,8 @@ class MongoTests(TestCase):
 
         # ensure no test user_group is already created in the unit test DB
         mongo_connection_object.mongo_delete_user_group("unit_test_user_group")
+        mongo_connection_object.mongo_delete_user_group("unit_test_user_group_2")
+
 
         # check create user_group works
         test_reply = mongo_connection_object.mongo_add_user_group(user_group="unit_test_user_group",
@@ -286,6 +288,40 @@ class MongoTests(TestCase):
         test_reply = mongo_connection_object.mongo_update_user_group("unit_test_user_group",
                                                                      {"pruning_allowed": True})
         self.assertTrue(test_reply["pruning_allowed"])
+
+        # check mongo list user permissions work
+        mongo_connection_object.mongo_add_user_group(user_group="unit_test_user_group_2",
+                                                     group_members=[
+                                                         "unit_test_member_1",
+                                                         "unit_test_member_2"
+                                                     ],
+                                                     pruning_allowed=False,
+                                                     apps={
+                                                         "unit_test_app_3": "rw",
+                                                         "unit_test_app_4": "ro"
+                                                     },
+                                                     device_groups={
+                                                         "unit_test_dg_3": "rw",
+                                                         "unit_test_dg_4": "ro"
+                                                     },
+                                                     admin=True)
+        test_reply = mongo_connection_object.mongo_list_user_permissions("unit_test_member_1")
+        self.assertTrue(test_reply["admin"])
+        self.assertTrue(test_reply["pruning_allowed"])
+        apps_result = {
+            'unit_test_app_1': 'rw',
+            'unit_test_app_2': 'ro',
+            'unit_test_app_3': 'rw',
+            'unit_test_app_4': 'ro'
+        }
+        device_groups_results = {
+            'unit_test_dg_1': 'rw',
+            'unit_test_dg_2': 'ro',
+            'unit_test_dg_3': 'rw',
+            'unit_test_dg_4': 'ro'
+        }
+        self.assertEqual(test_reply["apps"], apps_result)
+        self.assertEqual(test_reply["device_groups"], device_groups_results)
 
         # check user_group exists works
         test_reply = mongo_connection_object.mongo_check_user_group_exists("unit_test_user_group")
