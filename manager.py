@@ -88,6 +88,31 @@ def get_param_filter(param_name, full_request, filter_param="eq", request_type=s
         return None
 
 
+# check if a user is allowed to preform
+def check_authorization(permission_needed=None, permission_object_type=None):
+    # by default don't allow access
+    allow_access = False
+
+    # if auth is disabled always allow access or the user is a local admin always allow access
+    if (auth_enabled is False) or (g.user_type == "local"):
+        allow_access = True
+    # otherwise query the db for the current user permissions and set the default reply to not be allowed
+    else:
+        # if the user is admin allow access:
+        user_permissions = mongo_connection.mongo_list_user_permissions(g.user)
+        if user_permissions["admin"] is True:
+            allow_access = True
+        # elif what we need is pruning check if the "pruning_allowed" permission is set for the user
+        elif permission_needed == "pruning":
+            if user_permissions["pruning_allowed"] is True:
+                allow_access = True
+        # in any other case allow access if the permission needed is in the permission list of the user in the db
+        elif permission_needed in user_permissions[permission_object_type]:
+            allow_access = True
+
+    return allow_access
+
+
 # read config file at startup
 # load the login params from envvar or auth.json file if envvar is not set, if both are unset will load the default
 # value if one exists for the param
@@ -142,12 +167,15 @@ def verify_password(username, password):
         return True
     # else if username and password matches the admin user set in the manager config allow access
     elif username == basic_auth_user and password == basic_auth_password:
+        g.user = username
+        g.user_type = "local"
         return True
     # else if the user and password matches any in the DB allow access
     elif mongo_connection.mongo_check_user_exists(username) is True:
         user_exists, user_json = mongo_connection.mongo_get_user(username)
         if check_secret_matches(password, user_json["password"]) is True:
             g.user = username
+            g.user_type = "db"
             return True
         else:
             return False
@@ -164,6 +192,7 @@ def verify_token(token):
         return True
     # else if the token matches the admin user set in the manager config allow access
     elif auth_token == token:
+        g.user_type = "local"
         return True
     # else if the token matches any in the DB allow access or deny access if not
     else:
@@ -173,6 +202,7 @@ def verify_token(token):
             user_exists, user_json = mongo_connection.mongo_get_user(user)
             if check_secret_matches(token, user_json["token"]) is True:
                 g.user = user
+                g.user_type = "db"
                 allow_access = True
         return allow_access
 
