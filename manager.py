@@ -6,6 +6,7 @@ from functions.hashing.hashing import *
 from bson.json_util import dumps
 from cachetools import cached, TTLCache
 from retrying import retry
+from functools import wraps
 
 
 API_VERSION = "v2"
@@ -89,7 +90,7 @@ def get_param_filter(param_name, full_request, filter_param="eq", request_type=s
 
 
 # check if a user is allowed to preform
-def check_authorization(permission_needed=None, permission_object_type=None):
+def check_authorized(permission_needed=None, permission_object_type=None):
     # by default don't allow access
     allow_access = False
 
@@ -103,14 +104,44 @@ def check_authorization(permission_needed=None, permission_object_type=None):
         if user_permissions["admin"] is True:
             allow_access = True
         # elif what we need is pruning check if the "pruning_allowed" permission is set for the user
-        elif permission_needed == "pruning":
+        elif permission_object_type == "pruning":
             if user_permissions["pruning_allowed"] is True:
                 allow_access = True
         # in any other case allow access if the permission needed is in the permission list of the user in the db
-        elif permission_needed in user_permissions[permission_object_type]:
-            allow_access = True
-
+        elif permission_object_type == "apps" or permission_object_type == "device_groups":
+            for permission_key, permission_value in user_permissions[permission_object_type].items():
+                if permission_needed == {permission_key: permission_value}:
+                    allow_access = True
+                    break
     return allow_access
+
+
+def check_authorization_wrapper(permission_needed=None, permission_object_type=None):
+
+    def callable(func):
+        @wraps(func)
+        def wrapped(*args, **kwargs):
+            result = "{\"access_allowed\": false}", 403
+            if permission_object_type == "pruning":
+                if check_authorized(permission_needed={"pruning": permission_needed},
+                                    permission_object_type=permission_object_type) is True:
+                    result = func(*args, **kwargs)
+            if permission_object_type == "apps":
+                if check_authorized(permission_needed={kwargs['app_name']: permission_needed},
+                                    permission_object_type=permission_object_type) is True:
+                    result = func(*args, **kwargs)
+            elif permission_object_type == "device_groups":
+                if check_authorized(permission_needed={kwargs['device_group']: permission_needed},
+                                    permission_object_type=permission_object_type) is True:
+                    result = func(*args, **kwargs)
+            elif permission_object_type == "admin":
+                if check_authorized(permission_needed={"admin": permission_needed},
+                                    permission_object_type=permission_object_type) is True:
+                    result = func(*args, **kwargs)
+            return result
+        return wrapped
+
+    return callable
 
 
 # read config file at startup
@@ -218,6 +249,7 @@ def check_page():
 # create a new app
 @app.route('/api/' + API_VERSION + '/apps/<app_name>', methods=["POST"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="apps")
 def create_app(app_name):
     # check app does't exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -255,6 +287,7 @@ def create_app(app_name):
 # delete an app
 @app.route('/api/' + API_VERSION + '/apps/<app_name>', methods=["DELETE"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="apps")
 def delete_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -268,6 +301,7 @@ def delete_app(app_name):
 # restart an app
 @app.route('/api/' + API_VERSION + '/apps/<app_name>/restart', methods=["POST"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="apps")
 def restart_app(app_name):
     app_exists, app_json = mongo_connection.mongo_get_app(app_name)
     # check app exists first
@@ -284,6 +318,7 @@ def restart_app(app_name):
 # stop an app
 @app.route('/api/' + API_VERSION + '/apps/<app_name>/stop', methods=["POST"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="apps")
 def stop_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -297,6 +332,7 @@ def stop_app(app_name):
 # start an app
 @app.route('/api/' + API_VERSION + '/apps/<app_name>/start', methods=["POST"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="apps")
 def start_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -310,6 +346,7 @@ def start_app(app_name):
 # POST update an app - requires all the params to be given in the request body or else will be reset to default values
 @app.route('/api/' + API_VERSION + '/apps/<app_name>/update', methods=["POST"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="apps")
 def update_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -346,6 +383,7 @@ def update_app(app_name):
 # PUT update some fields of an app - params not given will be unchanged from their current value
 @app.route('/api/' + API_VERSION + '/apps/<app_name>/update', methods=["PUT", "PATCH"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="apps")
 def update_app_fields(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
@@ -384,6 +422,7 @@ def list_apps():
 @app.route('/api/' + API_VERSION + '/apps/<app_name>', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="ro", permission_object_type="apps")
 def get_app(app_name):
     app_exists, app_json = mongo_connection.mongo_get_app(app_name)
     if app_exists is True:
@@ -397,6 +436,7 @@ def get_app(app_name):
 @cached(cache=TTLCache(maxsize=cache_max_size, ttl=cache_time))
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="ro", permission_object_type="device_groups")
 def get_device_group_info(device_group):
     device_group_exists, device_group_json = mongo_connection.mongo_get_device_group(device_group)
     if device_group_exists is False:
@@ -414,6 +454,7 @@ def get_device_group_info(device_group):
 # create device_group
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>', methods=["POST"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="device_groups")
 def create_device_group(device_group):
     # check app does't exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
@@ -446,6 +487,7 @@ def create_device_group(device_group):
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="ro", permission_object_type="device_groups")
 def get_device_group(device_group):
     device_group_exists, device_group_json = mongo_connection.mongo_get_device_group(device_group)
     if device_group_exists is True:
@@ -457,6 +499,7 @@ def get_device_group(device_group):
 # POST update device_group - requires a full list of apps to be given in the request body
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>/update', methods=["POST"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="device_groups")
 def update_device_group(device_group):
     # check device_group exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
@@ -487,6 +530,7 @@ def update_device_group(device_group):
 # delete device_group
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>', methods=["DELETE"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="device_groups")
 def delete_device_group(device_group):
     # check app exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
@@ -509,6 +553,7 @@ def list_device_groups():
 # prune unused images on all devices running said device_group
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>/prune', methods=["POST"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="pruning")
 def prune_device_group_images(device_group):
     # check device_group exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
@@ -522,6 +567,7 @@ def prune_device_group_images(device_group):
 # prune unused images on all devices
 @app.route('/api/' + API_VERSION + '/prune', methods=["POST"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="pruning")
 def prune_images_on_all_device_groups():
     # get a list of all device_groups
     device_groups = mongo_connection.mongo_list_device_groups()
@@ -587,6 +633,7 @@ def list_users():
 @app.route('/api/' + API_VERSION + '/users/<user_name>', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="ro", permission_object_type="admin")
 def get_user(user_name):
     user_exists, user_json = mongo_connection.mongo_get_user(user_name)
     if user_exists is True:
@@ -598,6 +645,7 @@ def get_user(user_name):
 # delete a user
 @app.route('/api/' + API_VERSION + '/users/<user_name>', methods=["DELETE"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="admin")
 def delete_user(user_name):
     # check user exists first
     user_exists = mongo_connection.mongo_check_user_exists(user_name)
@@ -611,6 +659,7 @@ def delete_user(user_name):
 # update a user
 @app.route('/api/' + API_VERSION + '/users/<user_name>/update', methods=["PUT", "PATCH"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="admin")
 def update_user(user_name):
     # check user exists first
     user_exists = mongo_connection.mongo_check_user_exists(user_name)
@@ -641,6 +690,7 @@ def update_user(user_name):
 # refresh a user token
 @app.route('/api/' + API_VERSION + '/users/<user_name>/refresh', methods=["POST"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="admin")
 def refresh_user_token(user_name):
     # check user exists first
     user_exists = mongo_connection.mongo_check_user_exists(user_name)
@@ -661,6 +711,7 @@ def refresh_user_token(user_name):
 # create new user
 @app.route('/api/' + API_VERSION + '/users/<user_name>', methods=["POST"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="admin")
 def create_user(user_name):
     # check app does't exists first
     user_exists = mongo_connection.mongo_check_user_exists(user_name)
@@ -686,6 +737,7 @@ def create_user(user_name):
 # create new user_group
 @app.route('/api/' + API_VERSION + '/user_groups/<user_group>', methods=["POST"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="admin")
 def create_user_group(user_group):
     # check app does't exists first
     user_exists = mongo_connection.mongo_check_user_group_exists(user_group)
@@ -715,6 +767,7 @@ def create_user_group(user_group):
 # PUT update some fields of a user_group
 @app.route('/api/' + API_VERSION + '/user_groups/<user_group>/update', methods=["PUT", "PATCH"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="admin")
 def update_user_group_fields(user_group):
     # check user_group exists first
     user_group_exists = mongo_connection.mongo_check_user_group_exists(user_group)
@@ -735,6 +788,7 @@ def update_user_group_fields(user_group):
 # delete a user_group
 @app.route('/api/' + API_VERSION + '/user_groups/<user_group>', methods=["DELETE"])
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="admin")
 def delete_user_group(user_group):
     # check user exists first
     user_group_exists = mongo_connection.mongo_check_user_group_exists(user_group)
@@ -758,6 +812,7 @@ def list_user_groups():
 @app.route('/api/' + API_VERSION + '/user_groups/<user_group>', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 @multi_auth.login_required
+@check_authorization_wrapper(permission_needed="ro", permission_object_type="admin")
 def get_user_group(user_group):
     user_group_exists, user_json = mongo_connection.mongo_get_user_group(user_group)
     if user_group_exists is True:
