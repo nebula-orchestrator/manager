@@ -116,9 +116,10 @@ def check_authorized(permission_needed=None, permission_object_type=None):
     return allow_access
 
 
+# this wrapper checks if a user is authorized to preform the requested action
 def check_authorization_wrapper(permission_needed=None, permission_object_type=None):
 
-    def callable(func):
+    def callable_function(func):
         @wraps(func)
         def wrapped(*args, **kwargs):
             result = "{\"access_allowed\": false}", 403
@@ -141,7 +142,7 @@ def check_authorization_wrapper(permission_needed=None, permission_object_type=N
             return result
         return wrapped
 
-    return callable
+    return callable_function
 
 
 # read config file at startup
