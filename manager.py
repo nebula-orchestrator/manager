@@ -1,5 +1,5 @@
 import json, secrets
-from flask import json, Flask, request, g
+from flask import json, Flask, request, g, jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 from functions.db.mongo import *
 from functions.hashing.hashing import *
@@ -66,16 +66,16 @@ def check_ports_valid_range(checked_ports):
     for checked_port in checked_ports:
         if isinstance(checked_port, int):
             if not 1 <= checked_port <= 65535:
-                return "{\"starting_ports\": \"invalid port\"}", 400
+                return jsonify({"starting_ports": "invalid port"}), 400
         elif isinstance(checked_port, dict):
             for host_port, container_port in checked_port.items():
                 try:
                     if not 1 <= int(host_port) <= 65535 or not 1 <= int(container_port) <= 65535:
-                        return "{\"starting_ports\": \"invalid port\"}", 400
+                        return jsonify({"starting_ports": "invalid port"}), 400
                 except ValueError:
-                    return "{\"starting_ports\": \"can only be a list containing integers or dicts\"}", 403
+                    return jsonify({"starting_ports": "can only be a list containing integers or dicts"}), 403
         else:
-            return "{\"starting_ports\": \"can only be a list containing integers or dicts\"}", 403
+            return jsonify({"starting_ports": "can only be a list containing integers or dicts"}), 403
     return "all ports checked are in a valid 1-65535 range", 200
 
 
@@ -122,7 +122,7 @@ def check_authorization_wrapper(permission_needed=None, permission_object_type=N
     def callable_function(func):
         @wraps(func)
         def wrapped(*args, **kwargs):
-            result = "{\"access_allowed\": false}", 403
+            result = jsonify({"access_allowed": False}), 403
             if permission_object_type == "pruning":
                 if check_authorized(permission_needed={"pruning": permission_needed},
                                     permission_object_type=permission_object_type) is True:
@@ -244,7 +244,7 @@ def verify_token(token):
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 @multi_auth.login_required
 def check_page():
-    return "{\"api_available\": true}", 200
+    return jsonify({"api_available": True}), 200
 
 
 # create a new app
@@ -255,7 +255,7 @@ def create_app(app_name):
     # check app does't exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is True:
-        return "{\"app_exists\": true}", 403
+        return jsonify({"app_exists": True}), 403
     else:
         # check the request is passed with all needed parameters
         try:
@@ -293,7 +293,7 @@ def delete_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
-        return "{\"app_exists\": false}", 403
+        return jsonify({"app_exists": False}), 403
     # remove from db
     mongo_connection.mongo_remove_app(app_name)
     return "{}", 200
@@ -307,10 +307,10 @@ def restart_app(app_name):
     app_exists, app_json = mongo_connection.mongo_get_app(app_name)
     # check app exists first
     if app_exists is False:
-        return "{\"app_exists\": \"False\"}", 403
+        return jsonify({"app_exists": False}), 403
     # check if app already running:
     if app_json["running"] is False:
-        return "{\"running_before_restart\": false}", 403
+        return jsonify({"running_before_restart": False}), 403
     # post to db
     app_json = mongo_connection.mongo_increase_app_id(app_name)
     return dumps(app_json), 202
@@ -324,7 +324,7 @@ def stop_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
-        return "{\"app_exists\": false}", 403
+        return jsonify({"app_exists": False}), 403
     # post to db
     app_json = mongo_connection.mongo_update_app_running_state(app_name, False)
     return dumps(app_json), 202
@@ -338,7 +338,7 @@ def start_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
-        return "{\"app_exists\": false}", 403
+        return jsonify({"app_exists": False}), 403
     # post to db
     app_json = mongo_connection.mongo_update_app_running_state(app_name, True)
     return dumps(app_json), 202
@@ -352,7 +352,7 @@ def update_app(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
-        return "{\"app_exists\": false}", 403
+        return jsonify({"app_exists": False}), 403
     # check app got all needed parameters
     try:
         app_json = request.json
@@ -389,14 +389,14 @@ def update_app_fields(app_name):
     # check app exists first
     app_exists = mongo_connection.mongo_check_app_exists(app_name)
     if app_exists is False:
-        return "{\"app_exists\": false}", 403
+        return jsonify({"app_exists": False}), 403
     # check app got update parameters
     try:
         app_json = request.json
         if len(app_json) == 0:
-            return "{\"missing_parameters\": true}", 400
+            return jsonify({"missing_parameters": True}), 400
     except:
-        return "{\"missing_parameters\": true}", 400
+        return jsonify({"missing_parameters": True}), 400
     # check edge case of port being outside of possible port ranges in case trying to update port listing
     try:
         starting_ports = request.json["starting_ports"]
@@ -416,7 +416,7 @@ def update_app_fields(app_name):
 @multi_auth.login_required
 def list_apps():
     nebula_apps_list = mongo_connection.mongo_list_apps()
-    return "{\"apps\": " + dumps(nebula_apps_list) + " }", 200
+    return jsonify({"apps": dumps(nebula_apps_list)}), 200
 
 
 # get app info
@@ -429,7 +429,7 @@ def get_app(app_name):
     if app_exists is True:
         return dumps(app_json), 200
     elif app_exists is False:
-        return "{\"app_exists\": false}", 403
+        return jsonify({"app_exists": False}), 403
 
 
 # get device_group info
@@ -441,7 +441,7 @@ def get_app(app_name):
 def get_device_group_info(device_group):
     device_group_exists, device_group_json = mongo_connection.mongo_get_device_group(device_group)
     if device_group_exists is False:
-        return "{\"device_group_exists\": false}", 403
+        return jsonify({"device_group_exists": False}), 403
     device_group_config = {"apps": [], "apps_list": [], "prune_id": device_group_json["prune_id"],
                            "device_group_id": device_group_json["device_group_id"]}
     for device_app in device_group_json["apps"]:
@@ -460,7 +460,7 @@ def create_device_group(device_group):
     # check app does't exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
     if device_group_exists is True:
-        return "{\"device_group_exists\": true}", 403
+        return jsonify({"device_group_exists": True}), 403
     else:
         # check the request is passed with all needed parameters
         try:
@@ -473,12 +473,12 @@ def create_device_group(device_group):
             return json.dumps({"missing_parameters": ["apps"]}), 400
         # check edge case where apps is not a list
         if type(apps) is not list:
-            return "{\"apps_is_list\": false}", 400
+            return jsonify({"apps_is_list": False}), 400
         # check edge case where adding an app that does not exist
         for device_app in apps:
             app_exists, app_json = mongo_connection.mongo_get_app(device_app)
             if app_exists is False:
-                return "{\"app_exists\": false}", 403
+                return jsonify({"app_exists": False}), 403
         # update the db
         app_json = mongo_connection.mongo_add_device_group(device_group, apps)
         return dumps(app_json), 200
@@ -494,7 +494,7 @@ def get_device_group(device_group):
     if device_group_exists is True:
         return dumps(device_group_json), 200
     elif device_group_exists is False:
-        return "{\"device_group_exists\": false}", 403
+        return jsonify({"device_group_exists": False}), 403
 
 
 # POST update device_group - requires a full list of apps to be given in the request body
@@ -505,7 +505,7 @@ def update_device_group(device_group):
     # check device_group exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
     if device_group_exists is False:
-        return "{\"app_exists\": false}", 403
+        return jsonify({"app_exists": False}), 403
     # check app got all needed parameters
     try:
         app_json = request.json
@@ -517,12 +517,12 @@ def update_device_group(device_group):
         return json.dumps({"missing_parameters": ["apps"]}), 400
         # check edge case where apps is not a list
     if type(apps) is not list:
-        return "{\"apps_is_list\": false}", 400
+        return jsonify({"apps_is_list": False}), 400
     # check edge case where adding an app that does not exist
     for device_app in apps:
         app_exists, app_json = mongo_connection.mongo_get_app(device_app)
         if app_exists is False:
-            return "{\"app_exists\": false}", 403
+            return jsonify({"app_exists": False}), 403
     # update db
     app_json = mongo_connection.mongo_update_device_group(device_group, apps)
     return dumps(app_json), 202
@@ -536,7 +536,7 @@ def delete_device_group(device_group):
     # check app exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
     if device_group_exists is False:
-        return "{\"device_group_exists\": false}", 403
+        return jsonify({"device_group_exists": False}), 403
     # remove from db
     mongo_connection.mongo_remove_device_group(device_group)
     return "{}", 200
@@ -548,7 +548,7 @@ def delete_device_group(device_group):
 @multi_auth.login_required
 def list_device_groups():
     nebula_device_groups_list = mongo_connection.mongo_list_device_groups()
-    return "{\"device_groups\": " + dumps(nebula_device_groups_list) + " }", 200
+    return jsonify({"device_groups": dumps(nebula_device_groups_list)}), 200
 
 
 # prune unused images on all devices running said device_group
@@ -559,7 +559,7 @@ def prune_device_group_images(device_group):
     # check device_group exists first
     device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
     if device_group_exists is False:
-        return "{\"app_exists\": false}", 403
+        return jsonify({"app_exists": False}), 403
     # update db
     app_json = mongo_connection.mongo_increase_prune_id(device_group)
     return dumps(app_json), 202
@@ -578,7 +578,7 @@ def prune_images_on_all_device_groups():
         # check device_group exists first
         device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
         if device_group_exists is False:
-            return "{\"app_exists\": false}", 403
+            return jsonify({"app_exists": False}), 403
         # update db
         app_json = mongo_connection.mongo_increase_prune_id(device_group)
         all_device_groups_prune_id["prune_ids"][device_group] = app_json["prune_id"]
@@ -627,7 +627,7 @@ def apply_caching(response):
 @multi_auth.login_required
 def list_users():
     nebula_users_list = mongo_connection.mongo_list_users()
-    return "{\"users\": " + dumps(nebula_users_list) + " }", 200
+    return jsonify({"users": dumps(nebula_users_list)}), 200
 
 
 # get user info
@@ -640,7 +640,7 @@ def get_user(user_name):
     if user_exists is True:
         return dumps(user_json), 200
     elif user_exists is False:
-        return "{\"user_exists\": false}", 403
+        return jsonify({"user_exists": False}), 403
 
 
 # delete a user
@@ -651,7 +651,7 @@ def delete_user(user_name):
     # check user exists first
     user_exists = mongo_connection.mongo_check_user_exists(user_name)
     if user_exists is False:
-        return "{\"user_exists\": false}", 403
+        return jsonify({"user_exists": False}), 403
     # remove from db
     mongo_connection.mongo_delete_user(user_name)
     return "{}", 200
@@ -665,14 +665,14 @@ def update_user(user_name):
     # check user exists first
     user_exists = mongo_connection.mongo_check_user_exists(user_name)
     if user_exists is False:
-        return "{\"user_name\": false}", 403
+        return jsonify({"user_name": False}), 403
     # check user got update parameters
     try:
         user_json = request.json
         if len(user_json) == 0:
-            return "{\"missing_parameters\": true}", 400
+            return jsonify({"missing_parameters": True}), 400
     except:
-        return "{\"missing_parameters\": true}", 400
+        return jsonify({"missing_parameters": True}), 400
     # if part of the update includes a token hash it
     try:
         request.json["token"] = hash_secret(request.json["token"])
@@ -696,17 +696,17 @@ def refresh_user_token(user_name):
     # check user exists first
     user_exists = mongo_connection.mongo_check_user_exists(user_name)
     if user_exists is False:
-        return "{\"user_name\": false}", 403
+        return jsonify({"user_name": False}), 403
     # get current user data and update the token for him
     try:
         new_token = secrets.token_urlsafe()
         app_exists, user_json = mongo_connection.mongo_get_user(user_name)
         user_json["token"] = hash_secret(new_token)
     except:
-        return "{\"token_refreshed\": false}", 403
+        return jsonify({"token_refreshed": False}), 403
     # update db
     user_json = mongo_connection.mongo_update_user(user_name, user_json)
-    return "{\"token\": \"" + new_token + "\" }", 200
+    return jsonify({"token": new_token}), 200
 
 
 # create new user
@@ -717,19 +717,19 @@ def create_user(user_name):
     # check app does't exists first
     user_exists = mongo_connection.mongo_check_user_exists(user_name)
     if user_exists is True:
-        return "{\"user_exists\": true}", 403
+        return jsonify({"user_exists": True}), 403
     else:
         # check the request is passed with all needed parameters
         try:
             user_json = request.json
         except:
-            return "{\"missing_parameters\": true}", 400
+            return jsonify({"missing_parameters": True}), 400
         try:
             # hash the password & token, if not declared generates them randomly
             password = hash_secret(return_sane_default_if_not_declared("password", user_json, secrets.token_urlsafe()))
             token = hash_secret(return_sane_default_if_not_declared("token", user_json, secrets.token_urlsafe()))
         except:
-            return "{\"missing_parameters\": true}", 400
+            return jsonify({"missing_parameters": True}), 400
         # update the db
         user_json = mongo_connection.mongo_add_user(user_name, password, token)
         return dumps(user_json), 200
@@ -743,7 +743,7 @@ def create_user_group(user_group):
     # check app does't exists first
     user_exists = mongo_connection.mongo_check_user_group_exists(user_group)
     if user_exists is True:
-        return "{\"user_group_exists\": true}", 403
+        return jsonify({"user_group_exists": True}), 403
     else:
         # check the request is passed with all needed parameters
         try:
@@ -758,7 +758,7 @@ def create_user_group(user_group):
             device_groups = return_sane_default_if_not_declared("device_groups", user_json, {})
             admin = return_sane_default_if_not_declared("admin", user_json, False)
         except:
-            return "{\"missing_parameters\": true}", 400
+            return jsonify({"missing_parameters": True}), 400
         # update the db
         user_json = mongo_connection.mongo_add_user_group(user_group, group_members, pruning_allowed, apps,
                                                           device_groups, admin)
@@ -773,14 +773,14 @@ def update_user_group_fields(user_group):
     # check user_group exists first
     user_group_exists = mongo_connection.mongo_check_user_group_exists(user_group)
     if user_group is False:
-        return "{\"user_group_exists\": false}", 403
+        return jsonify({"user_group_exists": False}), 403
     # check app got update parameters
     try:
         app_json = request.json
         if len(app_json) == 0:
-            return "{\"missing_parameters\": true}", 400
+            return jsonify({"missing_parameters": True}), 400
     except:
-        return "{\"missing_parameters\": true}", 400
+        return jsonify({"missing_parameters": True}), 400
     # update db
     app_json = mongo_connection.mongo_update_user_group(user_group, request.json)
     return dumps(app_json), 202
@@ -794,7 +794,7 @@ def delete_user_group(user_group):
     # check user exists first
     user_group_exists = mongo_connection.mongo_check_user_group_exists(user_group)
     if user_group_exists is False:
-        return "{\"user_group_exists_exists\": false}", 403
+        return jsonify({"user_group_exists": False}), 403
     # remove from db
     mongo_connection.mongo_delete_user_group(user_group)
     return "{}", 200
@@ -806,7 +806,7 @@ def delete_user_group(user_group):
 @multi_auth.login_required
 def list_user_groups():
     nebula_user_groups_list = mongo_connection.mongo_list_user_groups()
-    return "{\"user_groups\": " + dumps(nebula_user_groups_list) + " }", 200
+    return jsonify({"user_groups": dumps(nebula_user_groups_list)}), 200
 
 
 # get user_group info
@@ -819,7 +819,7 @@ def get_user_group(user_group):
     if user_group_exists is True:
         return dumps(user_json), 200
     elif user_group_exists is False:
-        return "{\"user_group_exists\": false}", 403
+        return jsonify({"user_group_exists": False}), 403
 
 
 # used for when running with the 'ENV' envvar set to dev to open a new thread with flask builtin web server
