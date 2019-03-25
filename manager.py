@@ -416,7 +416,7 @@ def update_app_fields(app_name):
 @multi_auth.login_required
 def list_apps():
     nebula_apps_list = mongo_connection.mongo_list_apps()
-    return jsonify({"apps": dumps(nebula_apps_list)}), 200
+    return jsonify({"apps": nebula_apps_list}), 200
 
 
 # get app info
@@ -548,7 +548,7 @@ def delete_device_group(device_group):
 @multi_auth.login_required
 def list_device_groups():
     nebula_device_groups_list = mongo_connection.mongo_list_device_groups()
-    return jsonify({"device_groups": dumps(nebula_device_groups_list)}), 200
+    return jsonify({"device_groups": nebula_device_groups_list}), 200
 
 
 # prune unused images on all devices running said device_group
@@ -627,7 +627,7 @@ def apply_caching(response):
 @multi_auth.login_required
 def list_users():
     nebula_users_list = mongo_connection.mongo_list_users()
-    return jsonify({"users": dumps(nebula_users_list)}), 200
+    return jsonify({"users": nebula_users_list}), 200
 
 
 # get user info
@@ -806,7 +806,7 @@ def delete_user_group(user_group):
 @multi_auth.login_required
 def list_user_groups():
     nebula_user_groups_list = mongo_connection.mongo_list_user_groups()
-    return jsonify({"user_groups": dumps(nebula_user_groups_list)}), 200
+    return jsonify({"user_groups": nebula_user_groups_list}), 200
 
 
 # get user_group info
