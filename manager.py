@@ -783,7 +783,7 @@ def update_user_group_fields(user_group):
         return jsonify({"missing_parameters": True}), 400
     # update db
     app_json = mongo_connection.mongo_update_user_group(user_group, request.json)
-    return dumps(app_json), 202
+    return dumps(app_json), 200
 
 
 # delete a user_group
