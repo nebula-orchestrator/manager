@@ -173,8 +173,9 @@ print("opened MongoDB connection")
 # ensure mongo is indexed properly
 mongo_connection.mongo_create_index("apps", "app_name")
 mongo_connection.mongo_create_index("device_groups", "device_group")
-mongo_connection.mongo_create_index("users", "users")
-mongo_connection.mongo_create_index("user_groups", "user_groups")
+mongo_connection.mongo_create_index("users", "user")
+mongo_connection.mongo_create_index("user_groups", "user_group")
+mongo_connection.mongo_create_index("cron_jobs", "cron_job_name")
 
 # get current list of apps at startup
 nebula_apps = mongo_connection.mongo_list_apps()

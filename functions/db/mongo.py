@@ -12,7 +12,7 @@ class MongoConnection:
             self.db = self.client[schema_name]
             self.collection = {"apps": self.db["nebula_apps"], "device_groups": self.db["nebula_device_groups"],
                                "reports": self.db["nebula_reports"], "users": self.db["nebula_users"],
-                               "user_groups": self.db["nebula_user_groups"]}
+                               "user_groups": self.db["nebula_user_groups"], "cron_jobs": self.db["nebula_cron_jobs"]}
         except Exception as e:
             print("error connection to mongodb")
             print(e, file=sys.stderr)
