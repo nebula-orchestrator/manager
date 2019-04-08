@@ -174,6 +174,7 @@ class MongoConnection:
         return result
 
     # add device_group
+    # TODO - refactor to add cron_jobs
     def mongo_add_device_group(self, device_group, apps):
         app_doc = {
             "device_group_id": 1,
@@ -202,6 +203,7 @@ class MongoConnection:
         return device_group_exists, result
 
     # update device_group
+    # TODO - refactor to add cron_jobs
     def mongo_update_device_group(self, device_group, apps):
         result = self.collection["device_groups"].find_one_and_update({'device_group': device_group},
                                                                    {'$inc': {'device_group_id': 1},
@@ -304,6 +306,7 @@ class MongoConnection:
         return result
 
     # create a user_group
+    # TODO - refactor to add cron_jobs
     def mongo_add_user_group(self, user_group, group_members, pruning_allowed, apps, device_groups, admin):
         user_group_doc = {
             "user_group": user_group,
@@ -346,6 +349,7 @@ class MongoConnection:
         return user_group_exists, result
 
     # return a aggregated view of all groups that a user is a member of
+    # TODO - refactor to add cron_jobs
     def mongo_list_user_permissions(self, user_name):
         user_permissions = {"apps": {}, "device_groups": {}, "admin": False, "pruning_allowed": False}
         find_query = {"$and": [{"user_group": {"$exists": "true"}}, {"group_members": user_name}]}
@@ -357,3 +361,15 @@ class MongoConnection:
             user_permissions["apps"] = {**user_permissions["apps"], **user_group["apps"]}
             user_permissions["device_groups"] = {**user_permissions["device_groups"], **user_group["device_groups"]}
         return user_permissions
+
+    # TODO - add mongo create cron_job
+
+    # TODO - add mongo list all cron_jobs
+
+    # TODO - add mongo list cron_job info
+
+    # TODO - add mongo update cron_job
+
+    # TODO - add mongo delete cron_job
+
+    # TODO - add mongo check cron_job exists

@@ -437,6 +437,7 @@ def get_app(app_name):
 
 
 # get device_group info
+# TODO - add cron_jobs of device_group info
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>/info', methods=["GET"])
 @cached(cache=TTLCache(maxsize=cache_max_size, ttl=cache_time))
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
@@ -590,6 +591,7 @@ def prune_images_on_all_device_groups():
 
 
 # list reports
+# TODO - add filtering by cron_job
 @app.route('/api/' + API_VERSION + '/reports', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 @multi_auth.login_required
@@ -824,6 +826,17 @@ def get_user_group(user_group):
         return dumps(user_json), 200
     elif user_group_exists is False:
         return jsonify({"user_group_exists": False}), 403
+
+
+# TODO - add create cron_job endpoint
+
+# TODO - add list all cron_jobs endpoint
+
+# TODO - add list cron_job info endpoint
+
+# TODO - add update cron_job endpoint
+
+# TODO - add delete cron_job endpoint
 
 
 # used for when running with the 'ENV' envvar set to dev to open a new thread with flask builtin web server

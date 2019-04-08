@@ -23,6 +23,8 @@ def create_temp_app(mongo_connection_object, app):
 
 class MongoTests(TestCase):
 
+    # TODO - add cron_job_flow_mongo_tests
+
     def test_mongo_app_flow(self):
         mongo_connection_object = mongo_connection()
 
