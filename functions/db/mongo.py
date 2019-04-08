@@ -10,28 +10,19 @@ class MongoConnection:
         try:
             self.client = MongoClient(mongo_connection_string, maxPoolSize=max_pool_size)
             self.db = self.client[schema_name]
-            self.collection_apps = self.db["nebula_apps"]
-            self.collection_device_groups = self.db["nebula_device_groups"]
-            self.collection_reports = self.db["nebula_reports"]
-            self.collection_users = self.db["nebula_users"]
-            self.collection_user_groups = self.db["nebula_user_groups"]
+            self.collection = {"apps": self.db["nebula_apps"], "device_groups": self.db["nebula_device_groups"],
+                               "reports": self.db["nebula_reports"], "users": self.db["nebula_users"],
+                               "user_groups": self.db["nebula_user_groups"]}
         except Exception as e:
             print("error connection to mongodb")
             print(e, file=sys.stderr)
             os._exit(2)
 
     # create indexes
-    def mongo_create_indexes(self, app_index_name, device_groups_index_name, users_index_name, user_groups_index_name):
+    def mongo_create_index(self, collection_name, collection_index):
         try:
-            self.collection_apps.create_index([(app_index_name, ASCENDING)], background=True,
-                                              name=app_index_name + "_index", unique=True, sparse=True)
-            self.collection_device_groups.create_index([(device_groups_index_name, ASCENDING)], background=True,
-                                                       name=device_groups_index_name + "_index", unique=True,
-                                                       sparse=True)
-            self.collection_users.create_index([(users_index_name, ASCENDING)], background=True,
-                                               name=users_index_name + "_index", unique=True, sparse=True)
-            self.collection_user_groups.create_index([(user_groups_index_name, ASCENDING)], background=True,
-                                                     name=user_groups_index_name + "_index", unique=True, sparse=True)
+            self.collection[collection_name].create_index([(collection_index, ASCENDING)], background=True,
+                                                          name=collection_index + "_index", unique=True, sparse=True)
         except Exception as e:
             print("error creating mongodb indexes")
             print(e, file=sys.stderr)
@@ -39,7 +30,7 @@ class MongoConnection:
 
     # get all app data
     def mongo_get_app(self, app_name):
-        result = self.collection_apps.find_one({"app_name": app_name}, {'_id': False})
+        result = self.collection["apps"].find_one({"app_name": app_name}, {'_id': False})
         if result is None:
             app_exists = False
         else:
@@ -59,7 +50,7 @@ class MongoConnection:
     # update all app data
     def mongo_update_app(self, app_name, starting_ports, containers_per, env_vars, docker_image, running,
                          networks, volumes, devices, privileged, rolling_restart):
-        result = self.collection_apps.find_one_and_update({'app_name': app_name},
+        result = self.collection["apps"].find_one_and_update({'app_name': app_name},
                                                           {'$inc': {'app_id': 1},
                                                            '$set': {'starting_ports': starting_ports,
                                                                     'containers_per': containers_per,
@@ -79,12 +70,12 @@ class MongoConnection:
 
     # get latest envvars of app
     def mongo_list_app_envvars(self, app_name):
-        result = self.collection_apps.find_one({"app_name": app_name}, {'_id': False})
+        result = self.collection["apps"].find_one({"app_name": app_name}, {'_id': False})
         return result["env_vars"]
 
     # update envvars of an app
     def mongo_update_app_envars(self, app_name, env_vars):
-        result = self.collection_apps.find_one_and_update({'app_name': app_name},
+        result = self.collection["apps"].find_one_and_update({'app_name': app_name},
                                                           {'$inc': {'app_id': 1},
                                                            '$set': {'env_vars': env_vars}},
                                                           return_document=ReturnDocument.AFTER)
@@ -92,7 +83,7 @@ class MongoConnection:
 
     # update some fields of an app
     def mongo_update_app_fields(self, app_name, update_fields_dict):
-        result = self.collection_apps.find_one_and_update({'app_name': app_name},
+        result = self.collection["apps"].find_one_and_update({'app_name': app_name},
                                                           {'$inc': {'app_id': 1},
                                                            '$set': update_fields_dict},
                                                           return_document=ReturnDocument.AFTER)
@@ -100,12 +91,12 @@ class MongoConnection:
 
     # get number of containers per cpu of app
     def mongo_list_app_containers_per(self, app_name):
-        result = self.collection_apps.find_one({"app_name": app_name}, {'_id': False})
+        result = self.collection["apps"].find_one({"app_name": app_name}, {'_id': False})
         return result["containers_per"]
 
     # update number of containers per cpu of app
     def mongo_update_app_containers_per(self, app_name, containers_per):
-        result = self.collection_apps.find_one_and_update({'app_name': app_name},
+        result = self.collection["apps"].find_one_and_update({'app_name': app_name},
                                                           {'$inc': {'app_id': 1},
                                                            '$set': {'containers_per': containers_per}},
                                                           return_document=ReturnDocument.AFTER)
@@ -114,7 +105,7 @@ class MongoConnection:
     # get list of apps
     def mongo_list_apps(self):
         apps_list = []
-        for app in self.collection_apps.find({"app_name": {"$exists": "true"}}, {'_id': False}):
+        for app in self.collection["apps"].find({"app_name": {"$exists": "true"}}, {'_id': False}):
             apps_list.append(app["app_name"])
         return apps_list
 
@@ -140,23 +131,23 @@ class MongoConnection:
             "privileged": privileged,
             "rolling_restart": rolling_restart
         }
-        insert_id = self.collection_apps.insert_one(app_doc).inserted_id
+        insert_id = self.collection["apps"].insert_one(app_doc).inserted_id
         ignored_app_existence_status, result = self.mongo_get_app(app_name)
         return result
 
     # remove app
     def mongo_remove_app(self, app_name):
-        result = self.collection_apps.delete_one({"app_name": app_name})
+        result = self.collection["apps"].delete_one({"app_name": app_name})
         return result
 
     # get app starting ports
     def mongo_list_app_starting_ports(self, app_name):
-        result = self.collection_apps.find_one({"app_name": app_name}, {'_id': False})
+        result = self.collection["apps"].find_one({"app_name": app_name}, {'_id': False})
         return result["starting_ports"]
 
     # update app starting ports
     def mongo_update_app_starting_ports(self, app_name, starting_ports):
-        result = self.collection_apps.find_one_and_update({'app_name': app_name},
+        result = self.collection["apps"].find_one_and_update({'app_name': app_name},
                                                           {'$inc': {'app_id': 1},
                                                            '$set': {'starting_ports': starting_ports}},
                                                           return_document=ReturnDocument.AFTER)
@@ -164,19 +155,19 @@ class MongoConnection:
 
     # increase app_id - used to restart the app
     def mongo_increase_app_id(self, app_name):
-            result = self.collection_apps.find_one_and_update({'app_name': app_name},
+            result = self.collection["apps"].find_one_and_update({'app_name': app_name},
                                                               {'$inc': {'app_id': 1}},
                                                               return_document=ReturnDocument.AFTER)
             return result
 
     # get app running\stopped state
     def mongo_list_app_running_state(self, app_name):
-        result = self.collection_apps.find_one({"app_name": app_name}, {'_id': False})
+        result = self.collection["apps"].find_one({"app_name": app_name}, {'_id': False})
         return result["running"]
 
     # update app running\stopped state
     def mongo_update_app_running_state(self, app_name, running):
-        result = self.collection_apps.find_one_and_update({'app_name': app_name},
+        result = self.collection["apps"].find_one_and_update({'app_name': app_name},
                                                           {'$inc': {'app_id': 1},
                                                            '$set': {'running': running}},
                                                           return_document=ReturnDocument.AFTER)
@@ -190,20 +181,20 @@ class MongoConnection:
             "apps": apps,
             "prune_id": 1
         }
-        insert_id = self.collection_device_groups.insert_one(app_doc).inserted_id
+        insert_id = self.collection["device_groups"].insert_one(app_doc).inserted_id
         ignored_device_group_existence_status, result = self.mongo_get_device_group(device_group)
         return result
 
     # increase prune_id - used to prune unused images of devices that are part of a device group
     def mongo_increase_prune_id(self, device_group):
-        result = self.collection_device_groups.find_one_and_update({'device_group': device_group},
+        result = self.collection["device_groups"].find_one_and_update({'device_group': device_group},
                                                                    {'$inc': {'prune_id': 1}},
                                                                    return_document=ReturnDocument.AFTER)
         return result
 
     # list device_group
     def mongo_get_device_group(self, device_group):
-        result = self.collection_device_groups.find_one({"device_group": device_group}, {'_id': False})
+        result = self.collection["device_groups"].find_one({"device_group": device_group}, {'_id': False})
         if result is None:
             device_group_exists = False
         else:
@@ -212,7 +203,7 @@ class MongoConnection:
 
     # update device_group
     def mongo_update_device_group(self, device_group, apps):
-        result = self.collection_device_groups.find_one_and_update({'device_group': device_group},
+        result = self.collection["device_groups"].find_one_and_update({'device_group': device_group},
                                                                    {'$inc': {'device_group_id': 1},
                                                                     '$set': {'apps': apps}},
                                                                    return_document=ReturnDocument.AFTER
@@ -221,13 +212,13 @@ class MongoConnection:
 
     # delete device_group
     def mongo_remove_device_group(self, device_group):
-        result = self.collection_device_groups.delete_one({"device_group": device_group})
+        result = self.collection["device_groups"].delete_one({"device_group": device_group})
         return result
 
     # list all device groups
     def mongo_list_device_groups(self):
         device_groups = []
-        for device_group in self.collection_device_groups.find({"device_group": {"$exists": "true"}}, {'_id': False}):
+        for device_group in self.collection["device_groups"].find({"device_group": {"$exists": "true"}}, {'_id': False}):
             device_groups.append(device_group["device_group"])
         return device_groups
 
@@ -243,10 +234,10 @@ class MongoConnection:
 
         # if there aren't any filters return a page of all reports
         if filters == {}:
-            cursor = self.collection_reports.find().limit(page_size).sort('_id', ASCENDING)
+            cursor = self.collection["reports"].find().limit(page_size).sort('_id', ASCENDING)
         # if there are filters return a filtered page of the reports
         else:
-            cursor = self.collection_reports.find(filters).limit(page_size).sort('_id', ASCENDING)
+            cursor = self.collection["reports"].find(filters).limit(page_size).sort('_id', ASCENDING)
 
         # Get the data
         data = [x for x in cursor]
@@ -264,7 +255,7 @@ class MongoConnection:
     # list all users
     def mongo_list_users(self):
         users_list = []
-        for user in self.collection_users.find({"user_name": {"$exists": "true"}}, {'_id': False}):
+        for user in self.collection["users"].find({"user_name": {"$exists": "true"}}, {'_id': False}):
             users_list.append(user["user_name"])
         return users_list
 
@@ -280,7 +271,7 @@ class MongoConnection:
 
     # get user info - the password and\or token are returned hashed for security reasons
     def mongo_get_user(self, user_name):
-        result = self.collection_users.find_one({"user_name": user_name}, {'_id': False})
+        result = self.collection["users"].find_one({"user_name": user_name}, {'_id': False})
         if result is None:
             user_exists = False
         else:
@@ -289,7 +280,7 @@ class MongoConnection:
 
     # delete a user
     def mongo_delete_user(self, user_name):
-        result = self.collection_users.delete_one({"user_name": user_name})
+        result = self.collection["users"].delete_one({"user_name": user_name})
         return result
 
     # create a user - make sure to hash the password & token before using this function as it does not hash anything on
@@ -300,14 +291,14 @@ class MongoConnection:
             "password": password,
             "token": token
         }
-        insert_id = self.collection_users.insert_one(user_doc).inserted_id
+        insert_id = self.collection["users"].insert_one(user_doc).inserted_id
         ignored_device_group_existence_status, result = self.mongo_get_user(user_name)
         return result
 
     # update a user - make sure to hash the password & token before using this function as it does not hash anything on
     # it's own
     def mongo_update_user(self, user_name, update_fields_dict):
-        result = self.collection_users.find_one_and_update({'user_name': user_name},
+        result = self.collection["users"].find_one_and_update({'user_name': user_name},
                                                            {'$set': update_fields_dict},
                                                            return_document=ReturnDocument.AFTER)
         return result
@@ -322,32 +313,32 @@ class MongoConnection:
             "device_groups": device_groups,
             "admin": admin
         }
-        insert_id = self.collection_user_groups.insert_one(user_group_doc).inserted_id
+        insert_id = self.collection["user_groups"].insert_one(user_group_doc).inserted_id
         ignored_device_group_existence_status, result = self.mongo_get_user_group(user_group)
         return result
 
     # update a user_group
     def mongo_update_user_group(self, user_group, update_fields_dict):
-        result = self.collection_user_groups.find_one_and_update({'user_group': user_group},
+        result = self.collection["user_groups"].find_one_and_update({'user_group': user_group},
                                                                  {'$set': update_fields_dict},
                                                                  return_document=ReturnDocument.AFTER)
         return result
 
     # delete a user_group
     def mongo_delete_user_group(self, user_group):
-        result = self.collection_user_groups.delete_one({"user_group": user_group})
+        result = self.collection["user_groups"].delete_one({"user_group": user_group})
         return result
 
     # list all user_groups
     def mongo_list_user_groups(self):
         user_groups_list = []
-        for user_group in self.collection_user_groups.find({"user_group": {"$exists": "true"}}, {'_id': False}):
+        for user_group in self.collection["user_groups"].find({"user_group": {"$exists": "true"}}, {'_id': False}):
             user_groups_list.append(user_group["user_group"])
         return user_groups_list
 
     # get user_group info
     def mongo_get_user_group(self, user_group):
-        result = self.collection_user_groups.find_one({"user_group": user_group}, {'_id': False})
+        result = self.collection["user_groups"].find_one({"user_group": user_group}, {'_id': False})
         if result is None:
             user_group_exists = False
         else:
@@ -358,7 +349,7 @@ class MongoConnection:
     def mongo_list_user_permissions(self, user_name):
         user_permissions = {"apps": {}, "device_groups": {}, "admin": False, "pruning_allowed": False}
         find_query = {"$and": [{"user_group": {"$exists": "true"}}, {"group_members": user_name}]}
-        for user_group in self.collection_user_groups.find(find_query, {'_id': False}):
+        for user_group in self.collection["user_groups"].find(find_query, {'_id': False}):
             if user_group["admin"] is True:
                 user_permissions["admin"] = True
             if user_group["pruning_allowed"] is True:
