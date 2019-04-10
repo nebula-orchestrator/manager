@@ -458,6 +458,7 @@ def get_device_group_info(device_group):
 
 
 # create device_group
+# TODO - add cron_jobs of device_group info
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>', methods=["POST"])
 @multi_auth.login_required
 @check_authorization_wrapper(permission_needed="rw", permission_object_type="device_groups")
@@ -503,6 +504,7 @@ def get_device_group(device_group):
 
 
 # POST update device_group - requires a full list of apps to be given in the request body
+# TODO - add cron_jobs of device_group
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>/update', methods=["POST"])
 @multi_auth.login_required
 @check_authorization_wrapper(permission_needed="rw", permission_object_type="device_groups")
@@ -531,6 +533,9 @@ def update_device_group(device_group):
     # update db
     app_json = mongo_connection.mongo_update_device_group(device_group, apps)
     return dumps(app_json), 202
+
+
+# TODO - add PUT partial update of device_group
 
 
 # delete device_group
@@ -742,6 +747,7 @@ def create_user(user_name):
 
 
 # create new user_group
+# TODO - add cron_jobs
 @app.route('/api/' + API_VERSION + '/user_groups/<user_group>', methods=["POST"])
 @multi_auth.login_required
 @check_authorization_wrapper(permission_needed="rw", permission_object_type="admin")
@@ -772,6 +778,7 @@ def create_user_group(user_group):
 
 
 # PUT update some fields of a user_group
+# TODO - add cron_jobs
 @app.route('/api/' + API_VERSION + '/user_groups/<user_group>/update', methods=["PUT", "PATCH"])
 @multi_auth.login_required
 @check_authorization_wrapper(permission_needed="rw", permission_object_type="admin")
@@ -829,12 +836,14 @@ def get_user_group(user_group):
 
 
 # TODO - add create cron_job endpoint
+# TODO - add check that cron is valid
 
 # TODO - add list all cron_jobs endpoint
 
 # TODO - add list cron_job info endpoint
 
 # TODO - add update cron_job endpoint
+# TODO - add check that cron is valid
 
 # TODO - add delete cron_job endpoint
 
