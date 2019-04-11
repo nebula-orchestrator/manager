@@ -333,7 +333,7 @@ class MongoTests(TestCase):
             'unit_test_dg_2': 'ro',
             'unit_test_dg_3': 'rw',
             'unit_test_dg_4': 'ro'
-        },
+        }
         cron_jobs_results = {
             'unit_test_cj_1': 'rw',
             'unit_test_cj_2': 'ro',
