@@ -7,6 +7,7 @@ from bson.json_util import dumps
 from cachetools import cached, TTLCache
 from retrying import retry
 from functools import wraps
+from croniter import croniter
 
 
 API_VERSION = "v2"
@@ -90,6 +91,7 @@ def get_param_filter(param_name, full_request, filter_param="eq", request_type=s
 
 
 # check if a user is allowed to preform
+# TODO - add cron_job auth support
 def check_authorized(permission_needed=None, permission_object_type=None):
     # by default don't allow access
     allow_access = False
@@ -117,6 +119,7 @@ def check_authorized(permission_needed=None, permission_object_type=None):
 
 
 # this wrapper checks if a user is authorized to preform the requested action
+# TODO - add cron_job auth support
 def check_authorization_wrapper(permission_needed=None, permission_object_type=None):
 
     def callable_function(func):
@@ -437,7 +440,6 @@ def get_app(app_name):
 
 
 # get device_group info
-# TODO - add cron_jobs of device_group info
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>/info', methods=["GET"])
 @cached(cache=TTLCache(maxsize=cache_max_size, ttl=cache_time))
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
@@ -447,18 +449,22 @@ def get_device_group_info(device_group):
     device_group_exists, device_group_json = mongo_connection.mongo_get_device_group(device_group)
     if device_group_exists is False:
         return jsonify({"device_group_exists": False}), 403
-    device_group_config = {"apps": [], "apps_list": [], "prune_id": device_group_json["prune_id"],
-                           "device_group_id": device_group_json["device_group_id"]}
+    device_group_config = {"apps": [], "apps_list": [], "prune_id": device_group_json["prune_id"], "cron_jobs": [],
+                           "cron_jobs_list": [], "device_group_id": device_group_json["device_group_id"]}
     for device_app in device_group_json["apps"]:
         app_exists, app_json = mongo_connection.mongo_get_app(device_app)
         if app_exists is True:
             device_group_config["apps"].append(app_json)
             device_group_config["apps_list"].append(app_json["app_name"])
+    for device_cron_job in device_group_json["cron_jobs"]:
+        cron_job_exists, cron_job_json = mongo_connection.mongo_get_cron_job(device_cron_job)
+        if cron_job_exists is True:
+            device_group_config["cron_jobs"].append(cron_job_json)
+            device_group_config["cron_jobs_list"].append(cron_job_json["cron_jobs_name"])
     return dumps(device_group_config), 200
 
 
 # create device_group
-# TODO - add cron_jobs of device_group info
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>', methods=["POST"])
 @multi_auth.login_required
 @check_authorization_wrapper(permission_needed="rw", permission_object_type="device_groups")
@@ -471,12 +477,11 @@ def create_device_group(device_group):
         # check the request is passed with all needed parameters
         try:
             app_json = request.json
+            cron_jobs = return_sane_default_if_not_declared("cron_jobs", app_json, [])
+            apps = return_sane_default_if_not_declared("apps", app_json, [])
         except:
-            return json.dumps({"missing_parameters": ["apps"]}), 400
-        try:
-            apps = request.json["apps"]
-        except:
-            return json.dumps({"missing_parameters": ["apps"]}), 400
+            return json.dumps({"missing_parameters": True}), 400
+        # TODO - add check that cron_jobs is list & check edge case it does not exist
         # check edge case where apps is not a list
         if type(apps) is not list:
             return jsonify({"apps_is_list": False}), 400
@@ -486,11 +491,12 @@ def create_device_group(device_group):
             if app_exists is False:
                 return jsonify({"app_exists": False}), 403
         # update the db
-        app_json = mongo_connection.mongo_add_device_group(device_group, apps)
+        app_json = mongo_connection.mongo_add_device_group(device_group, apps, cron_jobs)
         return dumps(app_json), 200
 
 
 # list device_group
+# TODO - add cron_jobs
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 @multi_auth.login_required
@@ -504,7 +510,6 @@ def get_device_group(device_group):
 
 
 # POST update device_group - requires a full list of apps to be given in the request body
-# TODO - add cron_jobs of device_group
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>/update', methods=["POST"])
 @multi_auth.login_required
 @check_authorization_wrapper(permission_needed="rw", permission_object_type="device_groups")
@@ -516,13 +521,12 @@ def update_device_group(device_group):
     # check app got all needed parameters
     try:
         app_json = request.json
+        cron_jobs = return_sane_default_if_not_declared("cron_jobs", app_json, [])
+        apps = return_sane_default_if_not_declared("apps", app_json, [])
     except:
-        return json.dumps({"missing_parameters": ["apps"]}), 400
-    try:
-        apps = request.json["apps"]
-    except:
-        return json.dumps({"missing_parameters": ["apps"]}), 400
-        # check edge case where apps is not a list
+        return json.dumps({"missing_parameters": True}), 400
+    # TODO - add check that cron_jobs is list & check edge case it does not exist
+    # check edge case where apps is not a list
     if type(apps) is not list:
         return jsonify({"apps_is_list": False}), 400
     # check edge case where adding an app that does not exist
@@ -531,7 +535,8 @@ def update_device_group(device_group):
         if app_exists is False:
             return jsonify({"app_exists": False}), 403
     # update db
-    app_json = mongo_connection.mongo_update_device_group(device_group, apps)
+    update_fields_dict = {"apps": apps, "cron_jobs": cron_jobs}
+    app_json = mongo_connection.mongo_update_device_group(device_group, update_fields_dict)
     return dumps(app_json), 202
 
 
@@ -769,11 +774,12 @@ def create_user_group(user_group):
             apps = return_sane_default_if_not_declared("apps", user_json, {})
             device_groups = return_sane_default_if_not_declared("device_groups", user_json, {})
             admin = return_sane_default_if_not_declared("admin", user_json, False)
+            cron_jobs = return_sane_default_if_not_declared("cron_jobs", user_json, {})
         except:
             return jsonify({"missing_parameters": True}), 400
         # update the db
         user_json = mongo_connection.mongo_add_user_group(user_group, group_members, pruning_allowed, apps,
-                                                          device_groups, admin)
+                                                          device_groups, admin, cron_jobs)
         return dumps(user_json), 200
 
 
@@ -823,6 +829,7 @@ def list_user_groups():
 
 
 # get user_group info
+# TODO - add cron_jobs
 @app.route('/api/' + API_VERSION + '/user_groups/<user_group>', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 @multi_auth.login_required
@@ -836,14 +843,14 @@ def get_user_group(user_group):
 
 
 # TODO - add create cron_job endpoint
-# TODO - add check that cron is valid
+# TODO - add check that cron is valid croniter.is_valid('0 0 1 * *')
 
 # TODO - add list all cron_jobs endpoint
 
 # TODO - add list cron_job info endpoint
 
 # TODO - add update cron_job endpoint
-# TODO - add check that cron is valid
+# TODO - add check that cron is valid croniter.is_valid('0 0 1 * *')
 
 # TODO - add delete cron_job endpoint
 

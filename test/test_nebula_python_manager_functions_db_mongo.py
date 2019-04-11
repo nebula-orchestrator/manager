@@ -169,8 +169,9 @@ class MongoTests(TestCase):
         mongo_connection_object.mongo_remove_device_group("unit_test_device_group")
 
         # check create device group works
-        test_reply = mongo_connection_object.mongo_add_device_group("unit_test_device_group", [])
+        test_reply = mongo_connection_object.mongo_add_device_group("unit_test_device_group", [], [])
         self.assertEqual(test_reply["apps"], [])
+        self.assertEqual(test_reply["cron_jobs"], [])
         self.assertEqual(test_reply["device_group"], "unit_test_device_group")
         self.assertEqual(test_reply["device_group_id"], 1)
         self.assertEqual(test_reply["prune_id"], 1)
@@ -188,7 +189,8 @@ class MongoTests(TestCase):
         self.assertEqual(test_reply, ["unit_test_device_group"])
 
         # check update device group works
-        test_reply = mongo_connection_object.mongo_update_device_group("unit_test_device_group", [])
+        test_reply = mongo_connection_object.mongo_update_device_group("unit_test_device_group", {"apps": [],
+                                                                                                  "cron_jobs": []})
         self.assertEqual(test_reply["device_group"], "unit_test_device_group")
         self.assertEqual(test_reply["device_group_id"], 2)
         self.assertEqual(test_reply["prune_id"], 1)
@@ -263,12 +265,18 @@ class MongoTests(TestCase):
                                                                       "unit_test_dg_1": "rw",
                                                                       "unit_test_dg_2": "ro"
                                                                   },
-                                                                  admin=True)
+                                                                  admin=True,
+                                                                  cron_jobs={
+                                                                      "unit_test_cj_1": "rw",
+                                                                      "unit_test_cj_2": "ro"
+                                                                  }
+                                                                  )
         self.assertEqual(test_reply["user_group"], "unit_test_user_group")
         self.assertEqual(test_reply["group_members"], ["unit_test_member_1", "unit_test_member_2"])
         self.assertFalse(test_reply["pruning_allowed"])
         self.assertEqual(test_reply["apps"], {"unit_test_app_1": "rw", "unit_test_app_2": "ro"})
         self.assertEqual(test_reply["device_groups"], {"unit_test_dg_1": "rw", "unit_test_dg_2": "ro"})
+        self.assertEqual(test_reply["cron_jobs"], {"unit_test_cj_1": "rw", "unit_test_cj_2": "ro"})
         self.assertTrue(test_reply["admin"])
 
         # check list user_group works
@@ -305,7 +313,12 @@ class MongoTests(TestCase):
                                                          "unit_test_dg_3": "rw",
                                                          "unit_test_dg_4": "ro"
                                                      },
-                                                     admin=True)
+                                                     admin=True,
+                                                     cron_jobs={
+                                                         "unit_test_cj_3": "rw",
+                                                         "unit_test_cj_4": "ro"
+                                                     }
+                                                     )
         test_reply = mongo_connection_object.mongo_list_user_permissions("unit_test_member_1")
         self.assertTrue(test_reply["admin"])
         self.assertTrue(test_reply["pruning_allowed"])
@@ -320,9 +333,16 @@ class MongoTests(TestCase):
             'unit_test_dg_2': 'ro',
             'unit_test_dg_3': 'rw',
             'unit_test_dg_4': 'ro'
+        },
+        cron_jobs_results = {
+            'unit_test_cj_1': 'rw',
+            'unit_test_cj_2': 'ro',
+            'unit_test_cj_3': 'rw',
+            'unit_test_cj_4': 'ro'
         }
         self.assertEqual(test_reply["apps"], apps_result)
         self.assertEqual(test_reply["device_groups"], device_groups_results)
+        self.assertEqual(test_reply["cron_jobs"], cron_jobs_results)
 
         # check user_group exists works
         test_reply = mongo_connection_object.mongo_check_user_group_exists("unit_test_user_group")

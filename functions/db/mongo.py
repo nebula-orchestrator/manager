@@ -51,21 +51,21 @@ class MongoConnection:
     def mongo_update_app(self, app_name, starting_ports, containers_per, env_vars, docker_image, running,
                          networks, volumes, devices, privileged, rolling_restart):
         result = self.collection["apps"].find_one_and_update({'app_name': app_name},
-                                                          {'$inc': {'app_id': 1},
-                                                           '$set': {'starting_ports': starting_ports,
-                                                                    'containers_per': containers_per,
-                                                                    'env_vars': env_vars,
-                                                                    'docker_image': docker_image,
-                                                                    'running': running,
-                                                                    'networks': networks,
-                                                                    "volumes": volumes,
-                                                                    "devices": devices,
-                                                                    "privileged": privileged,
-                                                                    "rolling_restart": rolling_restart
-                                                                    }
-                                                           },
-                                                          upsert=True,
-                                                          return_document=ReturnDocument.AFTER)
+                                                             {'$inc': {'app_id': 1},
+                                                              '$set': {'starting_ports': starting_ports,
+                                                                       'containers_per': containers_per,
+                                                                       'env_vars': env_vars,
+                                                                       'docker_image': docker_image,
+                                                                       'running': running,
+                                                                       'networks': networks,
+                                                                       "volumes": volumes,
+                                                                       "devices": devices,
+                                                                       "privileged": privileged,
+                                                                       "rolling_restart": rolling_restart
+                                                                       }
+                                                              },
+                                                             upsert=True,
+                                                             return_document=ReturnDocument.AFTER)
         return result
 
     # get latest envvars of app
@@ -76,17 +76,17 @@ class MongoConnection:
     # update envvars of an app
     def mongo_update_app_envars(self, app_name, env_vars):
         result = self.collection["apps"].find_one_and_update({'app_name': app_name},
-                                                          {'$inc': {'app_id': 1},
-                                                           '$set': {'env_vars': env_vars}},
-                                                          return_document=ReturnDocument.AFTER)
+                                                             {'$inc': {'app_id': 1},
+                                                              '$set': {'env_vars': env_vars}},
+                                                             return_document=ReturnDocument.AFTER)
         return result
 
     # update some fields of an app
     def mongo_update_app_fields(self, app_name, update_fields_dict):
         result = self.collection["apps"].find_one_and_update({'app_name': app_name},
-                                                          {'$inc': {'app_id': 1},
-                                                           '$set': update_fields_dict},
-                                                          return_document=ReturnDocument.AFTER)
+                                                             {'$inc': {'app_id': 1},
+                                                              '$set': update_fields_dict},
+                                                             return_document=ReturnDocument.AFTER)
         return result
 
     # get number of containers per cpu of app
@@ -97,9 +97,9 @@ class MongoConnection:
     # update number of containers per cpu of app
     def mongo_update_app_containers_per(self, app_name, containers_per):
         result = self.collection["apps"].find_one_and_update({'app_name': app_name},
-                                                          {'$inc': {'app_id': 1},
-                                                           '$set': {'containers_per': containers_per}},
-                                                          return_document=ReturnDocument.AFTER)
+                                                             {'$inc': {'app_id': 1},
+                                                              '$set': {'containers_per': containers_per}},
+                                                             return_document=ReturnDocument.AFTER)
         return result
 
     # get list of apps
@@ -148,17 +148,17 @@ class MongoConnection:
     # update app starting ports
     def mongo_update_app_starting_ports(self, app_name, starting_ports):
         result = self.collection["apps"].find_one_and_update({'app_name': app_name},
-                                                          {'$inc': {'app_id': 1},
-                                                           '$set': {'starting_ports': starting_ports}},
-                                                          return_document=ReturnDocument.AFTER)
+                                                             {'$inc': {'app_id': 1},
+                                                              '$set': {'starting_ports': starting_ports}},
+                                                             return_document=ReturnDocument.AFTER)
         return result
 
     # increase app_id - used to restart the app
     def mongo_increase_app_id(self, app_name):
-            result = self.collection["apps"].find_one_and_update({'app_name': app_name},
-                                                              {'$inc': {'app_id': 1}},
-                                                              return_document=ReturnDocument.AFTER)
-            return result
+        result = self.collection["apps"].find_one_and_update({'app_name': app_name},
+                                                             {'$inc': {'app_id': 1}},
+                                                             return_document=ReturnDocument.AFTER)
+        return result
 
     # get app running\stopped state
     def mongo_list_app_running_state(self, app_name):
@@ -168,19 +168,19 @@ class MongoConnection:
     # update app running\stopped state
     def mongo_update_app_running_state(self, app_name, running):
         result = self.collection["apps"].find_one_and_update({'app_name': app_name},
-                                                          {'$inc': {'app_id': 1},
-                                                           '$set': {'running': running}},
-                                                          return_document=ReturnDocument.AFTER)
+                                                             {'$inc': {'app_id': 1},
+                                                              '$set': {'running': running}},
+                                                             return_document=ReturnDocument.AFTER)
         return result
 
     # add device_group
-    # TODO - refactor to add cron_jobs
-    def mongo_add_device_group(self, device_group, apps):
+    def mongo_add_device_group(self, device_group, apps, cron_jobs):
         app_doc = {
             "device_group_id": 1,
             "device_group": device_group,
             "apps": apps,
-            "prune_id": 1
+            "prune_id": 1,
+            "cron_jobs": cron_jobs
         }
         insert_id = self.collection["device_groups"].insert_one(app_doc).inserted_id
         ignored_device_group_existence_status, result = self.mongo_get_device_group(device_group)
@@ -189,8 +189,8 @@ class MongoConnection:
     # increase prune_id - used to prune unused images of devices that are part of a device group
     def mongo_increase_prune_id(self, device_group):
         result = self.collection["device_groups"].find_one_and_update({'device_group': device_group},
-                                                                   {'$inc': {'prune_id': 1}},
-                                                                   return_document=ReturnDocument.AFTER)
+                                                                      {'$inc': {'prune_id': 1}},
+                                                                      return_document=ReturnDocument.AFTER)
         return result
 
     # list device_group
@@ -203,13 +203,11 @@ class MongoConnection:
         return device_group_exists, result
 
     # update device_group
-    # TODO - refactor to add cron_jobs
-    def mongo_update_device_group(self, device_group, apps):
+    def mongo_update_device_group(self, device_group, update_fields_dict):
         result = self.collection["device_groups"].find_one_and_update({'device_group': device_group},
-                                                                   {'$inc': {'device_group_id': 1},
-                                                                    '$set': {'apps': apps}},
-                                                                   return_document=ReturnDocument.AFTER
-                                                                   )
+                                                                      {'$inc': {'device_group_id': 1},
+                                                                       '$set': update_fields_dict},
+                                                                      return_document=ReturnDocument.AFTER)
         return result
 
     # delete device_group
@@ -220,7 +218,8 @@ class MongoConnection:
     # list all device groups
     def mongo_list_device_groups(self):
         device_groups = []
-        for device_group in self.collection["device_groups"].find({"device_group": {"$exists": "true"}}, {'_id': False}):
+        for device_group in self.collection["device_groups"].find({"device_group": {"$exists": "true"}},
+                                                                  {'_id': False}):
             device_groups.append(device_group["device_group"])
         return device_groups
 
@@ -301,20 +300,20 @@ class MongoConnection:
     # it's own
     def mongo_update_user(self, user_name, update_fields_dict):
         result = self.collection["users"].find_one_and_update({'user_name': user_name},
-                                                           {'$set': update_fields_dict},
-                                                           return_document=ReturnDocument.AFTER)
+                                                              {'$set': update_fields_dict},
+                                                              return_document=ReturnDocument.AFTER)
         return result
 
     # create a user_group
-    # TODO - refactor to add cron_jobs
-    def mongo_add_user_group(self, user_group, group_members, pruning_allowed, apps, device_groups, admin):
+    def mongo_add_user_group(self, user_group, group_members, pruning_allowed, apps, device_groups, admin, cron_jobs):
         user_group_doc = {
             "user_group": user_group,
             "group_members": group_members,
             "pruning_allowed": pruning_allowed,
             "apps": apps,
             "device_groups": device_groups,
-            "admin": admin
+            "admin": admin,
+            "cron_jobs": cron_jobs
         }
         insert_id = self.collection["user_groups"].insert_one(user_group_doc).inserted_id
         ignored_device_group_existence_status, result = self.mongo_get_user_group(user_group)
@@ -323,8 +322,8 @@ class MongoConnection:
     # update a user_group
     def mongo_update_user_group(self, user_group, update_fields_dict):
         result = self.collection["user_groups"].find_one_and_update({'user_group': user_group},
-                                                                 {'$set': update_fields_dict},
-                                                                 return_document=ReturnDocument.AFTER)
+                                                                    {'$set': update_fields_dict},
+                                                                    return_document=ReturnDocument.AFTER)
         return result
 
     # delete a user_group
@@ -349,9 +348,8 @@ class MongoConnection:
         return user_group_exists, result
 
     # return a aggregated view of all groups that a user is a member of
-    # TODO - refactor to add cron_jobs
     def mongo_list_user_permissions(self, user_name):
-        user_permissions = {"apps": {}, "device_groups": {}, "admin": False, "pruning_allowed": False}
+        user_permissions = {"apps": {}, "device_groups": {}, "admin": False, "pruning_allowed": False, "cron_jobs": {}}
         find_query = {"$and": [{"user_group": {"$exists": "true"}}, {"group_members": user_name}]}
         for user_group in self.collection["user_groups"].find(find_query, {'_id': False}):
             if user_group["admin"] is True:
@@ -360,16 +358,59 @@ class MongoConnection:
                 user_permissions["pruning_allowed"] = True
             user_permissions["apps"] = {**user_permissions["apps"], **user_group["apps"]}
             user_permissions["device_groups"] = {**user_permissions["device_groups"], **user_group["device_groups"]}
+            user_permissions["cron_jobs"] = {**user_permissions["cron_jobs"], **user_group["cron_jobs"]}
         return user_permissions
 
-    # TODO - add mongo create cron_job
+    # add cron_job
+    def mongo_add_cron_job(self, cron_job_name, schedule, env_vars, docker_image, running, networks, volumes, devices,
+                           privileged):
+        cron_job_doc = {
+            "cron_job_id": 1,
+            "cron_job_name": cron_job_name,
+            "schedule": schedule,
+            "env_vars": env_vars,
+            "docker_image": docker_image,
+            'running': running,
+            'networks': networks,
+            "volumes": volumes,
+            "devices": devices,
+            "privileged": privileged
+        }
+        insert_id = self.collection["cron_jobs"].insert_one(cron_job_doc).inserted_id
+        ignored_cron_job_existence_status, result = self.mongo_get_cron_job(cron_job_name)
+        return result
 
-    # TODO - add mongo list all cron_jobs
+    # list all cron jobs
+    def mongo_list_cron_jobs(self):
+        cron_jobs = []
+        for cron_job in self.collection["cron_jobs"].find({"cron_job": {"$exists": "true"}},
+                                                          {'_id': False}):
+            cron_jobs.append(cron_job["cron_job"])
+        return cron_jobs
 
-    # TODO - add mongo list cron_job info
+    # get all cron job data
+    def mongo_get_cron_job(self, cron_job_name):
+        result = self.collection["cron_jobs"].find_one({"cron_job": cron_job_name}, {'_id': False})
+        if result is None:
+            cron_job_exists = False
+        else:
+            cron_job_exists = True
+        return cron_job_exists, result
 
-    # TODO - add mongo update cron_job
+    # update some fields of an cron_job
+    def mongo_update_cron_job_fields(self, cron_job_name, update_fields_dict):
+        result = self.collection["cron_jobs"].find_one_and_update({'cron_job': cron_job_name},
+                                                                  {'$inc': {'app_id': 1},
+                                                                   '$set': update_fields_dict},
+                                                                  return_document=ReturnDocument.AFTER)
+        return result
 
-    # TODO - add mongo delete cron_job
+    # delete a cron_job
+    def mongo_delete_cron_job(self, cron_job):
+        result = self.collection["cron_jobs"].delete_one({"cron_job": cron_job})
+        return result
 
-    # TODO - add mongo check cron_job exists
+    # check if cron_job exists
+    def mongo_check_cron_job_exists(self, cron_job):
+        result, ignored = self.mongo_get_cron_job(cron_job)
+        return result
