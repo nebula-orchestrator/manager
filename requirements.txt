@@ -1,7 +1,7 @@
 backports.ssl-match-hostname==3.5.0.1
 bcrypt==3.1.6
 cachetools==3.1.0
-certifi==2018.11.29
+certifi==2019.3.9
 cffi==1.12.2
 chardet==3.0.4
 Click==7.0
@@ -18,8 +18,8 @@ html5lib==1.0.1
 idna==2.8
 ipaddress==1.0.22
 itsdangerous==1.1.0
-Jinja2==2.10
-MarkupSafe==1.1.0
+Jinja2==2.10.1
+MarkupSafe==1.1.1
 pycparser==2.19
 pymongo==3.7.2
 python-dateutil==2.8.0
@@ -29,4 +29,4 @@ six==1.12.0
 urllib3==1.24.1
 webencodings==0.5.1
 websocket-client==0.54.0
-Werkzeug==0.14.1
+Werkzeug==0.15.2
