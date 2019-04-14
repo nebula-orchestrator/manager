@@ -91,12 +91,11 @@ def get_param_filter(param_name, full_request, filter_param="eq", request_type=s
 
 
 # check if a user is allowed to preform
-# TODO - add cron_job auth support
 def check_authorized(permission_needed=None, permission_object_type=None):
     # by default don't allow access
     allow_access = False
 
-    # if auth is disabled always allow access or the user is a local admin always allow access
+    # if auth is disabled or the user is a local admin always allow access
     if (auth_enabled is False) or (g.user_type == "local"):
         allow_access = True
     # otherwise query the db for the current user permissions and set the default reply to not be allowed
@@ -110,7 +109,8 @@ def check_authorized(permission_needed=None, permission_object_type=None):
             if user_permissions["pruning_allowed"] is True:
                 allow_access = True
         # in any other case allow access if the permission needed is in the permission list of the user in the db
-        elif permission_object_type == "apps" or permission_object_type == "device_groups":
+        elif permission_object_type == "apps" or permission_object_type == "device_groups" or \
+                permission_object_type == "cron_jobs":
             for permission_key, permission_value in user_permissions[permission_object_type].items():
                 if permission_needed == {permission_key: permission_value}:
                     allow_access = True
@@ -119,7 +119,6 @@ def check_authorized(permission_needed=None, permission_object_type=None):
 
 
 # this wrapper checks if a user is authorized to preform the requested action
-# TODO - add cron_job auth support
 def check_authorization_wrapper(permission_needed=None, permission_object_type=None):
 
     def callable_function(func):
@@ -130,12 +129,16 @@ def check_authorization_wrapper(permission_needed=None, permission_object_type=N
                 if check_authorized(permission_needed={"pruning": permission_needed},
                                     permission_object_type=permission_object_type) is True:
                     result = func(*args, **kwargs)
-            if permission_object_type == "apps":
+            elif permission_object_type == "apps":
                 if check_authorized(permission_needed={kwargs['app_name']: permission_needed},
                                     permission_object_type=permission_object_type) is True:
                     result = func(*args, **kwargs)
             elif permission_object_type == "device_groups":
                 if check_authorized(permission_needed={kwargs['device_group']: permission_needed},
+                                    permission_object_type=permission_object_type) is True:
+                    result = func(*args, **kwargs)
+            elif permission_object_type == "cron_jobs":
+                if check_authorized(permission_needed={kwargs['cron_jobs']: permission_needed},
                                     permission_object_type=permission_object_type) is True:
                     result = func(*args, **kwargs)
             elif permission_object_type == "admin":
