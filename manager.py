@@ -138,7 +138,7 @@ def check_authorization_wrapper(permission_needed=None, permission_object_type=N
                                     permission_object_type=permission_object_type) is True:
                     result = func(*args, **kwargs)
             elif permission_object_type == "cron_jobs":
-                if check_authorized(permission_needed={kwargs['cron_jobs']: permission_needed},
+                if check_authorized(permission_needed={kwargs['cron_job']: permission_needed},
                                     permission_object_type=permission_object_type) is True:
                     result = func(*args, **kwargs)
             elif permission_object_type == "admin":
@@ -275,7 +275,7 @@ def create_app(app_name):
         try:
             starting_ports = return_sane_default_if_not_declared("starting_ports", app_json, [])
             containers_per = return_sane_default_if_not_declared("containers_per", app_json, {"server": 1})
-            env_vars = return_sane_default_if_not_declared("env_vars", app_json, [])
+            env_vars = return_sane_default_if_not_declared("env_vars", app_json, {})
             docker_image = app_json["docker_image"]
             running = return_sane_default_if_not_declared("running", app_json, True)
             networks = return_sane_default_if_not_declared("networks", app_json, ["nebula", "bridge"])
@@ -841,17 +841,101 @@ def get_user_group(user_group):
         return jsonify({"user_group_exists": False}), 403
 
 
-# TODO - add create cron_job endpoint
-# TODO - add check that cron is valid croniter.is_valid('0 0 1 * *')
+# create cron_job
+@app.route('/api/' + API_VERSION + '/cron_jobs/<cron_job>', methods=["POST"])
+@multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="cron_jobs")
+def create_cron_job(cron_job):
+    # check cron_job does't exists first
+    cron_job_exists = mongo_connection.mongo_check_cron_job_exists(cron_job)
+    if cron_job_exists is True:
+        return jsonify({"cron_job_exists": True}), 403
+    else:
+        # check the request is passed with all needed parameters
+        try:
+            cron_job_json = request.json
+            schedule = cron_job_json["schedule"]
+            env_vars = return_sane_default_if_not_declared("env_vars", cron_job_json, {})
+            docker_image= cron_job_json["docker_image"]
+            running = return_sane_default_if_not_declared("running", cron_job_json, True)
+            networks = return_sane_default_if_not_declared("networks", cron_job_json, [])
+            volumes = return_sane_default_if_not_declared("volumes", cron_job_json, [])
+            devices = return_sane_default_if_not_declared("devices", cron_job_json, [])
+            privileged = return_sane_default_if_not_declared("privileged", cron_job_json, False)
+        except:
+            return json.dumps(find_missing_params(cron_job_json, ["docker_image", "schedule"])), 400
+        # check edge case where schedule is not valid
+        if croniter.is_valid(schedule) is False:
+            return jsonify({"schedule_valid": False}), 400
+        # update the db
+        cron_job_json = mongo_connection.mongo_add_cron_job(cron_job, schedule, env_vars, docker_image, running,
+                                                            networks, volumes, devices, privileged)
+        return dumps(cron_job_json), 200
 
-# TODO - add list all cron_jobs endpoint
 
-# TODO - add list cron_job info endpoint
+# list cron_jobs
+@app.route('/api/' + API_VERSION + '/cron_jobs', methods=["GET"])
+@retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
+@multi_auth.login_required
+def list_cron_jobs():
+    nebula_cron_jobs_list = mongo_connection.mongo_list_cron_jobs()
+    return jsonify({"cron_jobs": nebula_cron_jobs_list}), 200
 
-# TODO - add update cron_job endpoint
-# TODO - add check that cron is valid croniter.is_valid('0 0 1 * *')
 
-# TODO - add delete cron_job endpoint
+# list cron_job
+@app.route('/api/' + API_VERSION + '/cron_jobs/<cron_job>', methods=["GET"])
+@retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
+@multi_auth.login_required
+@check_authorization_wrapper(permission_needed="ro", permission_object_type="cron_jobs")
+def get_cron_job(cron_job):
+    cron_job_exists, cron_job_json = mongo_connection.mongo_get_cron_job(cron_job)
+    if cron_job_exists is True:
+        return dumps(cron_job_json), 200
+    elif cron_job_exists is False:
+        return jsonify({"cron_job_exists": False}), 403
+
+
+# PUT update some fields of an cron job - params not given will be unchanged from their current value
+@app.route('/api/' + API_VERSION + '/cron_jobs/<cron_job>/update', methods=["PUT", "PATCH"])
+@multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="cron_jobs")
+def update_cron_job_fields(cron_job):
+    # check cron_job exists first
+    cron_job_exists = mongo_connection.mongo_check_cron_job_exists(cron_job)
+    if cron_job_exists is False:
+        return jsonify({"cron_job_exists": False}), 403
+    # check cron_job got update parameters
+    try:
+        cron_job_json = request.json
+        if len(cron_job_json) == 0:
+            return jsonify({"missing_parameters": True}), 400
+    except:
+        return jsonify({"missing_parameters": True}), 400
+    # check edge case of port being outside of possible port ranges in case trying to update port listing
+    try:
+        schedule = request.json["schedule"]
+        # check edge case where schedule is not valid
+        if croniter.is_valid(schedule) is False:
+            return jsonify({"schedule_valid": False}), 400
+    except:
+        pass
+    # update db
+    cron_job_json = mongo_connection.mongo_update_cron_job_fields(cron_job, request.json)
+    return dumps(cron_job_json), 202
+
+
+# delete a cron_job
+@app.route('/api/' + API_VERSION + '/cron_jobs/<cron_job>', methods=["DELETE"])
+@multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="admin")
+def delete_cron_job(cron_job):
+    # check user exists first
+    cron_job_exists = mongo_connection.mongo_check_cron_job_exists(cron_job)
+    if cron_job_exists is False:
+        return jsonify({"cron_job_exists": False}), 403
+    # remove from db
+    mongo_connection.mongo_delete_cron_job(cron_job)
+    return "{}", 200
 
 
 # used for when running with the 'ENV' envvar set to dev to open a new thread with flask builtin web server

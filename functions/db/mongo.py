@@ -383,14 +383,14 @@ class MongoConnection:
     # list all cron jobs
     def mongo_list_cron_jobs(self):
         cron_jobs = []
-        for cron_job in self.collection["cron_jobs"].find({"cron_job": {"$exists": "true"}},
+        for cron_job in self.collection["cron_jobs"].find({"cron_job_name": {"$exists": "true"}},
                                                           {'_id': False}):
-            cron_jobs.append(cron_job["cron_job"])
+            cron_jobs.append(cron_job["cron_job_name"])
         return cron_jobs
 
     # get all cron job data
     def mongo_get_cron_job(self, cron_job_name):
-        result = self.collection["cron_jobs"].find_one({"cron_job": cron_job_name}, {'_id': False})
+        result = self.collection["cron_jobs"].find_one({"cron_job_name": cron_job_name}, {'_id': False})
         if result is None:
             cron_job_exists = False
         else:
@@ -399,15 +399,15 @@ class MongoConnection:
 
     # update some fields of an cron_job
     def mongo_update_cron_job_fields(self, cron_job_name, update_fields_dict):
-        result = self.collection["cron_jobs"].find_one_and_update({'cron_job': cron_job_name},
-                                                                  {'$inc': {'app_id': 1},
+        result = self.collection["cron_jobs"].find_one_and_update({'cron_job_name': cron_job_name},
+                                                                  {'$inc': {'cron_job_id': 1},
                                                                    '$set': update_fields_dict},
                                                                   return_document=ReturnDocument.AFTER)
         return result
 
     # delete a cron_job
     def mongo_delete_cron_job(self, cron_job):
-        result = self.collection["cron_jobs"].delete_one({"cron_job": cron_job})
+        result = self.collection["cron_jobs"].delete_one({"cron_job_name": cron_job})
         return result
 
     # check if cron_job exists
