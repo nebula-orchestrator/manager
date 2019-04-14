@@ -463,7 +463,7 @@ def get_device_group_info(device_group):
         cron_job_exists, cron_job_json = mongo_connection.mongo_get_cron_job(device_cron_job)
         if cron_job_exists is True:
             device_group_config["cron_jobs"].append(cron_job_json)
-            device_group_config["cron_jobs_list"].append(cron_job_json["cron_jobs_name"])
+            device_group_config["cron_jobs_list"].append(cron_job_json["cron_job_name"])
     return dumps(device_group_config), 200
 
 
