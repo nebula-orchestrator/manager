@@ -499,7 +499,6 @@ def create_device_group(device_group):
 
 
 # list device_group
-# TODO - add cron_jobs
 @app.route('/api/' + API_VERSION + '/device_groups/<device_group>', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 @multi_auth.login_required
@@ -755,7 +754,6 @@ def create_user(user_name):
 
 
 # create new user_group
-# TODO - add cron_jobs
 @app.route('/api/' + API_VERSION + '/user_groups/<user_group>', methods=["POST"])
 @multi_auth.login_required
 @check_authorization_wrapper(permission_needed="rw", permission_object_type="admin")
@@ -787,7 +785,6 @@ def create_user_group(user_group):
 
 
 # PUT update some fields of a user_group
-# TODO - add cron_jobs
 @app.route('/api/' + API_VERSION + '/user_groups/<user_group>/update', methods=["PUT", "PATCH"])
 @multi_auth.login_required
 @check_authorization_wrapper(permission_needed="rw", permission_object_type="admin")
@@ -832,7 +829,6 @@ def list_user_groups():
 
 
 # get user_group info
-# TODO - add cron_jobs
 @app.route('/api/' + API_VERSION + '/user_groups/<user_group>', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 @multi_auth.login_required
