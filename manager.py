@@ -484,7 +484,14 @@ def create_device_group(device_group):
             apps = return_sane_default_if_not_declared("apps", app_json, [])
         except:
             return json.dumps({"missing_parameters": True}), 400
-        # TODO - add check that cron_jobs is list & check edge case it does not exist
+        # check edge case where cron_jobs is not a list
+        if type(cron_jobs) is not list:
+            return jsonify({"cron_jobs_is_list": False}), 400
+        # check edge case where adding an cron_jobs that does not exist
+        for device_cron_job in cron_jobs:
+            cron_job_exists, cron_job_json = mongo_connection.mongo_get_cron_job(device_cron_job)
+            if cron_job_exists is False:
+                return jsonify({"cron_job_exists": False}), 403
         # check edge case where apps is not a list
         if type(apps) is not list:
             return jsonify({"apps_is_list": False}), 400
@@ -527,7 +534,14 @@ def update_device_group(device_group):
         apps = return_sane_default_if_not_declared("apps", app_json, [])
     except:
         return json.dumps({"missing_parameters": True}), 400
-    # TODO - add check that cron_jobs is list & check edge case it does not exist
+    # check edge case where cron_jobs is not a list
+    if type(cron_jobs) is not list:
+        return jsonify({"cron_jobs_is_list": False}), 400
+    # check edge case where adding an cron_jobs that does not exist
+    for device_cron_job in cron_jobs:
+        cron_job_exists, cron_job_json = mongo_connection.mongo_get_cron_job(device_cron_job)
+        if cron_job_exists is False:
+            return jsonify({"cron_job_exists": False}), 403
     # check edge case where apps is not a list
     if type(apps) is not list:
         return jsonify({"apps_is_list": False}), 400
@@ -603,7 +617,6 @@ def prune_images_on_all_device_groups():
 
 
 # list reports
-# TODO - add filtering by cron_job
 @app.route('/api/' + API_VERSION + '/reports', methods=["GET"])
 @retry(stop_max_attempt_number=3, wait_exponential_multiplier=200, wait_exponential_max=500)
 @multi_auth.login_required
