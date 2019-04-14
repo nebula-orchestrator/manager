@@ -4,8 +4,6 @@ from manager import *
 
 class BaseTests(TestCase):
 
-    # TODO - add cron_job_flow_tests
-
     def test_get_conf_setting_from_json_config(self):
         settings_json = {"test_json_key": "test_json_value"}
         test_value = get_conf_setting("test_json_key", settings_json, default_value="skip")

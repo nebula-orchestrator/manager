@@ -111,12 +111,14 @@ class MongoConnection:
 
     # add app
     def mongo_add_app(self, app_name, starting_ports, containers_per, env_vars, docker_image, running=True,
-                      networks="nebula", volumes=None, devices=None, privileged=False, rolling_restart=False):
+                      networks=None, volumes=None, devices=None, privileged=False, rolling_restart=False):
         # creating the list inside the function to avoid mutable value list in the function default value
         if volumes is None:
             volumes = []
         if devices is None:
             devices = []
+        if networks is None:
+            networks = ["nebula"]
         app_doc = {
             "app_id": 1,
             "app_name": app_name,
@@ -362,8 +364,14 @@ class MongoConnection:
         return user_permissions
 
     # add cron_job
-    def mongo_add_cron_job(self, cron_job_name, schedule, env_vars, docker_image, running, networks, volumes, devices,
-                           privileged):
+    def mongo_add_cron_job(self, cron_job_name, schedule, env_vars, docker_image, running=True, networks=None,
+                           volumes=None, devices=None, privileged=False):
+        if volumes is None:
+            volumes = []
+        if devices is None:
+            devices = []
+        if networks is None:
+            networks = ["nebula"]
         cron_job_doc = {
             "cron_job_id": 1,
             "cron_job_name": cron_job_name,

@@ -21,9 +21,105 @@ def create_temp_app(mongo_connection_object, app):
     return reply
 
 
+def create_temp_cron_job(mongo_connection_object, cron_job):
+    cron_job_conf = {
+        "env_vars": {"TEST": "test123"},
+        "docker_image": "nginx",
+        "running": True,
+        "volumes": [],
+        "networks": ["nebula"],
+        "devices": [],
+        "privileged": False,
+        "schedule": "0 * * * *"
+    }
+    reply = mongo_connection_object.mongo_add_cron_job(cron_job, cron_job_conf["schedule"], cron_job_conf["env_vars"],
+                                                       cron_job_conf["docker_image"], cron_job_conf["running"],
+                                                       cron_job_conf["networks"], cron_job_conf["volumes"],
+                                                       cron_job_conf["devices"], cron_job_conf["privileged"])
+    return reply
+
+
 class MongoTests(TestCase):
 
-    # TODO - add cron_job_flow_mongo_tests
+    def test_mongo_cron_job_flow(self):
+        mongo_connection_object = mongo_connection()
+
+        # ensure no test app is already created in the unit test DB
+        mongo_connection_object.mongo_delete_cron_job("unit_test_cron_job")
+
+        # check create test cron job works
+        test_reply = create_temp_cron_job(mongo_connection_object, "unit_test_cron_job")
+        self.assertEqual(test_reply["cron_job_id"], 1)
+        self.assertEqual(test_reply["cron_job_name"], "unit_test_cron_job")
+        self.assertEqual(test_reply["devices"], [])
+        self.assertEqual(test_reply["docker_image"], "nginx")
+        self.assertEqual(test_reply["env_vars"], {"TEST": "test123"})
+        self.assertEqual(test_reply["networks"], ["nebula"])
+        self.assertFalse(test_reply["privileged"])
+        self.assertTrue(test_reply["running"])
+        self.assertEqual(test_reply["volumes"], [])
+        self.assertEqual(test_reply["schedule"], "0 * * * *")
+
+        # check getting test cron job data works
+        cron_job_exists, test_reply = mongo_connection_object.mongo_get_cron_job("unit_test_cron_job")
+        self.assertTrue(cron_job_exists)
+        self.assertEqual(test_reply["cron_job_id"], 1)
+        self.assertEqual(test_reply["cron_job_name"], "unit_test_cron_job")
+        self.assertEqual(test_reply["devices"], [])
+        self.assertEqual(test_reply["docker_image"], "nginx")
+        self.assertEqual(test_reply["env_vars"], {"TEST": "test123"})
+        self.assertEqual(test_reply["networks"], ["nebula"])
+        self.assertFalse(test_reply["privileged"])
+        self.assertTrue(test_reply["running"])
+        self.assertEqual(test_reply["volumes"], [])
+        self.assertEqual(test_reply["schedule"], "0 * * * *")
+
+        # check getting test app data non existing app
+        cron_job_exists, test_reply = mongo_connection_object.mongo_get_cron_job("unit_test_cron_job_doesnt_exist")
+        self.assertFalse(cron_job_exists)
+
+        # check if app exists works
+        test_reply = mongo_connection_object.mongo_check_cron_job_exists("unit_test_cron_job")
+        self.assertTrue(test_reply)
+        test_reply = mongo_connection_object.mongo_check_cron_job_exists("unit_test_cron_job_doesnt_exist")
+        self.assertFalse(test_reply)
+
+        # check updating app somefield works
+        test_reply = mongo_connection_object.mongo_update_cron_job_fields("unit_test_cron_job", {
+            "env_vars":
+                {"TESTING": "testing12345"},
+            "running": False
+        })
+        self.assertEqual(test_reply["env_vars"], {"TESTING": "testing12345"})
+        self.assertFalse(test_reply["running"])
+
+        # check getting list of cron jobs works
+        test_reply = mongo_connection_object.mongo_list_cron_jobs()
+        self.assertEqual(test_reply, ["unit_test_cron_job"])
+
+        # check update test app works
+        test_reply = mongo_connection_object.mongo_get_cron_job("unit_test_cron_job")
+        cron_job_exists, test_cron_json = test_reply
+        test_cron_job_id = test_cron_json["cron_job_id"]
+        updated_app_conf = {
+            "schedule": "0 0 0 0 0"
+        }
+        test_reply = mongo_connection_object.mongo_update_cron_job_fields("unit_test_cron_job", updated_app_conf)
+        self.assertTrue(cron_job_exists)
+        self.assertEqual(test_reply["cron_job_id"], test_cron_job_id + 1)
+        self.assertEqual(test_reply["cron_job_name"], "unit_test_cron_job")
+        self.assertEqual(test_reply["devices"], [])
+        self.assertEqual(test_reply["docker_image"], "nginx")
+        self.assertEqual(test_reply["env_vars"], {"TESTING": "testing12345"})
+        self.assertEqual(test_reply["networks"], ["nebula"])
+        self.assertFalse(test_reply["privileged"])
+        self.assertFalse(test_reply["running"])
+        self.assertEqual(test_reply["volumes"], [])
+        self.assertEqual(test_reply["schedule"], "0 0 0 0 0")
+
+        # check delete test app works
+        test_reply = mongo_connection_object.mongo_delete_cron_job("unit_test_cron_job")
+        self.assertEqual(test_reply.deleted_count, 1)
 
     def test_mongo_app_flow(self):
         mongo_connection_object = mongo_connection()
@@ -39,7 +135,7 @@ class MongoTests(TestCase):
         self.assertEqual(test_reply["devices"], [])
         self.assertEqual(test_reply["docker_image"], "nginx")
         self.assertEqual(test_reply["env_vars"], {"TEST": "test123"})
-        self.assertEqual(test_reply["networks"], "nebula")
+        self.assertEqual(test_reply["networks"], ["nebula"])
         self.assertFalse(test_reply["privileged"])
         self.assertFalse(test_reply["rolling_restart"])
         self.assertTrue(test_reply["running"])
@@ -54,7 +150,7 @@ class MongoTests(TestCase):
         self.assertEqual(test_reply["devices"], [])
         self.assertEqual(test_reply["docker_image"], "nginx")
         self.assertEqual(test_reply["env_vars"], {"TEST": "test123"})
-        self.assertEqual(test_reply["networks"], "nebula")
+        self.assertEqual(test_reply["networks"], ["nebula"])
         self.assertFalse(test_reply["privileged"])
         self.assertFalse(test_reply["rolling_restart"])
         self.assertTrue(test_reply["running"])
