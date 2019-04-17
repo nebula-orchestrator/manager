@@ -556,7 +556,51 @@ def update_device_group(device_group):
     return dumps(app_json), 202
 
 
-# TODO - add PUT partial update of device_group
+# PUT update device_group
+@app.route('/api/' + API_VERSION + '/device_groups/<device_group>/update', methods=["PUT", "PATCH"])
+@multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="device_groups")
+def update_device_group_some_params(device_group):
+    # check device_group_ exists first
+    device_group_exists = mongo_connection.mongo_check_device_group_exists(device_group)
+    if device_group_exists is False:
+        return jsonify({"device_group_exists": False}), 403
+    # check device_group_ got update parameters
+    try:
+        device_group_json = request.json
+        if len(device_group_json) == 0:
+            return jsonify({"missing_parameters": True}), 400
+    except:
+        return jsonify({"missing_parameters": True}), 400
+    # check edge case of port being outside of possible port ranges in case trying to update port listing
+    try:
+        cron_jobs = request.json["cron_jobs"]
+        # check edge case where cron_jobs is not a list
+        if type(cron_jobs) is not list:
+            return jsonify({"cron_jobs_is_list": False}), 400
+        # check edge case where adding an cron_jobs that does not exist
+        for device_cron_job in cron_jobs:
+            cron_job_exists, cron_job_json = mongo_connection.mongo_get_cron_job(device_cron_job)
+            if cron_job_exists is False:
+                return jsonify({"cron_job_exists": False}), 403
+    except:
+        pass
+    try:
+        apps = request.json["apps"]
+        # check edge case where apps is not a list
+        if type(apps) is not list:
+            return jsonify({"apps_is_list": False}), 400
+        # check edge case where adding an app that does not exist
+        for device_app in apps:
+            app_exists, app_json = mongo_connection.mongo_get_app(device_app)
+            if app_exists is False:
+                return jsonify({"app_exists": False}), 403
+    except:
+        pass
+    # update db
+    device_group_json = mongo_connection.mongo_update_device_group(device_group, request.json)
+    return dumps(device_group_json), 202
+
 
 
 # delete device_group
