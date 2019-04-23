@@ -678,9 +678,9 @@ def get_report():
 
     # Now we combine all the filters
     filters = {}
-    for filter in [hostname, device_group, report_creation_time]:
-        if filter is not None:
-            filters = {**filters, **filter}
+    for filter_option in [hostname, device_group, report_creation_time]:
+        if filter_option is not None:
+            filters = {**filters, **filter_option}
 
     # lastly we return the requests reports to the user
     data, last_id = mongo_connection.mango_list_paginated_filtered_reports(page_size=page_size, last_id=last_id,
