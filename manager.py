@@ -8,30 +8,10 @@ from cachetools import cached, TTLCache
 from retrying import retry
 from functools import wraps
 from croniter import croniter
+from parse_it import ParseIt
 
 
 API_VERSION = "v2"
-
-
-# get setting from envvar with failover from config/conf.json file if envvar not set
-# using skip rather then None so passing a None type will still pass a None value rather then assuming there should be
-# default value thus allowing to have No value set where needed (like in the case of registry user\pass)
-def get_conf_setting(setting, settings_json, default_value="skip"):
-    try:
-        setting_value = os.getenv(setting.upper(), settings_json.get(setting, default_value))
-        if setting_value == "true":
-            return True
-        elif setting_value == "false":
-            return False
-    except Exception as e:
-        print("missing " + setting + " config setting", file=sys.stderr)
-        print("missing " + setting + " config setting")
-        os._exit(2)
-    if setting_value == "skip":
-        print("missing " + setting + " config setting", file=sys.stderr)
-        print("missing " + setting + " config setting")
-        os._exit(2)
-    return setting_value
 
 
 # takes an invalid request & figure out what params are missing on a request and returns a list of those, this function
@@ -152,25 +132,19 @@ def check_authorization_wrapper(permission_needed=None, permission_object_type=N
 
 
 # read config file at startup
-# load the login params from envvar or auth.json file if envvar is not set, if both are unset will load the default
-# value if one exists for the param
-if os.path.exists("config/conf.json"):
-    print("reading config file")
-    auth_file = json.load(open("config/conf.json"))
-else:
-    print("config file not found - skipping reading it and checking if needed params are given from envvars")
-    auth_file = {}
+print("reading config variables")
+parser = ParseIt(config_folder_location="config")
 
 print("reading config variables")
-basic_auth_user = get_conf_setting("basic_auth_user", auth_file, None)
-basic_auth_password = get_conf_setting("basic_auth_password", auth_file, None)
-auth_token = get_conf_setting("auth_token", auth_file, None)
-mongo_url = get_conf_setting("mongo_url", auth_file)
-schema_name = get_conf_setting("schema_name", auth_file, "nebula")
-auth_enabled = get_conf_setting("auth_enabled", auth_file, True)
-cache_time = int(get_conf_setting("cache_time", auth_file, "10"))
-cache_max_size = int(get_conf_setting("cache_max_size", auth_file, "1024"))
-mongo_max_pool_size = int(get_conf_setting("mongo_max_pool_size", auth_file, "25"))
+basic_auth_user = parser.read_configuration_variable("basic_auth_user",  default_value=None)
+basic_auth_password = parser.read_configuration_variable("basic_auth_password",  default_value=None)
+auth_token = parser.read_configuration_variable("auth_token",  default_value=None)
+mongo_url = parser.read_configuration_variable("mongo_url", required=True)
+schema_name = parser.read_configuration_variable("schema_name",  default_value="nebula")
+auth_enabled = parser.read_configuration_variable("auth_enabled",  default_value=True)
+cache_time = parser.read_configuration_variable("cache_time",  default_value=10)
+cache_max_size = parser.read_configuration_variable("cache_max_size",  default_value=1024)
+mongo_max_pool_size = parser.read_configuration_variable("mongo_max_pool_size",  default_value=25)
 
 # login to db at startup
 mongo_connection = MongoConnection(mongo_url, schema_name, max_pool_size=mongo_max_pool_size)
