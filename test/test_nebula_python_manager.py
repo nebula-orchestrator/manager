@@ -4,31 +4,6 @@ from manager import *
 
 class BaseTests(TestCase):
 
-    def test_get_conf_setting_from_json_config(self):
-        settings_json = {"test_json_key": "test_json_value"}
-        test_value = get_conf_setting("test_json_key", settings_json, default_value="skip")
-        self.assertEqual(test_value, "test_json_value")
-
-    def test_get_conf_setting_true(self):
-        settings_json = {"test_json_key": "true"}
-        test_value = get_conf_setting("test_json_key", settings_json, default_value="skip")
-        self.assertTrue(test_value)
-
-    def test_get_conf_setting_false(self):
-        settings_json = {"test_json_key": "false"}
-        test_value = get_conf_setting("test_json_key", settings_json, default_value="skip")
-        self.assertFalse(test_value)
-
-    def test_get_conf_setting_from_default_value(self):
-        settings_json = {"test_json_key": "test_json_value"}
-        test_value = get_conf_setting("default_value_key_check", settings_json, default_value="default_value_value")
-        self.assertEqual(test_value, "default_value_value")
-
-    def test_get_conf_setting_from_envar(self):
-        settings_json = {"test_json_key": "test_json_value"}
-        test_value = get_conf_setting("default_value_key_check", settings_json, default_value="default_value_value")
-        self.assertEqual(test_value, "default_value_value")
-
     def test_find_missing_params(self):
         test_reply = find_missing_params({}, ["docker_image"])
         self.assertEqual(test_reply, {"missing_parameters": ["docker_image"]})
