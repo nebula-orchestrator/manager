@@ -133,8 +133,7 @@ def check_authorization_wrapper(permission_needed=None, permission_object_type=N
 
 # read config file at startup
 print("reading config variables")
-parser = ParseIt(config_folder_location="config", config_type_priority=["envvars", "json", "yaml", "yml", "toml",
-                                                                        "tml"])
+parser = ParseIt(config_folder_location="config")
 
 print("reading config variables")
 basic_auth_user = parser.read_configuration_variable("basic_auth_user",  default_value=None)
