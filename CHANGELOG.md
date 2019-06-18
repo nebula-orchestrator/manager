@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump certifi from 2019.3.9 to 2019.6.16 [\#46](https://github.com/nebula-orchestrator/manager/pull/46) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyyaml from 5.1 to 5.1.1 [\#45](https://github.com/nebula-orchestrator/manager/pull/45) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.7.0 to 0.8.1 [\#44](https://github.com/nebula-orchestrator/manager/pull/44) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cachetools from 3.1.0 to 3.1.1 [\#43](https://github.com/nebula-orchestrator/manager/pull/43) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
