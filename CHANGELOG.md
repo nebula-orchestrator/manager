@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump flask from 1.0.3 to 1.1.0 [\#50](https://github.com/nebula-orchestrator/manager/pull/50) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.9.0 to 0.9.1 [\#49](https://github.com/nebula-orchestrator/manager/pull/49) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.8.1 to 0.9.0 [\#48](https://github.com/nebula-orchestrator/manager/pull/48) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump bcrypt from 3.1.6 to 3.1.7 [\#47](https://github.com/nebula-orchestrator/manager/pull/47) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
