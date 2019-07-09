@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump flask from 1.1.0 to 1.1.1 [\#51](https://github.com/nebula-orchestrator/manager/pull/51) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump flask from 1.0.3 to 1.1.0 [\#50](https://github.com/nebula-orchestrator/manager/pull/50) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.9.0 to 0.9.1 [\#49](https://github.com/nebula-orchestrator/manager/pull/49) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.8.1 to 0.9.0 [\#48](https://github.com/nebula-orchestrator/manager/pull/48) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -27,7 +28,6 @@
 - Bump flask from 1.0.2 to 1.0.3 [\#38](https://github.com/nebula-orchestrator/manager/pull/38) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump requests from 2.21.0 to 2.22.0 [\#37](https://github.com/nebula-orchestrator/manager/pull/37) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump websocket-client from 0.54.0 to 0.56.0 [\#36](https://github.com/nebula-orchestrator/manager/pull/36) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump werkzeug from 0.15.2 to 0.15.4 [\#35](https://github.com/nebula-orchestrator/manager/pull/35) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump backports-ssl-match-hostname from 3.5.0.1 to 3.7.0.1 [\#34](https://github.com/nebula-orchestrator/manager/pull/34) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.5.5 to 0.5.11 [\#33](https://github.com/nebula-orchestrator/manager/pull/33) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
@@ -75,6 +75,7 @@
 
 - Rename api-manager to manager [\#21](https://github.com/nebula-orchestrator/manager/issues/21)
 - pod like stracture option [\#6](https://github.com/nebula-orchestrator/manager/issues/6)
+- Bump werkzeug from 0.15.2 to 0.15.4 [\#35](https://github.com/nebula-orchestrator/manager/pull/35) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
