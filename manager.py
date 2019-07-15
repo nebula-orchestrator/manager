@@ -1,4 +1,4 @@
-import json, secrets
+import json, secrets, ast
 from flask import json, Flask, request, g, jsonify
 from flask_httpauth import HTTPBasicAuth, HTTPTokenAuth, MultiAuth
 from functions.db.mongo import *
@@ -65,6 +65,8 @@ def get_param_filter(param_name, full_request, filter_param="eq", request_type=s
     filter_param = "$" + filter_param
     param_value = full_request.args.get(param_name, type=request_type)
     if param_value is not None:
+        if param_name == "updated":
+            param_value = ast.literal_eval(param_value)
         return {param_name: {filter_param: param_value}}
     else:
         return None
@@ -647,12 +649,13 @@ def get_report():
     hostname = get_param_filter("hostname", request)
     device_group = get_param_filter("device_group", request)
     report_creation_time_filter = request.args.get('report_creation_time_filter', "eq", str)
-    report_creation_time = get_param_filter("report_creation_time", request, report_creation_time_filter,
+    report_creation_time = get_param_filter("report_creation_time", request, filter_param=report_creation_time_filter,
                                             request_type=int)
+    updated = get_param_filter("updated", request, filter_param="eq", request_type=str)
 
     # Now we combine all the filters
     filters = {}
-    for filter_option in [hostname, device_group, report_creation_time]:
+    for filter_option in [hostname, device_group, report_creation_time, updated]:
         if filter_option is not None:
             filters = {**filters, **filter_option}
 
