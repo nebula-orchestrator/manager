@@ -6,7 +6,6 @@
 
 **Implemented enhancements:**
 
-- Bump parse-it from 1.0.0 to 1.1.0 [\#54](https://github.com/nebula-orchestrator/manager/pull/54) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.15.4 to 0.15.5 [\#53](https://github.com/nebula-orchestrator/manager/pull/53) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.9.1 to 1.0.0 [\#52](https://github.com/nebula-orchestrator/manager/pull/52) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump flask from 1.1.0 to 1.1.1 [\#51](https://github.com/nebula-orchestrator/manager/pull/51) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
