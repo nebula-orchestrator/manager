@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump pymongo from 3.8.0 to 3.9.0 [\#58](https://github.com/nebula-orchestrator/manager/pull/58) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 3.0.0 to 3.1.1 [\#57](https://github.com/nebula-orchestrator/manager/pull/57) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 2.0.0 to 3.0.0 [\#56](https://github.com/nebula-orchestrator/manager/pull/56) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyyaml from 5.1.1 to 5.1.2 [\#55](https://github.com/nebula-orchestrator/manager/pull/55) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
