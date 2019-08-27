@@ -23,6 +23,7 @@
 - Bump parse-it from 0.7.0 to 0.8.1 [\#44](https://github.com/nebula-orchestrator/manager/pull/44) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cachetools from 3.1.0 to 3.1.1 [\#43](https://github.com/nebula-orchestrator/manager/pull/43) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.2 to 1.25.3 [\#42](https://github.com/nebula-orchestrator/manager/pull/42) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump requests from 2.21.0 to 2.22.0 [\#37](https://github.com/nebula-orchestrator/manager/pull/37) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 ## [2.6.1](https://github.com/nebula-orchestrator/manager/tree/2.6.1) (2019-05-21)
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/2.5.0...2.6.1)
@@ -33,7 +34,6 @@
 - Bump parse-it from 0.5.11 to 0.7.0 [\#40](https://github.com/nebula-orchestrator/manager/pull/40) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump flask-httpauth from 3.2.4 to 3.3.0 [\#39](https://github.com/nebula-orchestrator/manager/pull/39) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump flask from 1.0.2 to 1.0.3 [\#38](https://github.com/nebula-orchestrator/manager/pull/38) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump requests from 2.21.0 to 2.22.0 [\#37](https://github.com/nebula-orchestrator/manager/pull/37) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump websocket-client from 0.54.0 to 0.56.0 [\#36](https://github.com/nebula-orchestrator/manager/pull/36) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.15.2 to 0.15.4 [\#35](https://github.com/nebula-orchestrator/manager/pull/35) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump backports-ssl-match-hostname from 3.5.0.1 to 3.7.0.1 [\#34](https://github.com/nebula-orchestrator/manager/pull/34) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
