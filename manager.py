@@ -958,6 +958,47 @@ def update_cron_job_fields(cron_job):
     return dumps(cron_job_json), 202
 
 
+# POST update a cron job - replace all params
+@app.route('/api/' + API_VERSION + '/cron_jobs/<cron_job>/update', methods=["POST"])
+@multi_auth.login_required
+@check_authorization_wrapper(permission_needed="rw", permission_object_type="cron_jobs")
+def update_cron_job_all_fields(cron_job):
+    # check cron_job exists first
+    cron_job_exists = mongo_connection.mongo_check_cron_job_exists(cron_job)
+    if cron_job_exists is False:
+        return jsonify({"cron_job_exists": False}), 403
+    # check cron_job got update parameters
+    try:
+        cron_job_json = request.json
+        if len(cron_job_json) == 0:
+            return jsonify({"missing_parameters": True}), 400
+        if cron_job_json["docker_image"] is None or cron_job_json["schedule"] is None:
+            return json.dumps(find_missing_params(cron_job_json, ["docker_image", "schedule"])), 400
+    except:
+        return jsonify({"missing_parameters": True}), 400
+    # set default for undeclared params
+    try:
+        cron_job_json["env_vars"] = return_sane_default_if_not_declared("env_vars", cron_job_json, {})
+        cron_job_json["running"] = return_sane_default_if_not_declared("running", cron_job_json, True)
+        cron_job_json["volumes"] = return_sane_default_if_not_declared("volumes", cron_job_json, [])
+        cron_job_json["devices"] = return_sane_default_if_not_declared("devices", cron_job_json, [])
+        cron_job_json["privileged"] = return_sane_default_if_not_declared("privileged", cron_job_json, False)
+        cron_job_json["networks"] = return_sane_default_if_not_declared("networks", cron_job_json, ["nebula", "bridge"])
+    except:
+        return json.dumps(find_missing_params(cron_job_json, ["docker_image", "schedule"])), 400
+    # check edge case of port being outside of possible port ranges in case trying to update port listing
+    try:
+        schedule = request.json["schedule"]
+        # check edge case where schedule is not valid
+        if croniter.is_valid(schedule) is False:
+            return jsonify({"schedule_valid": False}), 400
+    except:
+        pass
+    # update db
+    cron_job_json = mongo_connection.mongo_update_cron_job_fields(cron_job, request.json)
+    return dumps(cron_job_json), 202
+
+
 # delete a cron_job
 @app.route('/api/' + API_VERSION + '/cron_jobs/<cron_job>', methods=["DELETE"])
 @multi_auth.login_required
