@@ -20,7 +20,7 @@ html5lib==1.0.1
 idna==2.8
 ipaddress==1.0.22
 itsdangerous==1.1.0
-Jinja2==2.10.1
+Jinja2==2.10.3
 MarkupSafe==1.1.1
 parse-it==3.3.2
 ply==3.11
