@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump jinja2 from 2.10.1 to 2.10.3 [\#70](https://github.com/nebula-orchestrator/manager/pull/70) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.5 to 1.25.6 [\#69](https://github.com/nebula-orchestrator/manager/pull/69) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 3.2.0 to 3.3.2 [\#68](https://github.com/nebula-orchestrator/manager/pull/68) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.15.6 to 0.16.0 [\#66](https://github.com/nebula-orchestrator/manager/pull/66) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
