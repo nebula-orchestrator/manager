@@ -18,7 +18,7 @@ greenlet==0.4.15
 gunicorn==19.9.0
 html5lib==1.0.1
 idna==2.8
-ipaddress==1.0.22
+ipaddress==1.0.23
 itsdangerous==1.1.0
 Jinja2==2.10.3
 MarkupSafe==1.1.1
