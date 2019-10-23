@@ -25,7 +25,7 @@ MarkupSafe==1.1.1
 parse-it==3.3.2
 ply==3.11
 pycparser==2.19
-pyhcl==0.3.12
+pyhcl==0.3.13
 pymongo==3.9.0
 python-dateutil==2.8.0
 python-dotenv==0.10.3
