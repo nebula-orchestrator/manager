@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump gunicorn from 19.9.0 to 20.0.2 [\#81](https://github.com/nebula-orchestrator/manager/pull/81) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.6 to 1.25.7 [\#80](https://github.com/nebula-orchestrator/manager/pull/80) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump six from 1.12.0 to 1.13.0 [\#78](https://github.com/nebula-orchestrator/manager/pull/78) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python-dateutil from 2.8.0 to 2.8.1 [\#77](https://github.com/nebula-orchestrator/manager/pull/77) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -13,6 +14,7 @@
 - Bump pyhcl from 0.3.12 to 0.3.13 [\#75](https://github.com/nebula-orchestrator/manager/pull/75) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cffi from 1.13.0 to 1.13.1 [\#74](https://github.com/nebula-orchestrator/manager/pull/74) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump ipaddress from 1.0.22 to 1.0.23 [\#73](https://github.com/nebula-orchestrator/manager/pull/73) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump cffi from 1.12.3 to 1.13.0 [\#72](https://github.com/nebula-orchestrator/manager/pull/72) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump jinja2 from 2.10.1 to 2.10.3 [\#70](https://github.com/nebula-orchestrator/manager/pull/70) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.5 to 1.25.6 [\#69](https://github.com/nebula-orchestrator/manager/pull/69) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 3.2.0 to 3.3.2 [\#68](https://github.com/nebula-orchestrator/manager/pull/68) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -29,7 +31,6 @@
 
 **Implemented enhancements:**
 
-- Bump cffi from 1.12.3 to 1.13.0 [\#72](https://github.com/nebula-orchestrator/manager/pull/72) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 3.1.1 to 3.2.0 [\#59](https://github.com/nebula-orchestrator/manager/pull/59) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pymongo from 3.8.0 to 3.9.0 [\#58](https://github.com/nebula-orchestrator/manager/pull/58) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 3.0.0 to 3.1.1 [\#57](https://github.com/nebula-orchestrator/manager/pull/57) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -43,7 +44,6 @@
 - Bump parse-it from 0.9.0 to 0.9.1 [\#49](https://github.com/nebula-orchestrator/manager/pull/49) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.8.1 to 0.9.0 [\#48](https://github.com/nebula-orchestrator/manager/pull/48) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump bcrypt from 3.1.6 to 3.1.7 [\#47](https://github.com/nebula-orchestrator/manager/pull/47) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump certifi from 2019.3.9 to 2019.6.16 [\#46](https://github.com/nebula-orchestrator/manager/pull/46) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyyaml from 5.1 to 5.1.1 [\#45](https://github.com/nebula-orchestrator/manager/pull/45) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.7.0 to 0.8.1 [\#44](https://github.com/nebula-orchestrator/manager/pull/44) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cachetools from 3.1.0 to 3.1.1 [\#43](https://github.com/nebula-orchestrator/manager/pull/43) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -108,6 +108,7 @@
 
 - Rename api-manager to manager [\#21](https://github.com/nebula-orchestrator/manager/issues/21)
 - pod like stracture option [\#6](https://github.com/nebula-orchestrator/manager/issues/6)
+- Bump certifi from 2019.3.9 to 2019.6.16 [\#46](https://github.com/nebula-orchestrator/manager/pull/46) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
