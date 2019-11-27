@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump gunicorn from 20.0.3 to 20.0.4 [\#83](https://github.com/nebula-orchestrator/manager/pull/83) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gunicorn from 20.0.2 to 20.0.3 [\#82](https://github.com/nebula-orchestrator/manager/pull/82) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gunicorn from 19.9.0 to 20.0.2 [\#81](https://github.com/nebula-orchestrator/manager/pull/81) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.6 to 1.25.7 [\#80](https://github.com/nebula-orchestrator/manager/pull/80) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -23,7 +24,6 @@
 - Bump urllib3 from 1.25.3 to 1.25.5 [\#65](https://github.com/nebula-orchestrator/manager/pull/65) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump certifi from 2019.6.16 to 2019.9.11 [\#64](https://github.com/nebula-orchestrator/manager/pull/64) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.15.5 to 0.15.6 [\#62](https://github.com/nebula-orchestrator/manager/pull/62) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump flask from 1.1.0 to 1.1.1 [\#51](https://github.com/nebula-orchestrator/manager/pull/51) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 ## [2.7.0](https://github.com/nebula-orchestrator/manager/tree/2.7.0) (2019-08-27)
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/2.6.2...2.7.0)
@@ -41,6 +41,7 @@
 - Bump parse-it from 1.0.0 to 1.1.0 [\#54](https://github.com/nebula-orchestrator/manager/pull/54) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.15.4 to 0.15.5 [\#53](https://github.com/nebula-orchestrator/manager/pull/53) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.9.1 to 1.0.0 [\#52](https://github.com/nebula-orchestrator/manager/pull/52) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump flask from 1.1.0 to 1.1.1 [\#51](https://github.com/nebula-orchestrator/manager/pull/51) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump flask from 1.0.3 to 1.1.0 [\#50](https://github.com/nebula-orchestrator/manager/pull/50) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.9.0 to 0.9.1 [\#49](https://github.com/nebula-orchestrator/manager/pull/49) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.8.1 to 0.9.0 [\#48](https://github.com/nebula-orchestrator/manager/pull/48) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
