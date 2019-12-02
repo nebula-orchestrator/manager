@@ -1,4 +1,4 @@
-# Change Log
+# Changelog
 
 ## [Unreleased](https://github.com/nebula-orchestrator/manager/tree/HEAD)
 
@@ -26,10 +26,16 @@
 - Bump certifi from 2019.6.16 to 2019.9.11 [\#64](https://github.com/nebula-orchestrator/manager/pull/64) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.15.5 to 0.15.6 [\#62](https://github.com/nebula-orchestrator/manager/pull/62) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
+**Merged pull requests:**
+
+- Bump python from 3.7.4-alpine3.10 to 3.8.0-alpine3.10 [\#85](https://github.com/nebula-orchestrator/manager/pull/85) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+
 ## [2.7.0](https://github.com/nebula-orchestrator/manager/tree/2.7.0) (2019-08-27)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/2.6.2...2.7.0)
 
 ## [2.6.2](https://github.com/nebula-orchestrator/manager/tree/2.6.2) (2019-08-20)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/2.6.1...2.6.2)
 
 **Implemented enhancements:**
@@ -44,6 +50,7 @@
 - Bump parse-it from 0.9.1 to 1.0.0 [\#52](https://github.com/nebula-orchestrator/manager/pull/52) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump flask from 1.1.0 to 1.1.1 [\#51](https://github.com/nebula-orchestrator/manager/pull/51) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump flask from 1.0.3 to 1.1.0 [\#50](https://github.com/nebula-orchestrator/manager/pull/50) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump parse-it from 0.9.0 to 0.9.1 [\#49](https://github.com/nebula-orchestrator/manager/pull/49) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.8.1 to 0.9.0 [\#48](https://github.com/nebula-orchestrator/manager/pull/48) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump bcrypt from 3.1.6 to 3.1.7 [\#47](https://github.com/nebula-orchestrator/manager/pull/47) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump certifi from 2019.3.9 to 2019.6.16 [\#46](https://github.com/nebula-orchestrator/manager/pull/46) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -53,12 +60,12 @@
 - Bump urllib3 from 1.25.2 to 1.25.3 [\#42](https://github.com/nebula-orchestrator/manager/pull/42) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 ## [2.6.1](https://github.com/nebula-orchestrator/manager/tree/2.6.1) (2019-05-21)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/2.5.0...2.6.1)
 
 **Implemented enhancements:**
 
 - Add cron jobs endpoints & modify the device\_group endpoints to include that option [\#29](https://github.com/nebula-orchestrator/manager/issues/29)
-- Bump parse-it from 0.9.0 to 0.9.1 [\#49](https://github.com/nebula-orchestrator/manager/pull/49) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.5.11 to 0.7.0 [\#40](https://github.com/nebula-orchestrator/manager/pull/40) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump flask-httpauth from 3.2.4 to 3.3.0 [\#39](https://github.com/nebula-orchestrator/manager/pull/39) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump flask from 1.0.2 to 1.0.3 [\#38](https://github.com/nebula-orchestrator/manager/pull/38) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -69,6 +76,7 @@
 - Bump parse-it from 0.5.5 to 0.5.11 [\#33](https://github.com/nebula-orchestrator/manager/pull/33) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 ## [2.5.0](https://github.com/nebula-orchestrator/manager/tree/2.5.0) (2019-04-21)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/2.4.0...2.5.0)
 
 **Implemented enhancements:**
@@ -76,9 +84,11 @@
 - multiple users\permissions support [\#2](https://github.com/nebula-orchestrator/manager/issues/2)
 
 ## [2.4.0](https://github.com/nebula-orchestrator/manager/tree/2.4.0) (2019-03-27)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/2.3.0...2.4.0)
 
 ## [2.3.0](https://github.com/nebula-orchestrator/manager/tree/2.3.0) (2019-03-11)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/2.2.0...2.3.0)
 
 **Implemented enhancements:**
@@ -88,6 +98,7 @@
 - Multiple authentication methods  [\#3](https://github.com/nebula-orchestrator/manager/issues/3)
 
 ## [2.2.0](https://github.com/nebula-orchestrator/manager/tree/2.2.0) (2019-02-27)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/2.1.0...2.2.0)
 
 **Implemented enhancements:**
@@ -95,6 +106,7 @@
 - Migrate to Python 3.x [\#20](https://github.com/nebula-orchestrator/manager/issues/20)
 
 ## [2.1.0](https://github.com/nebula-orchestrator/manager/tree/2.1.0) (2019-02-17)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/2.0.0...2.1.0)
 
 **Implemented enhancements:**
@@ -103,9 +115,11 @@
 - Add automated unit tests [\#24](https://github.com/nebula-orchestrator/manager/issues/24)
 
 ## [2.0.0](https://github.com/nebula-orchestrator/manager/tree/2.0.0) (2019-01-14)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/2.0.1...2.0.0)
 
 ## [2.0.1](https://github.com/nebula-orchestrator/manager/tree/2.0.1) (2019-01-14)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/1.6.0...2.0.1)
 
 **Implemented enhancements:**
@@ -122,12 +136,15 @@
 - 2.0.0a [\#23](https://github.com/nebula-orchestrator/manager/pull/23) ([naorlivne](https://github.com/naorlivne))
 
 ## [1.6.0](https://github.com/nebula-orchestrator/manager/tree/1.6.0) (2018-12-06)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/1.5.0...1.6.0)
 
 ## [1.5.0](https://github.com/nebula-orchestrator/manager/tree/1.5.0) (2018-10-07)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/1.4.0...1.5.0)
 
 ## [1.4.0](https://github.com/nebula-orchestrator/manager/tree/1.4.0) (2018-08-21)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/1.3.0...1.4.0)
 
 **Implemented enhancements:**
@@ -140,6 +157,7 @@
 - Set /api/status to work without basic Auth [\#5](https://github.com/nebula-orchestrator/manager/issues/5)
 
 ## [1.3.0](https://github.com/nebula-orchestrator/manager/tree/1.3.0) (2018-07-24)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/1.2.0...1.3.0)
 
 **Implemented enhancements:**
@@ -151,6 +169,7 @@
 - add protection against missing fanout exchanges [\#9](https://github.com/nebula-orchestrator/manager/issues/9)
 
 ## [1.2.0](https://github.com/nebula-orchestrator/manager/tree/1.2.0) (2017-10-19)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/1.1.1...1.2.0)
 
 **Implemented enhancements:**
@@ -167,15 +186,19 @@
 - enable "durable" flag in RabbitMQ exchange [\#13](https://github.com/nebula-orchestrator/manager/issues/13)
 
 ## [1.1.1](https://github.com/nebula-orchestrator/manager/tree/1.1.1) (2017-09-18)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/1.1.0...1.1.1)
 
 ## [1.1.0](https://github.com/nebula-orchestrator/manager/tree/1.1.0) (2017-09-18)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/1.0.0...1.1.0)
 
 ## [1.0.0](https://github.com/nebula-orchestrator/manager/tree/1.0.0) (2017-08-16)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/0.9.0...1.0.0)
 
 ## [0.9.0](https://github.com/nebula-orchestrator/manager/tree/0.9.0) (2017-08-03)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/0.8.0...0.9.0)
 
 **Implemented enhancements:**
@@ -183,12 +206,17 @@
 - PUT update support [\#1](https://github.com/nebula-orchestrator/manager/issues/1)
 
 ## [0.8.0](https://github.com/nebula-orchestrator/manager/tree/0.8.0) (2017-06-19)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/0.7...0.8.0)
 
 ## [0.7](https://github.com/nebula-orchestrator/manager/tree/0.7) (2017-05-29)
+
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/v0.7...0.7)
 
 ## [v0.7](https://github.com/nebula-orchestrator/manager/tree/v0.7) (2017-05-29)
 
+[Full Changelog](https://github.com/nebula-orchestrator/manager/compare/e3c29fd9741aa9aebedd14adee539af31e821b16...v0.7)
 
-\* *This Change Log was automatically generated by [github_changelog_generator](https://github.com/skywinder/Github-Changelog-Generator)*
+
+
+\* *This Changelog was automatically generated by [github_changelog_generator](https://github.com/github-changelog-generator/github-changelog-generator)*
