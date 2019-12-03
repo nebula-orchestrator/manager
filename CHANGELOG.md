@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump pyyaml from 5.1.2 to 5.2 [\#86](https://github.com/nebula-orchestrator/manager/pull/86) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump certifi from 2019.9.11 to 2019.11.28 [\#84](https://github.com/nebula-orchestrator/manager/pull/84) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gunicorn from 20.0.3 to 20.0.4 [\#83](https://github.com/nebula-orchestrator/manager/pull/83) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gunicorn from 20.0.2 to 20.0.3 [\#82](https://github.com/nebula-orchestrator/manager/pull/82) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
