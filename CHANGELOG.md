@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump cachetools from 3.1.1 to 4.0.0 [\#89](https://github.com/nebula-orchestrator/manager/pull/89) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pymongo from 3.9.0 to 3.10.0 [\#88](https://github.com/nebula-orchestrator/manager/pull/88) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump colorama from 0.4.1 to 0.4.3 [\#87](https://github.com/nebula-orchestrator/manager/pull/87) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyyaml from 5.1.2 to 5.2 [\#86](https://github.com/nebula-orchestrator/manager/pull/86) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -61,7 +62,6 @@
 - Bump parse-it from 0.7.0 to 0.8.1 [\#44](https://github.com/nebula-orchestrator/manager/pull/44) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cachetools from 3.1.0 to 3.1.1 [\#43](https://github.com/nebula-orchestrator/manager/pull/43) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.2 to 1.25.3 [\#42](https://github.com/nebula-orchestrator/manager/pull/42) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump parse-it from 0.5.5 to 0.5.11 [\#33](https://github.com/nebula-orchestrator/manager/pull/33) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 ## [2.6.1](https://github.com/nebula-orchestrator/manager/tree/2.6.1) (2019-05-21)
 
@@ -77,6 +77,7 @@
 - Bump websocket-client from 0.54.0 to 0.56.0 [\#36](https://github.com/nebula-orchestrator/manager/pull/36) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.15.2 to 0.15.4 [\#35](https://github.com/nebula-orchestrator/manager/pull/35) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump backports-ssl-match-hostname from 3.5.0.1 to 3.7.0.1 [\#34](https://github.com/nebula-orchestrator/manager/pull/34) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump parse-it from 0.5.5 to 0.5.11 [\#33](https://github.com/nebula-orchestrator/manager/pull/33) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 ## [2.5.0](https://github.com/nebula-orchestrator/manager/tree/2.5.0) (2019-04-21)
 
