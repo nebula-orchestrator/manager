@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump websocket-client from 0.56.0 to 0.57.0 [\#92](https://github.com/nebula-orchestrator/manager/pull/92) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cachetools from 3.1.1 to 4.0.0 [\#89](https://github.com/nebula-orchestrator/manager/pull/89) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pymongo from 3.9.0 to 3.10.0 [\#88](https://github.com/nebula-orchestrator/manager/pull/88) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump colorama from 0.4.1 to 0.4.3 [\#87](https://github.com/nebula-orchestrator/manager/pull/87) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
