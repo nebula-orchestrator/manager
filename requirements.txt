@@ -7,7 +7,7 @@ chardet==3.0.4
 Click==7.0
 colorama==0.4.3
 configobj==5.0.6
-croniter==0.3.30
+croniter==0.3.31
 dnspython==1.16.0
 dpath==1.5.0
 enum34==1.1.6
