@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump jinja2 from 2.10.3 to 2.11.0 [\#104](https://github.com/nebula-orchestrator/manager/pull/104) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump dpath from 1.5.0 to 2.0.1 [\#103](https://github.com/nebula-orchestrator/manager/pull/103) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.16.0 to 0.16.1 [\#102](https://github.com/nebula-orchestrator/manager/pull/102) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.7 to 1.25.8 [\#101](https://github.com/nebula-orchestrator/manager/pull/101) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
