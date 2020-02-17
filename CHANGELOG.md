@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump idna from 2.8 to 2.9 [\#110](https://github.com/nebula-orchestrator/manager/pull/110) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python-dotenv from 0.10.5 to 0.11.0 [\#109](https://github.com/nebula-orchestrator/manager/pull/109) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cffi from 1.13.2 to 1.14.0 [\#108](https://github.com/nebula-orchestrator/manager/pull/108) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.16.1 to 1.0.0 [\#107](https://github.com/nebula-orchestrator/manager/pull/107) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
