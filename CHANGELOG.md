@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump enum34 from 1.1.6 to 1.1.9 [\#112](https://github.com/nebula-orchestrator/manager/pull/112) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump requests from 2.22.0 to 2.23.0 [\#111](https://github.com/nebula-orchestrator/manager/pull/111) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump idna from 2.8 to 2.9 [\#110](https://github.com/nebula-orchestrator/manager/pull/110) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python-dotenv from 0.10.5 to 0.11.0 [\#109](https://github.com/nebula-orchestrator/manager/pull/109) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
