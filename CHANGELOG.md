@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump pyhcl from 0.4.1 to 0.4.2 [\#121](https://github.com/nebula-orchestrator/manager/pull/121) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyhcl from 0.4.0 to 0.4.1 [\#120](https://github.com/nebula-orchestrator/manager/pull/120) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyyaml from 5.3 to 5.3.1 [\#119](https://github.com/nebula-orchestrator/manager/pull/119) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump enum34 from 1.1.9 to 1.1.10 [\#117](https://github.com/nebula-orchestrator/manager/pull/117) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
