@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump gevent from 1.4.0 to 1.5.0 [\#126](https://github.com/nebula-orchestrator/manager/pull/126) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cachetools from 4.0.0 to 4.1.0 [\#125](https://github.com/nebula-orchestrator/manager/pull/125) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump certifi from 2019.11.28 to 2020.4.5.1 [\#124](https://github.com/nebula-orchestrator/manager/pull/124) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump flask from 1.1.1 to 1.1.2 [\#123](https://github.com/nebula-orchestrator/manager/pull/123) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
