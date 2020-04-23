@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump gevent from 1.5.0 to 20.4.0 [\#131](https://github.com/nebula-orchestrator/manager/pull/131) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.8 to 1.25.9 [\#130](https://github.com/nebula-orchestrator/manager/pull/130) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python-dotenv from 0.12.0 to 0.13.0 [\#129](https://github.com/nebula-orchestrator/manager/pull/129) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyhcl from 0.4.2 to 0.4.3 [\#128](https://github.com/nebula-orchestrator/manager/pull/128) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
