@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump six from 1.14.0 to 1.15.0 [\#138](https://github.com/nebula-orchestrator/manager/pull/138) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump toml from 0.10.0 to 0.10.1 [\#136](https://github.com/nebula-orchestrator/manager/pull/136) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gevent from 20.4.0 to 20.5.0 [\#135](https://github.com/nebula-orchestrator/manager/pull/135) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump click from 7.1.1 to 7.1.2 [\#134](https://github.com/nebula-orchestrator/manager/pull/134) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
