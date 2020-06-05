@@ -6,6 +6,8 @@
 
 **Implemented enhancements:**
 
+- Bump flask-httpauth from 4.0.0 to 4.1.0 [\#143](https://github.com/nebula-orchestrator/manager/pull/143) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump greenlet from 0.4.15 to 0.4.16 [\#142](https://github.com/nebula-orchestrator/manager/pull/142) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gevent from 20.5.1 to 20.5.2 [\#141](https://github.com/nebula-orchestrator/manager/pull/141) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump croniter from 0.3.31 to 0.3.32 [\#140](https://github.com/nebula-orchestrator/manager/pull/140) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gevent from 20.5.0 to 20.5.1 [\#139](https://github.com/nebula-orchestrator/manager/pull/139) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
