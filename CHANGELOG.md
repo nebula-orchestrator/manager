@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump croniter from 0.3.32 to 0.3.33 [\#147](https://github.com/nebula-orchestrator/manager/pull/147) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gevent from 20.6.0 to 20.6.1 [\#146](https://github.com/nebula-orchestrator/manager/pull/146) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gevent from 20.5.2 to 20.6.0 [\#145](https://github.com/nebula-orchestrator/manager/pull/145) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump certifi from 2020.4.5.1 to 2020.4.5.2 [\#144](https://github.com/nebula-orchestrator/manager/pull/144) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
