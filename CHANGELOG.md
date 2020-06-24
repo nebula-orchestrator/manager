@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump html5lib from 1.0.1 to 1.1 [\#152](https://github.com/nebula-orchestrator/manager/pull/152) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump croniter from 0.3.33 to 0.3.34 [\#151](https://github.com/nebula-orchestrator/manager/pull/151) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump certifi from 2020.4.5.2 to 2020.6.20 [\#150](https://github.com/nebula-orchestrator/manager/pull/150) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump requests from 2.23.0 to 2.24.0 [\#149](https://github.com/nebula-orchestrator/manager/pull/149) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -86,7 +87,6 @@
 - Bump urllib3 from 1.25.3 to 1.25.5 [\#65](https://github.com/nebula-orchestrator/manager/pull/65) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump certifi from 2019.6.16 to 2019.9.11 [\#64](https://github.com/nebula-orchestrator/manager/pull/64) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.15.5 to 0.15.6 [\#62](https://github.com/nebula-orchestrator/manager/pull/62) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump pyyaml from 5.1.1 to 5.1.2 [\#55](https://github.com/nebula-orchestrator/manager/pull/55) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Merged pull requests:**
 
@@ -109,6 +109,7 @@
 - Bump pymongo from 3.8.0 to 3.9.0 [\#58](https://github.com/nebula-orchestrator/manager/pull/58) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 3.0.0 to 3.1.1 [\#57](https://github.com/nebula-orchestrator/manager/pull/57) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 2.0.0 to 3.0.0 [\#56](https://github.com/nebula-orchestrator/manager/pull/56) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump pyyaml from 5.1.1 to 5.1.2 [\#55](https://github.com/nebula-orchestrator/manager/pull/55) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 1.0.0 to 1.1.0 [\#54](https://github.com/nebula-orchestrator/manager/pull/54) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.15.4 to 0.15.5 [\#53](https://github.com/nebula-orchestrator/manager/pull/53) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.9.1 to 1.0.0 [\#52](https://github.com/nebula-orchestrator/manager/pull/52) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
