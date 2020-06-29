@@ -6,6 +6,8 @@
 
 **Implemented enhancements:**
 
+- Bump idna from 2.9 to 2.10 [\#154](https://github.com/nebula-orchestrator/manager/pull/154) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump cachetools from 4.1.0 to 4.1.1 [\#153](https://github.com/nebula-orchestrator/manager/pull/153) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump html5lib from 1.0.1 to 1.1 [\#152](https://github.com/nebula-orchestrator/manager/pull/152) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump croniter from 0.3.33 to 0.3.34 [\#151](https://github.com/nebula-orchestrator/manager/pull/151) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump certifi from 2020.4.5.2 to 2020.6.20 [\#150](https://github.com/nebula-orchestrator/manager/pull/150) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
