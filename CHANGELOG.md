@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump python-dotenv from 0.13.0 to 0.14.0 [\#155](https://github.com/nebula-orchestrator/manager/pull/155) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump idna from 2.9 to 2.10 [\#154](https://github.com/nebula-orchestrator/manager/pull/154) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cachetools from 4.1.0 to 4.1.1 [\#153](https://github.com/nebula-orchestrator/manager/pull/153) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump html5lib from 1.0.1 to 1.1 [\#152](https://github.com/nebula-orchestrator/manager/pull/152) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -88,7 +89,6 @@
 - Bump werkzeug from 0.15.6 to 0.16.0 [\#66](https://github.com/nebula-orchestrator/manager/pull/66) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.3 to 1.25.5 [\#65](https://github.com/nebula-orchestrator/manager/pull/65) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump certifi from 2019.6.16 to 2019.9.11 [\#64](https://github.com/nebula-orchestrator/manager/pull/64) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump werkzeug from 0.15.5 to 0.15.6 [\#62](https://github.com/nebula-orchestrator/manager/pull/62) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Merged pull requests:**
 
