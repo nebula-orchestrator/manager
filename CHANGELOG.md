@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump dnspython from 1.16.0 to 2.0.0 [\#156](https://github.com/nebula-orchestrator/manager/pull/156) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python-dotenv from 0.13.0 to 0.14.0 [\#155](https://github.com/nebula-orchestrator/manager/pull/155) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump idna from 2.9 to 2.10 [\#154](https://github.com/nebula-orchestrator/manager/pull/154) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cachetools from 4.1.0 to 4.1.1 [\#153](https://github.com/nebula-orchestrator/manager/pull/153) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
