@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump urllib3 from 1.25.9 to 1.25.10 [\#157](https://github.com/nebula-orchestrator/manager/pull/157) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump dnspython from 1.16.0 to 2.0.0 [\#156](https://github.com/nebula-orchestrator/manager/pull/156) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python-dotenv from 0.13.0 to 0.14.0 [\#155](https://github.com/nebula-orchestrator/manager/pull/155) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump idna from 2.9 to 2.10 [\#154](https://github.com/nebula-orchestrator/manager/pull/154) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -89,7 +90,6 @@
 - Bump parse-it from 3.2.0 to 3.3.2 [\#68](https://github.com/nebula-orchestrator/manager/pull/68) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.15.6 to 0.16.0 [\#66](https://github.com/nebula-orchestrator/manager/pull/66) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.3 to 1.25.5 [\#65](https://github.com/nebula-orchestrator/manager/pull/65) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump certifi from 2019.6.16 to 2019.9.11 [\#64](https://github.com/nebula-orchestrator/manager/pull/64) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Merged pull requests:**
 
