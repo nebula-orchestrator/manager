@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump pymongo from 3.10.1 to 3.11.0 [\#159](https://github.com/nebula-orchestrator/manager/pull/159) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cffi from 1.14.0 to 1.14.1 [\#158](https://github.com/nebula-orchestrator/manager/pull/158) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.9 to 1.25.10 [\#157](https://github.com/nebula-orchestrator/manager/pull/157) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump dnspython from 1.16.0 to 2.0.0 [\#156](https://github.com/nebula-orchestrator/manager/pull/156) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -88,7 +89,6 @@
 - Bump cffi from 1.12.3 to 1.13.0 [\#72](https://github.com/nebula-orchestrator/manager/pull/72) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump jinja2 from 2.10.1 to 2.10.3 [\#70](https://github.com/nebula-orchestrator/manager/pull/70) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.5 to 1.25.6 [\#69](https://github.com/nebula-orchestrator/manager/pull/69) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump parse-it from 3.2.0 to 3.3.2 [\#68](https://github.com/nebula-orchestrator/manager/pull/68) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Merged pull requests:**
 
