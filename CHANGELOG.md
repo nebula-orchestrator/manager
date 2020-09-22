@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump cffi from 1.14.2 to 1.14.3 [\#162](https://github.com/nebula-orchestrator/manager/pull/162) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cffi from 1.14.1 to 1.14.2 [\#161](https://github.com/nebula-orchestrator/manager/pull/161) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump bcrypt from 3.1.7 to 3.2.0 [\#160](https://github.com/nebula-orchestrator/manager/pull/160) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pymongo from 3.10.1 to 3.11.0 [\#159](https://github.com/nebula-orchestrator/manager/pull/159) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -89,7 +90,6 @@
 - Bump cffi from 1.13.0 to 1.13.1 [\#74](https://github.com/nebula-orchestrator/manager/pull/74) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump ipaddress from 1.0.22 to 1.0.23 [\#73](https://github.com/nebula-orchestrator/manager/pull/73) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cffi from 1.12.3 to 1.13.0 [\#72](https://github.com/nebula-orchestrator/manager/pull/72) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump jinja2 from 2.10.1 to 2.10.3 [\#70](https://github.com/nebula-orchestrator/manager/pull/70) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Merged pull requests:**
 
