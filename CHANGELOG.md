@@ -6,6 +6,8 @@
 
 **Implemented enhancements:**
 
+- Bump greenlet from 0.4.16 to 0.4.17 [\#164](https://github.com/nebula-orchestrator/manager/pull/164) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump gevent from 20.6.2 to 20.9.0 [\#163](https://github.com/nebula-orchestrator/manager/pull/163) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cffi from 1.14.2 to 1.14.3 [\#162](https://github.com/nebula-orchestrator/manager/pull/162) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cffi from 1.14.1 to 1.14.2 [\#161](https://github.com/nebula-orchestrator/manager/pull/161) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump bcrypt from 3.1.7 to 3.2.0 [\#160](https://github.com/nebula-orchestrator/manager/pull/160) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -88,11 +90,14 @@
 - Bump cffi from 1.13.1 to 1.13.2 [\#76](https://github.com/nebula-orchestrator/manager/pull/76) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyhcl from 0.3.12 to 0.3.13 [\#75](https://github.com/nebula-orchestrator/manager/pull/75) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cffi from 1.13.0 to 1.13.1 [\#74](https://github.com/nebula-orchestrator/manager/pull/74) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump ipaddress from 1.0.22 to 1.0.23 [\#73](https://github.com/nebula-orchestrator/manager/pull/73) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump cffi from 1.12.3 to 1.13.0 [\#72](https://github.com/nebula-orchestrator/manager/pull/72) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+
+**Fixed bugs:**
+
+- Dependabot couldn't authenticate with https://pypi.python.org/simple/ [\#165](https://github.com/nebula-orchestrator/manager/issues/165)
 
 **Merged pull requests:**
 
+- Create Dependabot config file [\#166](https://github.com/nebula-orchestrator/manager/pull/166) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python from 3.8.2-alpine3.10 to 3.8.3-alpine3.10 [\#137](https://github.com/nebula-orchestrator/manager/pull/137) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python from 3.8.1-alpine3.10 to 3.8.2-alpine3.10 [\#113](https://github.com/nebula-orchestrator/manager/pull/113) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python from 3.8.0-alpine3.10 to 3.8.1-alpine3.10 [\#90](https://github.com/nebula-orchestrator/manager/pull/90) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
