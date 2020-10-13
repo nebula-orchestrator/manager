@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump croniter from 0.3.34 to 0.3.35 [\#167](https://github.com/nebula-orchestrator/manager/pull/167) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump greenlet from 0.4.16 to 0.4.17 [\#164](https://github.com/nebula-orchestrator/manager/pull/164) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gevent from 20.6.2 to 20.9.0 [\#163](https://github.com/nebula-orchestrator/manager/pull/163) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cffi from 1.14.2 to 1.14.3 [\#162](https://github.com/nebula-orchestrator/manager/pull/162) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -89,7 +90,6 @@
 - Bump python-dateutil from 2.8.0 to 2.8.1 [\#77](https://github.com/nebula-orchestrator/manager/pull/77) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cffi from 1.13.1 to 1.13.2 [\#76](https://github.com/nebula-orchestrator/manager/pull/76) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyhcl from 0.3.12 to 0.3.13 [\#75](https://github.com/nebula-orchestrator/manager/pull/75) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump cffi from 1.13.0 to 1.13.1 [\#74](https://github.com/nebula-orchestrator/manager/pull/74) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
