@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump colorama from 0.4.3 to 0.4.4 [\#168](https://github.com/nebula-orchestrator/manager/pull/168) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump croniter from 0.3.34 to 0.3.35 [\#167](https://github.com/nebula-orchestrator/manager/pull/167) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump greenlet from 0.4.16 to 0.4.17 [\#164](https://github.com/nebula-orchestrator/manager/pull/164) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gevent from 20.6.2 to 20.9.0 [\#163](https://github.com/nebula-orchestrator/manager/pull/163) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -89,7 +90,6 @@
 - Bump six from 1.12.0 to 1.13.0 [\#78](https://github.com/nebula-orchestrator/manager/pull/78) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python-dateutil from 2.8.0 to 2.8.1 [\#77](https://github.com/nebula-orchestrator/manager/pull/77) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cffi from 1.13.1 to 1.13.2 [\#76](https://github.com/nebula-orchestrator/manager/pull/76) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump pyhcl from 0.3.12 to 0.3.13 [\#75](https://github.com/nebula-orchestrator/manager/pull/75) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
@@ -148,6 +148,10 @@
 - Bump backports-ssl-match-hostname from 3.5.0.1 to 3.7.0.1 [\#34](https://github.com/nebula-orchestrator/manager/pull/34) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.5.5 to 0.5.11 [\#33](https://github.com/nebula-orchestrator/manager/pull/33) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
+**Merged pull requests:**
+
+- 2.0.0a [\#23](https://github.com/nebula-orchestrator/manager/pull/23) ([naorlivne](https://github.com/naorlivne))
+
 ## [2.5.0](https://github.com/nebula-orchestrator/manager/tree/2.5.0) (2019-04-21)
 
 [Full Changelog](https://github.com/nebula-orchestrator/manager/compare/2.4.0...2.5.0)
@@ -203,10 +207,6 @@
 **Fixed bugs:**
 
 - Allow starting the manager with no conf.json file present [\#22](https://github.com/nebula-orchestrator/manager/issues/22)
-
-**Merged pull requests:**
-
-- 2.0.0a [\#23](https://github.com/nebula-orchestrator/manager/pull/23) ([naorlivne](https://github.com/naorlivne))
 
 ## [1.6.0](https://github.com/nebula-orchestrator/manager/tree/1.6.0) (2018-12-06)
 
