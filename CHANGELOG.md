@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump python-dotenv from 0.14.0 to 0.15.0 [\#170](https://github.com/nebula-orchestrator/manager/pull/170) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump urllib3 from 1.25.10 to 1.25.11 [\#169](https://github.com/nebula-orchestrator/manager/pull/169) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump colorama from 0.4.3 to 0.4.4 [\#168](https://github.com/nebula-orchestrator/manager/pull/168) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump croniter from 0.3.34 to 0.3.35 [\#167](https://github.com/nebula-orchestrator/manager/pull/167) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -89,7 +90,6 @@
 - Bump gunicorn from 19.9.0 to 20.0.2 [\#81](https://github.com/nebula-orchestrator/manager/pull/81) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.6 to 1.25.7 [\#80](https://github.com/nebula-orchestrator/manager/pull/80) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump six from 1.12.0 to 1.13.0 [\#78](https://github.com/nebula-orchestrator/manager/pull/78) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump python-dateutil from 2.8.0 to 2.8.1 [\#77](https://github.com/nebula-orchestrator/manager/pull/77) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
