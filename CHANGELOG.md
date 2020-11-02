@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump toml from 0.10.1 to 0.10.2 [\#171](https://github.com/nebula-orchestrator/manager/pull/171) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump python-dotenv from 0.14.0 to 0.15.0 [\#170](https://github.com/nebula-orchestrator/manager/pull/170) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump urllib3 from 1.25.10 to 1.25.11 [\#169](https://github.com/nebula-orchestrator/manager/pull/169) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump colorama from 0.4.3 to 0.4.4 [\#168](https://github.com/nebula-orchestrator/manager/pull/168) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -89,7 +90,6 @@
 - Bump gunicorn from 20.0.2 to 20.0.3 [\#82](https://github.com/nebula-orchestrator/manager/pull/82) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gunicorn from 19.9.0 to 20.0.2 [\#81](https://github.com/nebula-orchestrator/manager/pull/81) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.6 to 1.25.7 [\#80](https://github.com/nebula-orchestrator/manager/pull/80) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump six from 1.12.0 to 1.13.0 [\#78](https://github.com/nebula-orchestrator/manager/pull/78) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
@@ -131,6 +131,7 @@
 - Bump parse-it from 0.7.0 to 0.8.1 [\#44](https://github.com/nebula-orchestrator/manager/pull/44) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cachetools from 3.1.0 to 3.1.1 [\#43](https://github.com/nebula-orchestrator/manager/pull/43) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.2 to 1.25.3 [\#42](https://github.com/nebula-orchestrator/manager/pull/42) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump backports-ssl-match-hostname from 3.5.0.1 to 3.7.0.1 [\#34](https://github.com/nebula-orchestrator/manager/pull/34) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 ## [2.6.1](https://github.com/nebula-orchestrator/manager/tree/2.6.1) (2019-05-21)
 
@@ -145,7 +146,6 @@
 - Bump requests from 2.21.0 to 2.22.0 [\#37](https://github.com/nebula-orchestrator/manager/pull/37) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump websocket-client from 0.54.0 to 0.56.0 [\#36](https://github.com/nebula-orchestrator/manager/pull/36) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.15.2 to 0.15.4 [\#35](https://github.com/nebula-orchestrator/manager/pull/35) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump backports-ssl-match-hostname from 3.5.0.1 to 3.7.0.1 [\#34](https://github.com/nebula-orchestrator/manager/pull/34) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.5.5 to 0.5.11 [\#33](https://github.com/nebula-orchestrator/manager/pull/33) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 ## [2.5.0](https://github.com/nebula-orchestrator/manager/tree/2.5.0) (2019-04-21)
