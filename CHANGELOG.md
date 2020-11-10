@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump certifi from 2020.6.20 to 2020.11.8 [\#173](https://github.com/nebula-orchestrator/manager/pull/173) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump croniter from 0.3.35 to 0.3.36 [\#172](https://github.com/nebula-orchestrator/manager/pull/172) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump toml from 0.10.1 to 0.10.2 [\#171](https://github.com/nebula-orchestrator/manager/pull/171) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump python-dotenv from 0.14.0 to 0.15.0 [\#170](https://github.com/nebula-orchestrator/manager/pull/170) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -89,7 +90,6 @@
 - Bump certifi from 2019.9.11 to 2019.11.28 [\#84](https://github.com/nebula-orchestrator/manager/pull/84) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gunicorn from 20.0.3 to 20.0.4 [\#83](https://github.com/nebula-orchestrator/manager/pull/83) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump gunicorn from 20.0.2 to 20.0.3 [\#82](https://github.com/nebula-orchestrator/manager/pull/82) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump gunicorn from 19.9.0 to 20.0.2 [\#81](https://github.com/nebula-orchestrator/manager/pull/81) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
@@ -115,7 +115,6 @@
 
 - Bump parse-it from 3.1.1 to 3.2.0 [\#59](https://github.com/nebula-orchestrator/manager/pull/59) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pymongo from 3.8.0 to 3.9.0 [\#58](https://github.com/nebula-orchestrator/manager/pull/58) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump parse-it from 3.0.0 to 3.1.1 [\#57](https://github.com/nebula-orchestrator/manager/pull/57) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 2.0.0 to 3.0.0 [\#56](https://github.com/nebula-orchestrator/manager/pull/56) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyyaml from 5.1.1 to 5.1.2 [\#55](https://github.com/nebula-orchestrator/manager/pull/55) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 1.0.0 to 1.1.0 [\#54](https://github.com/nebula-orchestrator/manager/pull/54) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
@@ -129,6 +128,7 @@
 - Bump certifi from 2019.3.9 to 2019.6.16 [\#46](https://github.com/nebula-orchestrator/manager/pull/46) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyyaml from 5.1 to 5.1.1 [\#45](https://github.com/nebula-orchestrator/manager/pull/45) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.7.0 to 0.8.1 [\#44](https://github.com/nebula-orchestrator/manager/pull/44) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump cachetools from 3.1.0 to 3.1.1 [\#43](https://github.com/nebula-orchestrator/manager/pull/43) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.2 to 1.25.3 [\#42](https://github.com/nebula-orchestrator/manager/pull/42) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 ## [2.6.1](https://github.com/nebula-orchestrator/manager/tree/2.6.1) (2019-05-21)
@@ -138,7 +138,6 @@
 **Implemented enhancements:**
 
 - Add cron jobs endpoints & modify the device\_group endpoints to include that option [\#29](https://github.com/nebula-orchestrator/manager/issues/29)
-- Bump cachetools from 3.1.0 to 3.1.1 [\#43](https://github.com/nebula-orchestrator/manager/pull/43) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 0.5.11 to 0.7.0 [\#40](https://github.com/nebula-orchestrator/manager/pull/40) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump flask-httpauth from 3.2.4 to 3.3.0 [\#39](https://github.com/nebula-orchestrator/manager/pull/39) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump flask from 1.0.2 to 1.0.3 [\#38](https://github.com/nebula-orchestrator/manager/pull/38) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
