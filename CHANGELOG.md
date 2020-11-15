@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump urllib3 from 1.26.1 to 1.26.2 [\#177](https://github.com/nebula-orchestrator/manager/pull/177) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump requests from 2.24.0 to 2.25.0 [\#176](https://github.com/nebula-orchestrator/manager/pull/176) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump urllib3 from 1.25.11 to 1.26.1 [\#175](https://github.com/nebula-orchestrator/manager/pull/175) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump certifi from 2020.6.20 to 2020.11.8 [\#173](https://github.com/nebula-orchestrator/manager/pull/173) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -89,7 +90,6 @@
 - Bump pymongo from 3.9.0 to 3.10.0 [\#88](https://github.com/nebula-orchestrator/manager/pull/88) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump colorama from 0.4.1 to 0.4.3 [\#87](https://github.com/nebula-orchestrator/manager/pull/87) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyyaml from 5.1.2 to 5.2 [\#86](https://github.com/nebula-orchestrator/manager/pull/86) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump certifi from 2019.9.11 to 2019.11.28 [\#84](https://github.com/nebula-orchestrator/manager/pull/84) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
