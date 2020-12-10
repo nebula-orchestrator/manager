@@ -1,7 +1,7 @@
 backports.ssl-match-hostname==3.7.0.1
 bcrypt==3.2.0
 cachetools==4.1.1
-certifi==2020.11.8
+certifi==2020.12.5
 cffi==1.14.4
 chardet==3.0.4
 Click==7.1.2
