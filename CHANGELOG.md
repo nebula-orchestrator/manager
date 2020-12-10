@@ -6,6 +6,8 @@
 
 **Implemented enhancements:**
 
+- Bump certifi from 2020.11.8 to 2020.12.5 [\#183](https://github.com/nebula-orchestrator/manager/pull/183) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump parse-it from 3.4.0 to 3.5.0 [\#182](https://github.com/nebula-orchestrator/manager/pull/182) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump pymongo from 3.11.1 to 3.11.2 [\#181](https://github.com/nebula-orchestrator/manager/pull/181) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump cffi from 1.14.3 to 1.14.4 [\#180](https://github.com/nebula-orchestrator/manager/pull/180) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump pymongo from 3.11.0 to 3.11.1 [\#179](https://github.com/nebula-orchestrator/manager/pull/179) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -90,7 +92,6 @@
 - Bump croniter from 0.3.30 to 0.3.31 [\#94](https://github.com/nebula-orchestrator/manager/pull/94) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump dpath from 1.4.2 to 1.5.0 [\#93](https://github.com/nebula-orchestrator/manager/pull/93) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump websocket-client from 0.56.0 to 0.57.0 [\#92](https://github.com/nebula-orchestrator/manager/pull/92) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump cachetools from 3.1.1 to 4.0.0 [\#89](https://github.com/nebula-orchestrator/manager/pull/89) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
