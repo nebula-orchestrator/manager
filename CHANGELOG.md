@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump gevent from 20.9.0 to 20.12.0 [\#188](https://github.com/nebula-orchestrator/manager/pull/188) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump requests from 2.25.0 to 2.25.1 [\#186](https://github.com/nebula-orchestrator/manager/pull/186) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump cachetools from 4.1.1 to 4.2.0 [\#185](https://github.com/nebula-orchestrator/manager/pull/185) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump chardet from 3.0.4 to 4.0.0 [\#184](https://github.com/nebula-orchestrator/manager/pull/184) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -92,7 +93,6 @@
 - Bump pyhcl from 0.3.15 to 0.4.0 [\#97](https://github.com/nebula-orchestrator/manager/pull/97) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyyaml from 5.2 to 5.3 [\#96](https://github.com/nebula-orchestrator/manager/pull/96) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pyhcl from 0.3.13 to 0.3.15 [\#95](https://github.com/nebula-orchestrator/manager/pull/95) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump croniter from 0.3.30 to 0.3.31 [\#94](https://github.com/nebula-orchestrator/manager/pull/94) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
