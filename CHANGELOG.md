@@ -6,6 +6,9 @@
 
 **Implemented enhancements:**
 
+- Bump greenlet from 0.4.17 to 1.0.0 [\#195](https://github.com/nebula-orchestrator/manager/pull/195) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump dnspython from 2.0.0 to 2.1.0 [\#194](https://github.com/nebula-orchestrator/manager/pull/194) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump croniter from 0.3.37 to 1.0.1 [\#193](https://github.com/nebula-orchestrator/manager/pull/193) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump croniter from 0.3.36 to 0.3.37 [\#190](https://github.com/nebula-orchestrator/manager/pull/190) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump gevent from 20.12.0 to 20.12.1 [\#189](https://github.com/nebula-orchestrator/manager/pull/189) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump gevent from 20.9.0 to 20.12.0 [\#188](https://github.com/nebula-orchestrator/manager/pull/188) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -91,8 +94,6 @@
 - Bump urllib3 from 1.25.7 to 1.25.8 [\#101](https://github.com/nebula-orchestrator/manager/pull/101) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python-dotenv from 0.10.3 to 0.10.5 [\#100](https://github.com/nebula-orchestrator/manager/pull/100) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump six from 1.13.0 to 1.14.0 [\#99](https://github.com/nebula-orchestrator/manager/pull/99) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump pymongo from 3.10.0 to 3.10.1 [\#98](https://github.com/nebula-orchestrator/manager/pull/98) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump pyhcl from 0.3.15 to 0.4.0 [\#97](https://github.com/nebula-orchestrator/manager/pull/97) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
