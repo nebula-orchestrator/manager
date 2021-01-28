@@ -6,6 +6,11 @@
 
 **Implemented enhancements:**
 
+- Bump urllib3 from 1.26.2 to 1.26.3 [\#203](https://github.com/nebula-orchestrator/manager/pull/203) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump cachetools from 4.2.0 to 4.2.1 [\#202](https://github.com/nebula-orchestrator/manager/pull/202) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump gevent from 20.12.1 to 21.1.2 [\#201](https://github.com/nebula-orchestrator/manager/pull/201) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pyyaml from 5.3.1 to 5.4.1 [\#200](https://github.com/nebula-orchestrator/manager/pull/200) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump croniter from 1.0.1 to 1.0.2 [\#199](https://github.com/nebula-orchestrator/manager/pull/199) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump greenlet from 0.4.17 to 1.0.0 [\#195](https://github.com/nebula-orchestrator/manager/pull/195) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump dnspython from 2.0.0 to 2.1.0 [\#194](https://github.com/nebula-orchestrator/manager/pull/194) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump croniter from 0.3.37 to 1.0.1 [\#193](https://github.com/nebula-orchestrator/manager/pull/193) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -89,11 +94,7 @@
 - Bump jinja2 from 2.11.0 to 2.11.1 [\#106](https://github.com/nebula-orchestrator/manager/pull/106) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump parse-it from 3.3.2 to 3.4.0 [\#105](https://github.com/nebula-orchestrator/manager/pull/105) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump jinja2 from 2.10.3 to 2.11.0 [\#104](https://github.com/nebula-orchestrator/manager/pull/104) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump dpath from 1.5.0 to 2.0.1 [\#103](https://github.com/nebula-orchestrator/manager/pull/103) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.16.0 to 0.16.1 [\#102](https://github.com/nebula-orchestrator/manager/pull/102) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump urllib3 from 1.25.7 to 1.25.8 [\#101](https://github.com/nebula-orchestrator/manager/pull/101) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump python-dotenv from 0.10.3 to 0.10.5 [\#100](https://github.com/nebula-orchestrator/manager/pull/100) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump six from 1.13.0 to 1.14.0 [\#99](https://github.com/nebula-orchestrator/manager/pull/99) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
