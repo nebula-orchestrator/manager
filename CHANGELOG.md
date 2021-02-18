@@ -6,6 +6,10 @@
 
 **Implemented enhancements:**
 
+- Bump cffi from 1.14.4 to 1.14.5 [\#208](https://github.com/nebula-orchestrator/manager/pull/208) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump pymongo from 3.11.2 to 3.11.3 [\#207](https://github.com/nebula-orchestrator/manager/pull/207) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump croniter from 1.0.2 to 1.0.6 [\#206](https://github.com/nebula-orchestrator/manager/pull/206) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump jinja2 from 2.11.2 to 2.11.3 [\#205](https://github.com/nebula-orchestrator/manager/pull/205) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump urllib3 from 1.26.2 to 1.26.3 [\#203](https://github.com/nebula-orchestrator/manager/pull/203) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump cachetools from 4.2.0 to 4.2.1 [\#202](https://github.com/nebula-orchestrator/manager/pull/202) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump gevent from 20.12.1 to 21.1.2 [\#201](https://github.com/nebula-orchestrator/manager/pull/201) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -92,9 +96,6 @@
 - Bump cffi from 1.13.2 to 1.14.0 [\#108](https://github.com/nebula-orchestrator/manager/pull/108) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.16.1 to 1.0.0 [\#107](https://github.com/nebula-orchestrator/manager/pull/107) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump jinja2 from 2.11.0 to 2.11.1 [\#106](https://github.com/nebula-orchestrator/manager/pull/106) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump parse-it from 3.3.2 to 3.4.0 [\#105](https://github.com/nebula-orchestrator/manager/pull/105) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump jinja2 from 2.10.3 to 2.11.0 [\#104](https://github.com/nebula-orchestrator/manager/pull/104) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump werkzeug from 0.16.0 to 0.16.1 [\#102](https://github.com/nebula-orchestrator/manager/pull/102) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
