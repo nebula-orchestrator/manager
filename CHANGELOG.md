@@ -6,6 +6,8 @@
 
 **Implemented enhancements:**
 
+- Bump croniter from 1.0.6 to 1.0.8 [\#211](https://github.com/nebula-orchestrator/manager/pull/211) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump websocket-client from 0.57.0 to 0.58.0 [\#210](https://github.com/nebula-orchestrator/manager/pull/210) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump cffi from 1.14.4 to 1.14.5 [\#208](https://github.com/nebula-orchestrator/manager/pull/208) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump pymongo from 3.11.2 to 3.11.3 [\#207](https://github.com/nebula-orchestrator/manager/pull/207) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump croniter from 1.0.2 to 1.0.6 [\#206](https://github.com/nebula-orchestrator/manager/pull/206) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -94,8 +96,6 @@
 - Bump idna from 2.8 to 2.9 [\#110](https://github.com/nebula-orchestrator/manager/pull/110) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python-dotenv from 0.10.5 to 0.11.0 [\#109](https://github.com/nebula-orchestrator/manager/pull/109) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cffi from 1.13.2 to 1.14.0 [\#108](https://github.com/nebula-orchestrator/manager/pull/108) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump werkzeug from 0.16.1 to 1.0.0 [\#107](https://github.com/nebula-orchestrator/manager/pull/107) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump jinja2 from 2.11.0 to 2.11.1 [\#106](https://github.com/nebula-orchestrator/manager/pull/106) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
@@ -135,6 +135,7 @@
 - Bump parse-it from 0.7.0 to 0.8.1 [\#44](https://github.com/nebula-orchestrator/manager/pull/44) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump cachetools from 3.1.0 to 3.1.1 [\#43](https://github.com/nebula-orchestrator/manager/pull/43) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump urllib3 from 1.25.2 to 1.25.3 [\#42](https://github.com/nebula-orchestrator/manager/pull/42) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
+- Bump flask from 1.0.2 to 1.0.3 [\#38](https://github.com/nebula-orchestrator/manager/pull/38) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 ## [2.6.1](https://github.com/nebula-orchestrator/manager/tree/2.6.1) (2019-05-21)
 
@@ -145,7 +146,6 @@
 - Add cron jobs endpoints & modify the device\_group endpoints to include that option [\#29](https://github.com/nebula-orchestrator/manager/issues/29)
 - Bump parse-it from 0.5.11 to 0.7.0 [\#40](https://github.com/nebula-orchestrator/manager/pull/40) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump flask-httpauth from 3.2.4 to 3.3.0 [\#39](https://github.com/nebula-orchestrator/manager/pull/39) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump flask from 1.0.2 to 1.0.3 [\#38](https://github.com/nebula-orchestrator/manager/pull/38) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump requests from 2.21.0 to 2.22.0 [\#37](https://github.com/nebula-orchestrator/manager/pull/37) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump websocket-client from 0.54.0 to 0.56.0 [\#36](https://github.com/nebula-orchestrator/manager/pull/36) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump werkzeug from 0.15.2 to 0.15.4 [\#35](https://github.com/nebula-orchestrator/manager/pull/35) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
