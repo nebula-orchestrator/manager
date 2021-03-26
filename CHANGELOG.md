@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump croniter from 1.0.9 to 1.0.10 [\#215](https://github.com/nebula-orchestrator/manager/pull/215) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump croniter from 1.0.8 to 1.0.9 [\#214](https://github.com/nebula-orchestrator/manager/pull/214) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump parse-it from 3.5.0 to 3.6.0 [\#213](https://github.com/nebula-orchestrator/manager/pull/213) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump urllib3 from 1.26.3 to 1.26.4 [\#212](https://github.com/nebula-orchestrator/manager/pull/212) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -95,7 +96,6 @@
 - Bump pycparser from 2.19 to 2.20 [\#115](https://github.com/nebula-orchestrator/manager/pull/115) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python-dotenv from 0.11.0 to 0.12.0 [\#114](https://github.com/nebula-orchestrator/manager/pull/114) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump enum34 from 1.1.6 to 1.1.9 [\#112](https://github.com/nebula-orchestrator/manager/pull/112) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump requests from 2.22.0 to 2.23.0 [\#111](https://github.com/nebula-orchestrator/manager/pull/111) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
