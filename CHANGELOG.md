@@ -6,6 +6,8 @@
 
 **Implemented enhancements:**
 
+- Bump gunicorn from 20.0.4 to 20.1.0 [\#217](https://github.com/nebula-orchestrator/manager/pull/217) ([dependabot[bot]](https://github.com/apps/dependabot))
+- Bump python-dotenv from 0.15.0 to 0.16.0 [\#216](https://github.com/nebula-orchestrator/manager/pull/216) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump croniter from 1.0.9 to 1.0.10 [\#215](https://github.com/nebula-orchestrator/manager/pull/215) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump croniter from 1.0.8 to 1.0.9 [\#214](https://github.com/nebula-orchestrator/manager/pull/214) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump parse-it from 3.5.0 to 3.6.0 [\#213](https://github.com/nebula-orchestrator/manager/pull/213) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -95,7 +97,6 @@
 - Bump click from 7.0 to 7.1.1 [\#116](https://github.com/nebula-orchestrator/manager/pull/116) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pycparser from 2.19 to 2.20 [\#115](https://github.com/nebula-orchestrator/manager/pull/115) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python-dotenv from 0.11.0 to 0.12.0 [\#114](https://github.com/nebula-orchestrator/manager/pull/114) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump enum34 from 1.1.6 to 1.1.9 [\#112](https://github.com/nebula-orchestrator/manager/pull/112) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
@@ -105,7 +106,6 @@
 
 - Create Dependabot config file [\#166](https://github.com/nebula-orchestrator/manager/pull/166) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump python from 3.8.2-alpine3.10 to 3.8.3-alpine3.10 [\#137](https://github.com/nebula-orchestrator/manager/pull/137) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump python from 3.8.1-alpine3.10 to 3.8.2-alpine3.10 [\#113](https://github.com/nebula-orchestrator/manager/pull/113) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 ## [2.7.0](https://github.com/nebula-orchestrator/manager/tree/2.7.0) (2019-08-27)
 
