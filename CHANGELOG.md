@@ -6,6 +6,7 @@
 
 **Implemented enhancements:**
 
+- Bump python-dotenv from 0.16.0 to 0.17.0 [\#218](https://github.com/nebula-orchestrator/manager/pull/218) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump gunicorn from 20.0.4 to 20.1.0 [\#217](https://github.com/nebula-orchestrator/manager/pull/217) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump python-dotenv from 0.15.0 to 0.16.0 [\#216](https://github.com/nebula-orchestrator/manager/pull/216) ([dependabot[bot]](https://github.com/apps/dependabot))
 - Bump croniter from 1.0.9 to 1.0.10 [\#215](https://github.com/nebula-orchestrator/manager/pull/215) ([dependabot[bot]](https://github.com/apps/dependabot))
@@ -96,7 +97,6 @@
 - Bump enum34 from 1.1.9 to 1.1.10 [\#117](https://github.com/nebula-orchestrator/manager/pull/117) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump click from 7.0 to 7.1.1 [\#116](https://github.com/nebula-orchestrator/manager/pull/116) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 - Bump pycparser from 2.19 to 2.20 [\#115](https://github.com/nebula-orchestrator/manager/pull/115) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
-- Bump python-dotenv from 0.11.0 to 0.12.0 [\#114](https://github.com/nebula-orchestrator/manager/pull/114) ([dependabot-preview[bot]](https://github.com/apps/dependabot-preview))
 
 **Fixed bugs:**
 
