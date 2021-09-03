@@ -9,7 +9,7 @@ colorama==0.4.4
 configobj==5.0.6
 croniter==1.0.15
 dnspython==2.1.0
-dpath==2.0.1
+dpath==2.0.2
 enum34==1.1.10
 Flask==2.0.1
 Flask-HTTPAuth==4.4.0
