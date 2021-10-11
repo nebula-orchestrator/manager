@@ -4,7 +4,7 @@ cachetools==4.2.2
 certifi==2021.10.8
 cffi==1.14.6
 chardet==4.0.0
-Click==8.0.1
+Click==8.0.3
 colorama==0.4.4
 configobj==5.0.6
 croniter==1.0.15
