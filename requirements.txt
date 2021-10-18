@@ -22,7 +22,7 @@ ipaddress==1.0.23
 itsdangerous==2.0.1
 Jinja2==3.0.2
 MarkupSafe==2.0.1
-parse-it==2021.10.11.15.14
+parse-it==2021.10.18.8.14
 ply==3.11
 pycparser==2.20
 pyhcl==0.4.4
