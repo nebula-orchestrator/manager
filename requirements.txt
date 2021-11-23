@@ -12,7 +12,7 @@ dnspython==2.1.0
 dpath==2.0.5
 enum34==1.1.10
 Flask==2.0.2
-Flask-HTTPAuth==4.4.0
+Flask-HTTPAuth==4.5.0
 gevent==21.8.0
 greenlet==1.1.2
 gunicorn==20.1.0
