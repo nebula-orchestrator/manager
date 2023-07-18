@@ -15,7 +15,7 @@ Flask==2.3.2
 Flask-HTTPAuth==4.8.0
 gevent==23.7.0
 greenlet==2.0.2
-gunicorn==20.1.0
+gunicorn==21.0.1
 html5lib==1.1
 idna==3.4
 ipaddress==1.0.23
