@@ -37,5 +37,5 @@ toml==0.10.2
 urllib3==2.0.4
 webencodings==0.5.1
 websocket-client==1.6.2
-Werkzeug==2.3.6
+Werkzeug==2.3.7
 xmltodict==0.13.0
