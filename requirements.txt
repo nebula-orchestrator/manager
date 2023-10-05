@@ -11,7 +11,7 @@ croniter==1.4.1
 dnspython==2.4.2
 dpath==2.1.6
 enum34==1.1.10
-Flask==2.3.3
+Flask==3.0.0
 Flask-HTTPAuth==4.8.0
 gevent==23.9.1
 greenlet==3.0.0
