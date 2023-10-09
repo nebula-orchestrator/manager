@@ -36,6 +36,6 @@ six==1.16.0
 toml==0.10.2
 urllib3==2.0.6
 webencodings==0.5.1
-websocket-client==1.6.3
+websocket-client==1.6.4
 Werkzeug==3.0.0
 xmltodict==0.13.0
