@@ -26,7 +26,7 @@ parse-it==2024.3.25.9.54
 ply==3.11
 pycparser==2.21
 pyhcl==0.4.5
-pymongo==4.6.2
+pymongo==4.6.3
 python-dateutil==2.9.0.post0
 python-dotenv==1.0.1
 PyYAML==6.0.1
