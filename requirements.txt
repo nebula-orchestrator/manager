@@ -14,7 +14,7 @@ enum34==1.1.10
 Flask==3.0.3
 Flask-HTTPAuth==4.8.0
 gevent==24.2.1
-greenlet==3.0.3
+greenlet==3.1.1
 gunicorn==23.0.0
 html5lib==1.1
 idna==3.10
