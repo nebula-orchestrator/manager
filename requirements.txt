@@ -8,7 +8,7 @@ Click==8.1.7
 colorama==0.4.6
 configobj==5.0.9
 croniter==3.0.3
-dnspython==2.6.1
+dnspython==2.7.0
 dpath==2.2.0
 enum34==1.1.10
 Flask==3.0.3
